@@ -3,6 +3,8 @@ package generic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/IceFoxs/open-gateway/util"
 	"log"
 	"time"
 )
@@ -276,6 +278,11 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 }
 
 func ConfRefresh(refConf config.ReferenceConfig) interface{} {
+	defer func() {
+		if e := recover(); e != nil {
+			fmt.Println("recover the panic:", e)
+		}
+	}()
 	resp, err := refConf.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		"confRefresh",
@@ -290,45 +297,8 @@ func ConfRefresh(refConf config.ReferenceConfig) interface{} {
 		panic(err)
 	}
 	logger.Infof("confRefresh res: %+v", resp)
-	data := respHandler(resp)
+	data := util.ConvertMap(resp)
 	by, err := json.Marshal(data)
 	log.Println("output json:", string(by), err)
 	return data
-}
-
-func respHandler(res interface{}) (tmp map[string]interface{}) {
-	// map 需要初始化一个出来
-	tmp = make(map[string]interface{})
-	log.Println("input res is : ", res)
-	switch res.(type) {
-	case nil:
-		return tmp
-	case map[string]interface{}:
-		return res.(map[string]interface{})
-	case map[interface{}]interface{}:
-		log.Println("map[interface{}]interface{} res:", res)
-		for k, v := range res.(map[interface{}]interface{}) {
-			log.Println("loop:", k, v)
-			switch k.(type) {
-			case string:
-				switch v.(type) {
-				case map[interface{}]interface{}:
-					log.Println("map[interface{}]interface{} v:", v)
-					tmp[k.(string)] = respHandler(v)
-					continue
-				default:
-					log.Printf("default v: %v %v \n", k, v)
-					tmp[k.(string)] = v
-				}
-
-			default:
-				continue
-			}
-		}
-		return tmp
-	default:
-		// 暂时没遇到更复杂的数据
-		log.Println("unknow data:", res)
-	}
-	return tmp
 }
