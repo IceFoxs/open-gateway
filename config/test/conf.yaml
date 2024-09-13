@@ -1,0 +1,18 @@
+app:
+  host: 127.0.0.1:8888
+  name: open-gateway
+  register: nacos
+registry:
+  registry_address:
+    - 127.0.0.1:8848
+  username: "nacos"
+  password: "nacos"
+  register_type: "nacos"
+mysql:
+  dsn: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
+
+redis:
+  address: "127.0.0.1:6379"
+  username: ""
+  password: ""
+  db: 0

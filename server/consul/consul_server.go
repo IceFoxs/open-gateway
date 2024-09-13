@@ -2,7 +2,6 @@ package consul
 
 import (
 	"fmt"
-	con "github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/server/router"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/app/server/registry"
@@ -13,19 +12,18 @@ import (
 	"os"
 )
 
-func CreateConsulServer() {
+func CreateConsulServer(serverHost string, appName string, address string) {
 	config := consulapi.DefaultConfig()
-	config.Address = "127.0.0.1:8500"
+	config.Address = address
 	consulClient, err := consulapi.NewClient(config)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	addr := "127.0.0.1:8888"
 	check := &consulapi.AgentServiceCheck{
-		CheckID:  "foo-ttl",
+		CheckID:  appName + "-check",
 		Interval: "10s",
-		HTTP:     "http://" + addr + "/health",
+		HTTP:     "http://" + serverHost + "/health",
 	}
 	r := consul.NewConsulRegister(consulClient, consul.WithCheck(check))
 	dir, err := os.Getwd()
@@ -34,9 +32,9 @@ func CreateConsulServer() {
 		return
 	}
 	fmt.Println(dir)
-	h := server.Default(server.WithHostPorts(addr), server.WithRegistry(r, &registry.Info{
-		ServiceName: con.TEST_SERVEICE,
-		Addr:        utils.NewNetAddr("tcp", addr),
+	h := server.Default(server.WithHostPorts(serverHost), server.WithRegistry(r, &registry.Info{
+		ServiceName: appName,
+		Addr:        utils.NewNetAddr("tcp", serverHost),
 		Weight:      10,
 		Tags:        nil,
 	}))

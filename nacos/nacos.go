@@ -39,7 +39,6 @@ func CreateNamingClient(host string, port uint64, username string, password stri
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
 	}
-
 	//create ClientConfig
 	cc := *constant.NewClientConfig(
 		constant.WithUsername(username),
