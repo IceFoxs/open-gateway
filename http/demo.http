@@ -2,12 +2,11 @@ POST http://127.0.0.1:8888/api/json
 Content-Type: application/json
 
 {
-
-    "encryptType": "NONE",
+    "encryptType": "",
     "filename": "FPS_MANAGER_CONFREFRESH_REQ_niyang_20240813164335632.json",
     "sign": "1",
     "signType": "1",
-  "bizContent": "1",
+    "bizContent": "1",
     "timestamp": "2024-08-13T16:43:35",
     "version": "2.0"
 }
