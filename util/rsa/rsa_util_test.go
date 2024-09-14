@@ -3,6 +3,8 @@ package rsa_test
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/x509"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/IceFoxs/open-gateway/util/aes"
@@ -75,6 +77,39 @@ func TestRsa(*testing.T) {
 	// 验证签名的有效性
 	err = rsaUtil.RSAVerify(param, publicKey)
 
-	fmt.Println("Signature verificatio:", err)
+	fmt.Println("Signature verification:", err)
 
+	// 编码私钥为Base64
+	// 将私钥转换为PKCS8编码
+	encodedPublicKey := publicKeyToBytes(publicKey)
+	// 将私钥编码为Base64字符串
+	publicBase64 := base64.StdEncoding.EncodeToString(encodedPublicKey)
+
+	fmt.Println("Public Key (Base64):", publicBase64)
+
+	pk, _ := rsaUtil.Base64PublicKeyToRSA(publicBase64)
+	// 使用公钥进行加密
+	RsaEncrypted1, _ := rsaUtil.RSAEncrypt(param, pk)
+	println("64-RSAencrypted:", RsaEncrypted1)
+
+	// 编码私钥为Base64
+	// 将私钥转换为PKCS8编码
+	encodedPrivateKey := privateKeyToBytes(privateKey)
+	// 将私钥编码为Base64字符串
+	privateKeyBase64 := base64.StdEncoding.EncodeToString(encodedPrivateKey)
+	fmt.Println("Private Key (Base64):", privateKeyBase64)
+	// 使用私钥进行解密
+	pk2, _ := rsaUtil.Base64ToPrivateKey(privateKeyBase64)
+	RsaDecrypted1, _ := rsaUtil.RSADecrypt(RsaEncrypted1, pk2)
+	println("64RsaDecrypted:", string(RsaDecrypted1))
+
+}
+
+func privateKeyToBytes(privateKey *rsa.PrivateKey) []byte {
+	return x509.MarshalPKCS1PrivateKey(privateKey)
+}
+
+func publicKeyToBytes(publicKey *rsa.PublicKey) []byte {
+	x, _ := x509.MarshalPKIXPublicKey(publicKey)
+	return x
 }

@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
+	"crypto/x509"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -156,4 +157,46 @@ func RSAVerify(data map[string]interface{}, publicKey *rsa.PublicKey) error {
 	}
 	hashed := sha256.Sum256(bytes)
 	return rsa.VerifyPKCS1v15(publicKey, crypto.SHA256, hashed[:], decoded)
+}
+
+func Base64PublicKeyToRSA(base64PublicKey string) (*rsa.PublicKey, error) {
+	// 解码Base64字符串
+	publicKeyDecoded, err := base64.StdEncoding.DecodeString(base64PublicKey)
+	if err != nil {
+		return nil, err
+	}
+	// 解析PEM格式的公钥
+	pubInterface, err := x509.ParsePKIXPublicKey(publicKeyDecoded)
+	if err != nil {
+		return nil, err
+	}
+	// 类型断言，确保得到的是*rsa.PublicKey
+	publicKey, ok := pubInterface.(*rsa.PublicKey)
+	if !ok {
+		return nil, fmt.Errorf("invalid public key type")
+	}
+
+	return publicKey, nil
+}
+
+func Base64ToPrivateKey(base64EncodedKey string) (*rsa.PrivateKey, error) {
+	// 解码Base64编码的密钥
+	decodedKey, err := base64.StdEncoding.DecodeString(base64EncodedKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// 解析PEM格式的密钥为*rsa.PrivateKey
+	privateKey, err := x509.ParsePKCS1PrivateKey(decodedKey)
+	if err != nil {
+		return nil, err
+	}
+	return privateKey, nil
+	//// 类型断言，确保得到的是*rsa.PublicKey
+	//privateKey1, ok := privateKey.(*rsa.PrivateKey)
+	//if !ok {
+	//	return nil, fmt.Errorf("invalid public key type")
+	//}
+	//
+	//return privateKey1, nil
 }
