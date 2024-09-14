@@ -277,7 +277,7 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 	return refConf
 }
 
-func ConfRefresh(refConf config.ReferenceConfig) interface{} {
+func ConfRefresh(refConf config.ReferenceConfig) (interface{}, error) {
 	defer func() {
 		if e := recover(); e != nil {
 			fmt.Println("recover the panic:", e)
@@ -294,11 +294,12 @@ func ConfRefresh(refConf config.ReferenceConfig) interface{} {
 			}},
 	)
 	if err != nil {
-		panic(err)
+
+		return nil, err
 	}
 	logger.Infof("confRefresh res: %+v", resp)
 	data := util.ConvertMap(resp)
 	by, err := json.Marshal(data)
 	log.Println("output json:", string(by), err)
-	return data
+	return data, nil
 }
