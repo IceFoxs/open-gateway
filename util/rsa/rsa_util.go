@@ -221,3 +221,17 @@ func Base64ToPrivateKeyByPkcs8(base64EncodedKey string) (*rsa.PrivateKey, error)
 
 	return privateKey1, nil
 }
+
+func PrivateKeyToBytes(privateKey *rsa.PrivateKey) []byte {
+	return x509.MarshalPKCS1PrivateKey(privateKey)
+}
+
+func PublicKeyToBytes(publicKey *rsa.PublicKey) []byte {
+	x, _ := x509.MarshalPKIXPublicKey(publicKey)
+	return x
+}
+
+func PrivateKeyPkcs8ToBytes(privateKey *rsa.PrivateKey) []byte {
+	cs8, _ := x509.MarshalPKCS8PrivateKey(privateKey)
+	return cs8
+}

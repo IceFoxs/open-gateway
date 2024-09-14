@@ -3,7 +3,6 @@ package rsa_test
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/x509"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -81,7 +80,7 @@ func TestRsa(*testing.T) {
 
 	// 编码私钥为Base64
 	// 将私钥转换为PKCS8编码
-	encodedPublicKey := publicKeyToBytes(publicKey)
+	encodedPublicKey := rsaUtil.PublicKeyToBytes(publicKey)
 	// 将私钥编码为Base64字符串
 	publicBase64 := base64.StdEncoding.EncodeToString(encodedPublicKey)
 	fmt.Println("Public Key (Base64):", publicBase64)
@@ -92,7 +91,7 @@ func TestRsa(*testing.T) {
 
 	// 编码私钥为Base64
 	// 将私钥转换为PKCS8编码
-	encodedPrivateKey := privateKeyToBytes(privateKey)
+	encodedPrivateKey := rsaUtil.PrivateKeyToBytes(privateKey)
 	// 将私钥编码为Base64字符串
 	privateKeyBase64 := base64.StdEncoding.EncodeToString(encodedPrivateKey)
 	fmt.Println("Private Key (Base64):", privateKeyBase64)
@@ -103,7 +102,7 @@ func TestRsa(*testing.T) {
 
 	// 编码私钥为Base64
 	// 将私钥转换为PKCS8编码
-	encodedPrivateKey1 := privateKeyPkcs8ToBytes(privateKey)
+	encodedPrivateKey1 := rsaUtil.PrivateKeyPkcs8ToBytes(privateKey)
 	// 将私钥编码为Base64字符串
 	privateKeyBase641 := base64.StdEncoding.EncodeToString(encodedPrivateKey1)
 	fmt.Println("Pkcs8 Private Key (Base64):", privateKeyBase641)
@@ -112,18 +111,4 @@ func TestRsa(*testing.T) {
 	RsaDecrypted2, _ := rsaUtil.RSADecrypt(RsaEncrypted1, pk3)
 	println("Pkcs8 64RsaDecrypted:", string(RsaDecrypted2))
 
-}
-
-func privateKeyToBytes(privateKey *rsa.PrivateKey) []byte {
-	return x509.MarshalPKCS1PrivateKey(privateKey)
-}
-
-func publicKeyToBytes(publicKey *rsa.PublicKey) []byte {
-	x, _ := x509.MarshalPKIXPublicKey(publicKey)
-	return x
-}
-
-func privateKeyPkcs8ToBytes(privateKey *rsa.PrivateKey) []byte {
-	cs8, _ := x509.MarshalPKCS8PrivateKey(privateKey)
-	return cs8
 }
