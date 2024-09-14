@@ -2,6 +2,11 @@ package common
 
 import "github.com/cloudwego/hertz/pkg/common/json"
 
+const (
+	REQ          = "req"
+	FILENAME_REQ = "filenameReq"
+)
+
 type RequiredReq struct {
 	SignType    string `json:"signType,required" vd:"@:len($)>0; msg:'signType不能为空'"`
 	Sign        string `json:"sign,required" vd:"@:len($)>0; msg:'sign不能为空'"`

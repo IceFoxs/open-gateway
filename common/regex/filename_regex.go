@@ -1,6 +1,7 @@
 package regex
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 )
@@ -16,7 +17,7 @@ type FilenameReq struct {
 	Timestamp   string `json:"timestamp"`
 }
 
-func MatchFileName(filename string) (FilenameReq, error) {
+func MatchFileName(filename string) (*FilenameReq, error) {
 	pattern := regexp.MustCompile(FILENAME_PATTERN)
 	// 执行匹配
 	matches := pattern.FindStringSubmatch(filename)
@@ -34,8 +35,8 @@ func MatchFileName(filename string) (FilenameReq, error) {
 			timestamp = matches[5]
 		}
 	} else {
-		panic("filename not match")
+		return nil, errors.New("File name not match")
 	}
-	req := FilenameReq{AppId: appid, FilenamePre: filenamePre, Timestamp: timestamp, Filename: filename}
+	req := &FilenameReq{AppId: appid, FilenamePre: filenamePre, Timestamp: timestamp, Filename: filename}
 	return req, nil
 }
