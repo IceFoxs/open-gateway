@@ -1,4 +1,4 @@
-package dubbo
+package dubbo_test
 
 import (
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"

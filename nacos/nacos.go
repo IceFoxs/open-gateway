@@ -8,11 +8,10 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
 
-func CreateNacosClient(host string, port uint64, username string, password string) (iClient config_client.IConfigClient, err error) {
+func CreateConfigClient(host string, port uint64, username string, password string) (iClient config_client.IConfigClient, err error) {
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
 	}
-
 	//create ClientConfig
 	cc := *constant.NewClientConfig(
 		constant.WithUsername(username),
@@ -39,7 +38,6 @@ func CreateNamingClient(host string, port uint64, username string, password stri
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
 	}
-	//create ClientConfig
 	cc := *constant.NewClientConfig(
 		constant.WithUsername(username),
 		constant.WithPassword(password),
