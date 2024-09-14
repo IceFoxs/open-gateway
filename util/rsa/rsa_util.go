@@ -200,3 +200,24 @@ func Base64ToPrivateKey(base64EncodedKey string) (*rsa.PrivateKey, error) {
 	//
 	//return privateKey1, nil
 }
+
+func Base64ToPrivateKeyByPkcs8(base64EncodedKey string) (*rsa.PrivateKey, error) {
+	// 解码Base64编码的密钥
+	decodedKey, err := base64.StdEncoding.DecodeString(base64EncodedKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// 解析PEM格式的密钥为*rsa.PrivateKey
+	privateKey, err := x509.ParsePKCS8PrivateKey(decodedKey)
+	if err != nil {
+		return nil, err
+	}
+	//// 类型断言，确保得到的是*rsa.PublicKey
+	privateKey1, ok := privateKey.(*rsa.PrivateKey)
+	if !ok {
+		return nil, fmt.Errorf("invalid public key type")
+	}
+
+	return privateKey1, nil
+}
