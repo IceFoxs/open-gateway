@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "encryptType": "11",
-    "filename": "FPS_MANAGER_CONFREFRESH_REQ_niyang_20240813164335632.json1",
+    "filename": "FPS_MANAGER_CONFREFRESH_REQ_niyang_20240813164335632.json",
     "sign": "1",
     "signType": "1",
     "bizContent": "1",
