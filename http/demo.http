@@ -10,3 +10,19 @@ Content-Type: application/json
     "timestamp": "2024-08-13T16:43:35",
     "version": "2.0"
 }
+###
+POST http://127.0.0.1:8888/api/json
+Content-Type: application/json
+
+{
+"encryptType": "11",
+"filename": "FPS_MANAGER_CONFREFRESH_REQ_990102_20240813164335632.json",
+"sign": "1",
+"signType": "1",
+"bizContent": "1",
+"timestamp": "2024-08-13T16:43:35",
+"version": "2.0"
+}
+
+###
+GET http://127.0.0.1:8888/getGatewayChannelConfig

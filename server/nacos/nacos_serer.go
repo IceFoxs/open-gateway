@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func CreateNacosServer(serverHost string, appName string, address string, username string, password string) {
+func CreateNacosServer(serverHost string, appName string, address string, username string, password string) (*server.Hertz, error) {
 	addresses := strings.Split(address, ":")
 	host := addresses[0]
 	port, _ := strconv.ParseUint(addresses[1], 0, 64)
@@ -22,7 +22,7 @@ func CreateNacosServer(serverHost string, appName string, address string, userna
 	dir, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)
-		return
+		return nil, err
 	}
 	fmt.Println(dir)
 	h := server.Default(server.WithHostPorts(serverHost), server.WithRegistry(r, &registry.Info{
@@ -32,5 +32,5 @@ func CreateNacosServer(serverHost string, appName string, address string, userna
 		Tags:        nil,
 	}))
 	router.AddRouter(h, dir)
-	h.Spin()
+	return h, nil
 }

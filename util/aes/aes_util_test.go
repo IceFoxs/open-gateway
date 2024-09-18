@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestAes1(t *testing.T) {
+func TestAes(t *testing.T) {
 	origData := []byte("赵云涛")         // 待加密的数据
 	key := []byte("1234567890123456") // 加密的密钥
 	log.Println("原文：", string(origData))
