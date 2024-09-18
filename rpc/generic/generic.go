@@ -277,7 +277,7 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 	return refConf
 }
 
-func ConfRefresh(refConf config.ReferenceConfig) (interface{}, error) {
+func Invoke(refConf config.ReferenceConfig, methodName string, parameterName string, param interface{}) (interface{}, error) {
 	defer func() {
 		if e := recover(); e != nil {
 			fmt.Println("recover the panic:", e)
@@ -285,13 +285,9 @@ func ConfRefresh(refConf config.ReferenceConfig) (interface{}, error) {
 	}()
 	resp, err := refConf.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
-		"confRefresh",
-		[]string{"com.hundsun.manager.model.req.ConfRefreshRequest"},
-		[]hessian.Object{
-			map[string]hessian.Object{
-				"confType":    "BANK_TEST",
-				"confContent": "TEST|20240930",
-			}},
+		methodName,
+		[]string{parameterName},
+		[]hessian.Object{param},
 	)
 	if err != nil {
 

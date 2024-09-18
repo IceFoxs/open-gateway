@@ -1,6 +1,12 @@
 package util
 
-import "log"
+import (
+	"fmt"
+	"github.com/IceFoxs/open-gateway/common"
+	hessian "github.com/apache/dubbo-go-hessian2"
+	"github.com/cloudwego/hertz/pkg/common/json"
+	"log"
+)
 
 func ConvertMap(res interface{}) (tmp map[string]interface{}) {
 	// map 需要初始化一个出来
@@ -37,4 +43,22 @@ func ConvertMap(res interface{}) (tmp map[string]interface{}) {
 		log.Println("unknow data:", res)
 	}
 	return tmp
+}
+
+func ConvertHessianMap(m map[string]interface{}) map[string]hessian.Object {
+	hmap := make(map[string]hessian.Object)
+	for k, v := range m {
+		hmap[k] = hessian.Object(v)
+	}
+	return hmap
+}
+
+func JsonStringToMap(jsonStr string) (map[string]interface{}, error) {
+	var data map[string]interface{}
+	err := json.Unmarshal([]byte(jsonStr), &data)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("JsonStringToMap:%s", common.ToJSON(data))
+	return data, nil
 }

@@ -3,10 +3,13 @@ package router
 import (
 	"context"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
+	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/common/regex"
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"
+	"github.com/IceFoxs/open-gateway/util"
+	hessian "github.com/apache/dubbo-go-hessian2"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -23,10 +26,19 @@ func AddRouter(h *server.Hertz, dir string) {
 		g, _ := mysql.GetGatewayChannelConfig("")
 		c.JSON(consts.StatusOK, g)
 	})
+
+	h.GET("/getGatewaySystemConfig", func(ctx context.Context, c *app.RequestContext) {
+		g, _ := mysql.GetGatewaySystemConfig("")
+		c.JSON(consts.StatusOK, g)
+	})
 	h.GET("/generic", func(ctx context.Context, c *app.RequestContext) {
+
 		re := ge.NewRefConf1("com.hundsun.manager.model.proto.ConfRefreshRpcService", "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
 		time.Sleep(1 * time.Second)
-		data, _ := ge.ConfRefresh(re)
+		var m = make(map[string]hessian.Object)
+		m["confType"] = "BANK_TEST"
+		m["confContent"] = "TEST|20240930"
+		data, _ := ge.Invoke(re, "confRefresh", "com.hundsun.manager.model.req.ConfRefreshRequest", m)
 		c.JSON(consts.StatusOK, data)
 	})
 	h.StaticFS("/", &app.FS{Root: dir + "/static", IndexNames: []string{"index.html"}})
@@ -34,10 +46,23 @@ func AddRouter(h *server.Hertz, dir string) {
 	h.POST("/api/json", validFileName, validSign, func(ctx context.Context, c *app.RequestContext) {
 		var r, _ = c.Get(common.REQ)
 		req := r.(common.RequiredReq)
-		//re := ge.NewRefConf1("com.hundsun.manager.model.proto.ConfRefreshRpcService", "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
-		//time.Sleep(1 * time.Second)
-		//data, _ := ge.ConfRefresh(re)
-		c.JSON(consts.StatusOK, common.Succ(0, req, "NONE"))
+		var fr, _ = c.Get(common.FILENAME_REQ)
+		fileReq := fr.(*regex.FilenameReq)
+		hlog.Infof("fileReq %s", fileReq)
+		gm, _ := gatewaymethod.GetGatewayMethodCache().GetCache(fileReq.FilenamePre)
+		hlog.Infof("gm--------------- %s", gm)
+		re := ge.NewRefConf1(gm.InterfaceName, "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
+		time.Sleep(1 * time.Second)
+		//"{\"confType\": \"BANK_TEST\",\"confContent\": \"TEST|20240930\"}"
+		toMap, err := util.JsonStringToMap(req.BizContent)
+		if err != nil {
+			c.JSON(consts.StatusOK, common.Error(500, err.Error()))
+			return
+		}
+		hlog.Infof("toMap %s", common.ToJSON(toMap))
+		util.ConvertHessianMap(toMap)
+		data, _ := ge.Invoke(re, gm.MethodName, gm.ParameterTypeName, util.ConvertHessianMap(toMap))
+		c.JSON(consts.StatusOK, common.Succ(0, data, "NONE"))
 	})
 }
 

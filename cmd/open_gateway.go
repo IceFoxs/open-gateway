@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
+	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db"
+	"github.com/IceFoxs/open-gateway/registry"
 	"github.com/IceFoxs/open-gateway/server/consul"
 	na "github.com/IceFoxs/open-gateway/server/nacos"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -21,8 +23,12 @@ func main() {
 	appName := conf.GetConf().App.Name
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
+	registry.GetRegisterClient()
 	c := gatewayconfig.GetGatewayConfigCache()
 	c.RefreshCache()
+	gsc := gatewaymethod.GetGatewayMethodCache()
+	gsc.RefreshCache("FPS_MANAGER_CONFREFRESH")
+
 	if register == "" {
 		panic("app register can not empty, please check your config")
 	}

@@ -9,7 +9,7 @@ const (
 
 type RequiredReq struct {
 	SignType    string `json:"signType,required" vd:"@:len($)>0; msg:'signType不能为空'"`
-	Sign        string `json:"sign,required" vd:"@:len($)>0; msg:'sign不能为空'"`
+	Sign        string `json:"sign,required"`
 	Filename    string `json:"filename,required" vd:"@:len($)>0; msg:'filename不能为空'"`
 	EncryptType string `json:"encryptType,required" vd:"@:len($)>0; msg:'encryptType不能为空'"`
 	BizContent  string `json:"bizContent,required" vd:"@:len($)>0; msg:'bizContent不能为空'"`
