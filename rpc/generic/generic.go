@@ -250,10 +250,12 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 		RegistryType: registryType,
 	}
 	refConf := config.ReferenceConfig{
-		InterfaceName: iface,
-		RegistryIDs:   []string{registry},
-		Protocol:      protocol,
-		Generic:       "true",
+		InterfaceName:  iface,
+		RegistryIDs:    []string{registry},
+		Protocol:       protocol,
+		Generic:        "true",
+		Retries:        "0",
+		RequestTimeout: "5000",
 	}
 	metadata := &config.MetadataReportConfig{
 		Protocol: registry,

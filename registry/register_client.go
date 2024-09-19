@@ -19,10 +19,12 @@ type Registry struct {
 	registerClient RegisterClient
 }
 
+type Listener func(group, dataId, data string)
+
 type RegisterClient interface {
 	PublishConfig(key string, group string, value string) error
 	GetConfig(key string, group string) (string, error)
-	Subscribe(key string, group string)
+	Subscribe(key string, group string, listener Listener)
 }
 
 func (r *Registry) PublishConfig(key string, group string, value string) error {
@@ -31,8 +33,8 @@ func (r *Registry) PublishConfig(key string, group string, value string) error {
 func (r *Registry) GetConfig(key string, group string) (string, error) {
 	return r.registerClient.GetConfig(key, group)
 }
-func (r *Registry) Subscribe(key string, group string) {
-	r.registerClient.Subscribe(key, group)
+func (r *Registry) Subscribe(key string, group string, listener Listener) {
+	r.registerClient.Subscribe(key, group, listener)
 }
 func GetRegisterClient() *Registry {
 	once.Do(initRegisterClient)

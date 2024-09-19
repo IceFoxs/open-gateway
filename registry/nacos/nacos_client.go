@@ -2,6 +2,7 @@ package nacos
 
 import (
 	"github.com/IceFoxs/open-gateway/nacos"
+	"github.com/IceFoxs/open-gateway/registry"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
@@ -38,12 +39,12 @@ func (rc *NacosRegisterClient) GetConfig(key string, group string) (string, erro
 	return data, err
 }
 
-func (rc *NacosRegisterClient) Subscribe(key string, group string) {
+func (rc *NacosRegisterClient) Subscribe(key string, group string, f registry.Listener) {
 	err := rc.Client.ListenConfig(vo.ConfigParam{
 		DataId: key,
 		Group:  group,
 		OnChange: func(namespace, group, dataId, data string) {
-
+			f(group, dataId, data)
 		},
 	})
 	if err != nil {

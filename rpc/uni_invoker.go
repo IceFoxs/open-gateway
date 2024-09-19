@@ -24,7 +24,7 @@ func Invoke(ctx context.Context, c *app.RequestContext, filename string, param i
 	}
 	hlog.Infof("found rpc invoke metadata --------------- %s", gmm)
 	if gmm.RpcType == constant.RPC_DUBOO {
-		re := ge.NewRefConf1(gmm.InterfaceName, "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
+		re := ge.NewRefConf1(gmm.InterfaceName, "nacos", constant.RPC_INTERFACE_TYPE, "dubbo", "127.0.0.1:8848", "nacos", "nacos")
 		time.Sleep(1 * time.Second)
 		toMap, err := util.JsonStringToMap(param.(string))
 		if err != nil {
