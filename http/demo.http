@@ -58,7 +58,7 @@ POST http://127.0.0.1:8888/api/json
 Content-Type: application/json
 
 {
-    "bizContent": "{\"pageNo\":\"w1\",\"pageSize\":10}",
+    "bizContent": "{\"pageNo\":\"1\",\"pageSize\":10}",
     "encryptType": "NONE",
     "filename": "FPS_MANAGER_GETBANKCHANNELCONFIG_REQ_990102_20240813164335632.json",
     "sign": "",
