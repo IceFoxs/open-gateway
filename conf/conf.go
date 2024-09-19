@@ -62,7 +62,7 @@ func initConf() {
 	fmt.Println(dir)
 	prefix := "config"
 	confFileRelPath := dir + "/" + filepath.Join(prefix, filepath.Join(GetEnv(), "conf.yaml"))
-	hlog.SystemLogger().Errorf("confFileRelPath - %v", confFileRelPath)
+	hlog.SystemLogger().Infof("confFileRelPath - %v", confFileRelPath)
 	content, err := ioutil.ReadFile(confFileRelPath)
 	if err != nil {
 		panic(err)

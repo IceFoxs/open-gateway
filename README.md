@@ -1,8 +1,12 @@
 # open-gateway
 
 
+#### 运行
+```shell
+make run
+```
 
-```go
-
-
+#### 构建
+```shell
+make build
 ```
