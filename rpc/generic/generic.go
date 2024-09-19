@@ -2,7 +2,7 @@ package generic
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"github.com/IceFoxs/open-gateway/util"
 	"time"
 )
@@ -276,11 +276,6 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 }
 
 func Invoke(refConf config.ReferenceConfig, methodName string, parameterName string, param interface{}) (interface{}, error) {
-	defer func() {
-		if e := recover(); e != nil {
-			fmt.Println("recover the panic:", e)
-		}
-	}()
 	resp, err := refConf.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		methodName,
@@ -294,5 +289,5 @@ func Invoke(refConf config.ReferenceConfig, methodName string, parameterName str
 	if resp != nil {
 		return util.DealResp(resp, false)
 	}
-	return nil, nil
+	return nil, errors.New("服务调用异常")
 }

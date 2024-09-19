@@ -34,6 +34,10 @@ func Invoke(ctx context.Context, c *app.RequestContext, filename string, param i
 		hlog.Infof("toMap %s", common.ToJSON(toMap))
 		util.ConvertHessianMap(toMap)
 		data, err := ge.Invoke(re, gmm.MethodName, gmm.ParameterTypeName, util.ConvertHessianMap(toMap))
+		if err != nil {
+			c.JSON(consts.StatusOK, common.Error(900, err.Error()))
+			return
+		}
 		c.JSON(consts.StatusOK, common.Succ(0, data, "NONE"))
 		return
 	}
