@@ -3,12 +3,11 @@ package router
 import (
 	"context"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
-	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/common/regex"
 	"github.com/IceFoxs/open-gateway/db/mysql"
+	"github.com/IceFoxs/open-gateway/rpc"
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"
-	"github.com/IceFoxs/open-gateway/util"
 	hessian "github.com/apache/dubbo-go-hessian2"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -32,7 +31,6 @@ func AddRouter(h *server.Hertz, dir string) {
 		c.JSON(consts.StatusOK, g)
 	})
 	h.GET("/generic", func(ctx context.Context, c *app.RequestContext) {
-
 		re := ge.NewRefConf1("com.hundsun.manager.model.proto.ConfRefreshRpcService", "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
 		time.Sleep(1 * time.Second)
 		var m = make(map[string]hessian.Object)
@@ -50,20 +48,10 @@ func AddRouter(h *server.Hertz, dir string) {
 		var fr, _ = c.Get(common.FILENAME_REQ)
 		fileReq := fr.(*regex.FilenameReq)
 		hlog.Infof("fileReq %s", fileReq)
-		gm, _ := gatewaymethod.GetGatewayMethodCache().GetCache(fileReq.FilenamePre)
-		hlog.Infof("gm--------------- %s", gm)
-		re := ge.NewRefConf1(gm.InterfaceName, "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
-		time.Sleep(1 * time.Second)
-		toMap, err := util.JsonStringToMap(req.BizContent)
+		data, err := rpc.Invoke(context.TODO(), fileReq.FilenamePre, req.BizContent)
 		if err != nil {
-			c.JSON(consts.StatusOK, common.Error(500, err.Error()))
+			c.JSON(consts.StatusOK, common.Error(900, err.Error()))
 			return
-		}
-		hlog.Infof("toMap %s", common.ToJSON(toMap))
-		util.ConvertHessianMap(toMap)
-		data, err := ge.Invoke(re, gm.MethodName, gm.ParameterTypeName, util.ConvertHessianMap(toMap))
-		for k, v := range data.(map[string]interface{}) {
-			hlog.Infof("data %s:%s \r\n", k, v)
 		}
 		c.JSON(consts.StatusOK, common.Succ(0, data, "NONE"))
 	})

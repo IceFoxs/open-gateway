@@ -34,7 +34,7 @@ func Invoke(ctx context.Context, filename string, param interface{}) (interface{
 	}
 	if gmm.RpcType == constant.RPC_HTTP {
 		data, err := client.GetHttpClient().Post(ctx, gmm.AppName, gmm.Path, param)
-		return data, err
+		return string(data.([]byte)), err
 	}
 	return nil, nil
 }

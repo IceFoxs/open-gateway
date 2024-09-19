@@ -30,8 +30,8 @@ func initCache() {
 	hlog.SystemLogger().Infof("init GatewaySystem cache")
 }
 
-func (*GatewayMethodCache) PutCache(gm model.GatewayMethodMetadata) {
-	gatewayMethodCache.m.Set(gm.GatewayMethodName, gm)
+func (g *GatewayMethodCache) PutCache(filename string, gm model.GatewayMethodMetadata) {
+	g.m.Set(filename, gm)
 }
 
 func (g *GatewayMethodCache) RefreshCache(filename string) {
@@ -48,7 +48,7 @@ func (g *GatewayMethodCache) RefreshCache(filename string) {
 		return
 	}
 	hlog.Infof("GatewayMethodMetadata [%s] is %s", filename, gmm)
-	g.PutCache(gmm)
+	g.PutCache(filename, gmm)
 }
 
 func (g *GatewayMethodCache) RefreshAllCache() {
@@ -59,16 +59,16 @@ func (g *GatewayMethodCache) RefreshAllCache() {
 	}
 
 }
-func (*GatewayMethodCache) GetCache(gatewayMethodName string) (model.GatewayMethodMetadata, bool) {
-	return gatewayMethodCache.m.Get(gatewayMethodName)
+func (g *GatewayMethodCache) GetCache(gatewayMethodName string) (model.GatewayMethodMetadata, bool) {
+	return g.m.Get(gatewayMethodName)
 }
 
-func (*GatewayMethodCache) DeleteCache(appId string) {
-	gatewayMethodCache.m.Remove(appId)
+func (g *GatewayMethodCache) DeleteCache(appId string) {
+	g.m.Remove(appId)
 }
 
-func (*GatewayMethodCache) ClearCache() {
-	gatewayMethodCache.m.Clear()
+func (g *GatewayMethodCache) ClearCache() {
+	g.m.Clear()
 }
 
 func (*GatewayMethodCache) ToJson() string {

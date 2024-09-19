@@ -10,3 +10,7 @@ type GatewayMethodMetadata struct {
 	ContextPath       string `json:"contextPath"`
 	AppName           string `json:"appName"`
 }
+
+func (gm *GatewayMethodMetadata) getReferenceKey() string {
+	return gm.InterfaceName + "-" + gm.MethodName + "-" + gm.ParameterTypeName
+}

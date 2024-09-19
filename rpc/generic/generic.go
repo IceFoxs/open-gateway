@@ -288,7 +288,6 @@ func Invoke(refConf config.ReferenceConfig, methodName string, parameterName str
 		[]hessian.Object{param},
 	)
 	if err != nil {
-
 		return nil, err
 	}
 	logger.Infof("Invoke method,%s res: %+v", methodName, resp)

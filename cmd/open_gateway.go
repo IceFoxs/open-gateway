@@ -6,6 +6,7 @@ import (
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/cache/gatewaysystem"
+	"github.com/IceFoxs/open-gateway/client"
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db"
@@ -34,6 +35,7 @@ func main() {
 	amc.RefreshAllCache()
 	gmc := gatewaymethod.GetGatewayMethodCache()
 	gmc.RefreshAllCache()
+	client.GetHttpClient()
 	if register == "" {
 		panic("app register can not empty, please check your config")
 	}

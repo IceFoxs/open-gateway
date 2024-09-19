@@ -1,9 +1,8 @@
 package nacos
 
 import (
-	"github.com/nacos-group/nacos-sdk-go/v2/clients"
+	"github.com/IceFoxs/open-gateway/nacos"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
-	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
 
@@ -12,27 +11,12 @@ type NacosRegisterClient struct {
 }
 
 func NewRegisterClient(host string, port uint64, username string, password string) (*NacosRegisterClient, error) {
-	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
+	client, err := nacos.CreateConfigClient(host, port, username, password)
+	if err != nil {
+		return nil, err
 	}
-	cc := *constant.NewClientConfig(
-		constant.WithUsername(username),
-		constant.WithPassword(password),
-		constant.WithNamespaceId(""),
-		constant.WithTimeoutMs(5000),
-		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir("/tmp/nacos/log"),
-		constant.WithCacheDir("/tmp/nacos/cache"),
-		constant.WithLogLevel("debug"),
-	)
-	iclient, err := clients.NewConfigClient(
-		vo.NacosClientParam{
-			ClientConfig:  &cc,
-			ServerConfigs: sc,
-		},
-	)
 	rc := &NacosRegisterClient{
-		Client: iclient,
+		Client: client,
 	}
 	return rc, err
 }

@@ -68,6 +68,9 @@ func (a *AppMetadataCache) RefreshAllCache() {
 	appNames := gsc.GetAllAppName()
 	for _, name := range appNames {
 		a.RefreshCache(name, constant.APP_METADATA)
+		hlog.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
 		a.RefreshCache(name, constant.HTTP_APP_METADATA)
+		hlog.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
+
 	}
 }
