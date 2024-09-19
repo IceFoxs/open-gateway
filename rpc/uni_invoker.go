@@ -39,6 +39,10 @@ func Invoke(ctx context.Context, c *app.RequestContext, filename string, param i
 	}
 	if gmm.RpcType == constant.RPC_HTTP {
 		data, err := client.GetHttpClient().Post(ctx, gmm.AppName, gmm.Path, param)
+		if err != nil {
+			c.JSON(consts.StatusOK, common.Error(900, err.Error()))
+			return
+		}
 		var res model.Response
 		err = json.Unmarshal(data.([]byte), &res)
 		if err != nil {
