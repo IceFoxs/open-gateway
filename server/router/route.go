@@ -48,12 +48,7 @@ func AddRouter(h *server.Hertz, dir string) {
 		var fr, _ = c.Get(common.FILENAME_REQ)
 		fileReq := fr.(*regex.FilenameReq)
 		hlog.Infof("fileReq %s", fileReq)
-		data, err := rpc.Invoke(context.TODO(), fileReq.FilenamePre, req.BizContent)
-		if err != nil {
-			c.JSON(consts.StatusOK, common.Error(900, err.Error()))
-			return
-		}
-		c.JSON(consts.StatusOK, common.Succ(0, data, "NONE"))
+		rpc.Invoke(context.TODO(), c, fileReq.FilenamePre, req.BizContent)
 	})
 }
 
