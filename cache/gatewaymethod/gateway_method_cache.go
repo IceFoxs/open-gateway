@@ -1,6 +1,7 @@
 package gatewaymethod
 
 import (
+	"github.com/IceFoxs/open-gateway/cache/appmetadata"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
@@ -50,6 +51,14 @@ func (g *GatewayMethodCache) RefreshCache(filename string) {
 	g.PutCache(gmm)
 }
 
+func (g *GatewayMethodCache) RefreshAllCache() {
+	amc := appmetadata.GetAppMetadataCache()
+	methods := amc.GetAllMethods()
+	for _, method := range methods {
+		g.RefreshCache(method)
+	}
+
+}
 func (*GatewayMethodCache) GetCache(gatewayMethodName string) (model.GatewayMethodMetadata, bool) {
 	return gatewayMethodCache.m.Get(gatewayMethodName)
 }

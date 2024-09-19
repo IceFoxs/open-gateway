@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/IceFoxs/open-gateway/cache/appmetadata"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
+	"github.com/IceFoxs/open-gateway/cache/gatewaysystem"
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db"
@@ -26,9 +28,12 @@ func main() {
 	registry.GetRegisterClient()
 	c := gatewayconfig.GetGatewayConfigCache()
 	c.RefreshCache()
-	gsc := gatewaymethod.GetGatewayMethodCache()
-	gsc.RefreshCache("FPS_MANAGER_CONFREFRESH")
-
+	gsc := gatewaysystem.GetGatewaySystemCache()
+	gsc.RefreshCache()
+	amc := appmetadata.GetAppMetadataCache()
+	amc.RefreshAllCache()
+	gmc := gatewaymethod.GetGatewayMethodCache()
+	gmc.RefreshAllCache()
 	if register == "" {
 		panic("app register can not empty, please check your config")
 	}

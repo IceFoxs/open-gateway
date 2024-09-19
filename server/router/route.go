@@ -39,6 +39,7 @@ func AddRouter(h *server.Hertz, dir string) {
 		m["confType"] = "BANK_TEST"
 		m["confContent"] = "TEST|20240930"
 		data, _ := ge.Invoke(re, "confRefresh", "com.hundsun.manager.model.req.ConfRefreshRequest", m)
+
 		c.JSON(consts.StatusOK, data)
 	})
 	h.StaticFS("/", &app.FS{Root: dir + "/static", IndexNames: []string{"index.html"}})
@@ -53,7 +54,6 @@ func AddRouter(h *server.Hertz, dir string) {
 		hlog.Infof("gm--------------- %s", gm)
 		re := ge.NewRefConf1(gm.InterfaceName, "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
 		time.Sleep(1 * time.Second)
-		//"{\"confType\": \"BANK_TEST\",\"confContent\": \"TEST|20240930\"}"
 		toMap, err := util.JsonStringToMap(req.BizContent)
 		if err != nil {
 			c.JSON(consts.StatusOK, common.Error(500, err.Error()))
@@ -61,7 +61,10 @@ func AddRouter(h *server.Hertz, dir string) {
 		}
 		hlog.Infof("toMap %s", common.ToJSON(toMap))
 		util.ConvertHessianMap(toMap)
-		data, _ := ge.Invoke(re, gm.MethodName, gm.ParameterTypeName, util.ConvertHessianMap(toMap))
+		data, err := ge.Invoke(re, gm.MethodName, gm.ParameterTypeName, util.ConvertHessianMap(toMap))
+		for k, v := range data.(map[string]interface{}) {
+			hlog.Infof("data %s:%s \r\n", k, v)
+		}
 		c.JSON(consts.StatusOK, common.Succ(0, data, "NONE"))
 	})
 }

@@ -2,10 +2,8 @@ package generic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/IceFoxs/open-gateway/util"
-	"log"
 	"time"
 )
 
@@ -293,9 +291,9 @@ func Invoke(refConf config.ReferenceConfig, methodName string, parameterName str
 
 		return nil, err
 	}
-	logger.Infof("confRefresh res: %+v", resp)
-	data := util.ConvertMap(resp)
-	by, err := json.Marshal(data)
-	log.Println("output json:", string(by), err)
-	return data, nil
+	logger.Infof("Invoke method,%s res: %+v", methodName, resp)
+	if resp != nil {
+		return util.DealResp(resp, false)
+	}
+	return nil, nil
 }

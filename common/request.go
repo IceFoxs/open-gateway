@@ -1,6 +1,6 @@
 package common
 
-import "github.com/cloudwego/hertz/pkg/common/json"
+import "encoding/json"
 
 const (
 	REQ          = "req"

@@ -62,3 +62,11 @@ func JsonStringToMap(jsonStr string) (map[string]interface{}, error) {
 	fmt.Printf("JsonStringToMap:%s", common.ToJSON(data))
 	return data, nil
 }
+
+func ToJSON(i interface{}) string {
+	content, err := json.Marshal(i)
+	if err != nil {
+		panic(err)
+	}
+	return string(content)
+}

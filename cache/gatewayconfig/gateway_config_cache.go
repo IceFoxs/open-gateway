@@ -43,7 +43,6 @@ func (*GatewayConfigCache) PutCache(gatewayConfig GatewayConfig) {
 
 func (g *GatewayConfigCache) RefreshCache() {
 	configs, _ := mysql.GetGatewayChannelConfig("")
-
 	for _, config := range configs {
 		gConfig := GatewayConfig{
 			AppId:         config.AppId,
