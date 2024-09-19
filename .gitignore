@@ -1,4 +1,4 @@
 .idea
 ./dist
 go.sum
-./tmp
+tmp
