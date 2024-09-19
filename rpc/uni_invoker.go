@@ -3,11 +3,11 @@ package rpc
 import (
 	"context"
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
-	"github.com/IceFoxs/open-gateway/client"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"
+	"github.com/IceFoxs/open-gateway/rpc/http"
 	"github.com/IceFoxs/open-gateway/util"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -42,7 +42,7 @@ func Invoke(ctx context.Context, c *app.RequestContext, filename string, param i
 		return
 	}
 	if gmm.RpcType == constant.RPC_HTTP {
-		data, err := client.GetHttpClient().Post(ctx, gmm.AppName, gmm.Path, param)
+		data, err := http.GetHttpClient().Post(ctx, gmm.AppName, gmm.Path, param)
 		if err != nil {
 			c.JSON(consts.StatusOK, common.Error(900, err.Error()))
 			return

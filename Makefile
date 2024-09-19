@@ -6,4 +6,4 @@ run:
 build:
 	go build -o $(currentPath)/dist/$(targetName) $(currentPath)/cmd/
 clean:
-	@rm -rf $(currentPath)/dist/ 
+	@rm -rf $(currentPath)/dist/

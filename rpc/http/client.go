@@ -1,10 +1,10 @@
-package client
+package http
 
 import (
 	"context"
-	"github.com/IceFoxs/open-gateway/client/nacos_client"
 	"github.com/IceFoxs/open-gateway/conf"
 	con "github.com/IceFoxs/open-gateway/constant"
+	"github.com/IceFoxs/open-gateway/rpc/http/nacos_client"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"strconv"
 	"strings"

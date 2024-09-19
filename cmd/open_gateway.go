@@ -6,11 +6,11 @@ import (
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/cache/gatewaysystem"
-	"github.com/IceFoxs/open-gateway/client"
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db"
 	"github.com/IceFoxs/open-gateway/registry"
+	"github.com/IceFoxs/open-gateway/rpc/http"
 	"github.com/IceFoxs/open-gateway/server/consul"
 	na "github.com/IceFoxs/open-gateway/server/nacos"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -35,7 +35,7 @@ func main() {
 	amc.RefreshAllCache()
 	gmc := gatewaymethod.GetGatewayMethodCache()
 	gmc.RefreshAllCache()
-	client.GetHttpClient()
+	http.GetHttpClient()
 	if register == "" {
 		panic("app register can not empty, please check your config")
 	}
