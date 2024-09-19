@@ -1,6 +1,5 @@
 # open-gateway
 
-
 #### 运行
 ```shell
 make run
