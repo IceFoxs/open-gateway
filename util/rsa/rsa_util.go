@@ -146,6 +146,15 @@ func RSASign(data map[string]interface{}, privateKey *rsa.PrivateKey) (string, e
 	return base64.StdEncoding.EncodeToString(sign), nil
 }
 
+func RSASignByString(data string, privateKey *rsa.PrivateKey) (string, error) {
+	hashed := sha256.Sum256([]byte(data))
+	sign, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hashed[:])
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(sign), nil
+}
+
 // RSAVerify 验证 RSA 签名的有效性
 func RSAVerify(data map[string]interface{}, publicKey *rsa.PublicKey) error {
 	signature := data["sign"].(string)
@@ -156,6 +165,16 @@ func RSAVerify(data map[string]interface{}, publicKey *rsa.PublicKey) error {
 		return err
 	}
 	hashed := sha256.Sum256(bytes)
+	return rsa.VerifyPKCS1v15(publicKey, crypto.SHA256, hashed[:], decoded)
+}
+
+// RSAVerify 验证 RSA 签名的有效性
+func RSAVerifyByString(data string, signature string, publicKey *rsa.PublicKey) error {
+	decoded, err := base64.StdEncoding.DecodeString(signature)
+	if err != nil {
+		return err
+	}
+	hashed := sha256.Sum256([]byte(data))
 	return rsa.VerifyPKCS1v15(publicKey, crypto.SHA256, hashed[:], decoded)
 }
 

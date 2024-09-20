@@ -82,5 +82,10 @@ func validFileName(ctx context.Context, c *app.RequestContext) {
 }
 
 func validSign(ctx context.Context, c *app.RequestContext) {
+	var r, _ = c.Get(common.REQ)
+	req := r.(common.RequiredReq)
+	if req.SignType == "NONE" {
+		return
+	}
 
 }
