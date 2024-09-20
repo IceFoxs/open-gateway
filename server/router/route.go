@@ -8,6 +8,7 @@ import (
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	"github.com/IceFoxs/open-gateway/rpc"
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"
+	rsaUtil "github.com/IceFoxs/open-gateway/util/rsa"
 	hessian "github.com/apache/dubbo-go-hessian2"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -84,8 +85,28 @@ func validFileName(ctx context.Context, c *app.RequestContext) {
 func validSign(ctx context.Context, c *app.RequestContext) {
 	var r, _ = c.Get(common.REQ)
 	req := r.(common.RequiredReq)
+	var fr, _ = c.Get(common.FILENAME_REQ)
+	fileReq := fr.(*regex.FilenameReq)
 	if req.SignType == "NONE" {
 		return
 	}
-
+	cache := gatewayconfig.GetGatewayConfigCache()
+	gc, _ := cache.GetCache(fileReq.AppId)
+	publicKey, _ := rsaUtil.Base64PublicKeyToRSA(gc.RsaPublicKey)
+	var param = make(map[string]interface{})
+	param["bizContent"] = req.BizContent
+	param["version"] = req.Version
+	param["filename"] = req.Filename
+	param["signType"] = req.SignType
+	param["encryptType"] = req.EncryptType
+	param["timestamp"] = req.Timestamp
+	param["sign"] = req.Sign
+	sortedParams := rsaUtil.SortParam(param)
+	err := rsaUtil.RSAVerifyByString(sortedParams, req.Sign, publicKey)
+	if err != nil {
+		hlog.Errorf("Signature verification failed %s", err)
+		c.Abort()
+		c.JSON(consts.StatusOK, common.Error(954, "验签失败:"+err.Error()))
+	}
+	// 验证签名的有效性
 }

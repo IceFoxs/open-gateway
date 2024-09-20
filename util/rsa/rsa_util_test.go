@@ -25,7 +25,7 @@ func TestRsa(*testing.T) {
 
 	secret := []byte("1234567890123456")
 
-	sortedParams := sign.SortParam(param)
+	sortedParams := rsaUtil.SortParam(param)
 	println("Sorted Params:", sortedParams)
 
 	signature := sign.Sign(param, secret)
@@ -114,7 +114,6 @@ func TestRsa(*testing.T) {
 }
 
 func TestRsa1(*testing.T) {
-
 	pri := "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAImXqz3gxnTdJxgPbVOio9EH20yyVeUEBfNWm12lFvxRp5R80RI1QUxNVbj7fHazyT10koYeskzA1iXVZ8BqaurHL6Z9LpJb35I06xWyIAQOIftsl1HL++zUTnu7iU6oXOHc/QNxB4ksmg8XJ4MKJ5hSkf2M9NepPgNzmxuIV/9VAgMBAAECgYBzfDDHtAT+i6zHfhNWEnmK9hw0CK8dlL3l23h2Jh3f1C1i7UySCs7u2y4rIDH8c7Rh95kQJ22iDGzxvmfh0bBAd1ZgXi6cmn8hqdn5vw/no+qztG8YcUSjtYa2S+vQATykxHoFe/zHnh0zYdG71KM/0RKJ7KkZHgBFqscHPWKugQJBANQyHrTG9SB4CyQnHjVRZu1YcjGjQxHzP6/ornndJTrO7pWJo9gdBGW8vljXnuRUgBdi7BtrWMXHgfTgzGBWt+ECQQCl/v9twB/Czsi7m/Chz/I599vOA7kqrrTK4a5460ijGsFxquxWZVovMDkoNlVUhaCjFhvnmARb2XzXQbYTlqX1AkAQCxYNPvmrkcft3NNI3rW0fjpsDFb21XhcOXBvoEu/TYP2ZGix30fE1Wdi2jKWOtlQa1dEn3IfyfzGYfSx1/yhAkAl3HeeLMgRwuB+Ch9kiO2S0znLT4YYeii6badB5Uh4C048AuRNAGkFglZHGb10vdXZ3N0Ygc/cs0qKPm6tIRtRAkEAvX6HtMzsvHceODQR2+HOJPO6KQHUKmfIO3XK3oGycc8REEaQifenu+Pt3dT7XMvsc7OGP6S72nsGXxf7PE39wA=="
 	pub := "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJl6s94MZ03ScYD21ToqPRB9tMslXlBAXzVptdpRb8UaeUfNESNUFMTVW4+3x2s8k9dJKGHrJMwNYl1WfAamrqxy+mfS6SW9+SNOsVsiAEDiH7bJdRy/vs1E57u4lOqFzh3P0DcQeJLJoPFyeDCieYUpH9jPTXqT4Dc5sbiFf/VQIDAQAB"
 	pk3, _ := rsaUtil.Base64ToPrivateKeyByPkcs8(pri)

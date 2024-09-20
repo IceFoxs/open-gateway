@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/registry/nacos"
@@ -19,12 +20,10 @@ type Registry struct {
 	registerClient RegisterClient
 }
 
-type Listener func(group, dataId, data string)
-
 type RegisterClient interface {
 	PublishConfig(key string, group string, value string) error
 	GetConfig(key string, group string) (string, error)
-	Subscribe(key string, group string, listener Listener)
+	Subscribe(key string, group string, listener common.Listener)
 }
 
 func (r *Registry) PublishConfig(key string, group string, value string) error {
@@ -33,7 +32,7 @@ func (r *Registry) PublishConfig(key string, group string, value string) error {
 func (r *Registry) GetConfig(key string, group string) (string, error) {
 	return r.registerClient.GetConfig(key, group)
 }
-func (r *Registry) Subscribe(key string, group string, listener Listener) {
+func (r *Registry) Subscribe(key string, group string, listener common.Listener) {
 	r.registerClient.Subscribe(key, group, listener)
 }
 func GetRegisterClient() *Registry {
