@@ -51,11 +51,9 @@ func paginate(data []model.GatewayMethodDetail, pageNumber int, pageSize int) []
 	if startIndex > dataLen {
 		return []model.GatewayMethodDetail{}
 	}
-
 	if endIndex > dataLen {
 		endIndex = dataLen
 	}
-
 	// 返回分页后的切片
 	return data[startIndex:endIndex]
 }
