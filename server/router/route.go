@@ -22,13 +22,25 @@ func AddRouter(h *server.Hertz, dir string) {
 		c.JSON(consts.StatusOK, "ok")
 	})
 
-	h.GET("/getGatewayChannelConfig", func(ctx context.Context, c *app.RequestContext) {
-		g, _ := mysql.GetGatewayChannelConfig("")
+	h.POST("/selectByAppId", func(ctx context.Context, c *app.RequestContext) {
+		var req common.GatewayConfigReq
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, err)
+			return
+		}
+		g, _ := mysql.GetGatewayChannelConfig(req.AppId)
 		c.JSON(consts.StatusOK, g)
 	})
 
-	h.GET("/getGatewaySystemConfig", func(ctx context.Context, c *app.RequestContext) {
-		g, _ := mysql.GetGatewaySystemConfig("")
+	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
+		var req common.GatewaySystemReq
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, err)
+			return
+		}
+		g, _ := mysql.GetGatewaySystemConfig(req.SysId)
 		c.JSON(consts.StatusOK, g)
 	})
 	h.GET("/generic", func(ctx context.Context, c *app.RequestContext) {

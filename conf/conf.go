@@ -25,9 +25,10 @@ type Config struct {
 	Registry Registry `yaml:"registry"`
 }
 type App struct {
-	Host     string `yaml:"host"`
-	Name     string `yaml:"name"`
-	Register string `yaml:"register"`
+	Host       string `yaml:"host"`
+	Name       string `yaml:"name"`
+	StaticPath string `yaml:"static_path"`
+	Register   string `yaml:"register"`
 }
 type MySQL struct {
 	DSN string `yaml:"dsn"`

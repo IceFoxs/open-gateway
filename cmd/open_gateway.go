@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"github.com/IceFoxs/open-gateway/cache/appmetadata"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
@@ -27,6 +27,7 @@ func main() {
 	password := conf.GetConf().Registry.Password
 	register := conf.GetConf().App.Register
 	host := conf.GetConf().App.Host
+	staticPath := conf.GetConf().App.StaticPath
 	appName := conf.GetConf().App.Name
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
@@ -43,11 +44,15 @@ func main() {
 	if register == "" {
 		panic("app register can not empty, please check your config")
 	}
-
+	if len(staticPath) == 0 {
+		staticPath, _ = os.Getwd()
+	}
+	hlog.Infof("static path is %s", staticPath)
 	h, err := CreateServer(register, host, appName, address, username, password)
 	if err != nil {
 		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())
 	}
+	router.AddRouter(h, staticPath)
 	h.Spin()
 
 }
@@ -60,23 +65,16 @@ func CreateServer(register string, host string, appName string, address string, 
 	} else if register == constant.REGISTRY_CONSUL {
 		r, err = consul.CreateRegistry(host, appName, address)
 	} else {
-		return nil, fmt.Errorf("register %s is not supported", register)
+		return nil, errors.New("register[" + register + "]is not supported")
 	}
 	if err != nil {
-		return nil, fmt.Errorf("register occur error,%s", err.Error())
-	}
-	dir, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Println(dir)
 	h := server.Default(server.WithHostPorts(host), server.WithRegistry(r, &re.Info{
 		ServiceName: appName,
 		Addr:        utils.NewNetAddr("tcp", host),
 		Weight:      1,
 		Tags:        nil,
 	}))
-	router.AddRouter(h, dir)
 	return h, nil
 }
