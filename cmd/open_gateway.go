@@ -13,8 +13,12 @@ import (
 	"github.com/IceFoxs/open-gateway/rpc/http"
 	"github.com/IceFoxs/open-gateway/server/consul"
 	na "github.com/IceFoxs/open-gateway/server/nacos"
+	"github.com/IceFoxs/open-gateway/server/router"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/hertz/pkg/common/utils"
+	"os"
 )
 
 func main() {
@@ -49,11 +53,30 @@ func main() {
 }
 
 func CreateServer(register string, host string, appName string, address string, username string, password string) (*server.Hertz, error) {
+	var r re.Registry
+	var err error
 	if register == constant.REGISTRY_NACOS {
-		return na.CreateNacosServer(host, appName, address, username, password)
+		r, err = na.CreateRegistry(address, username, password)
+	} else if register == constant.REGISTRY_CONSUL {
+		r, err = consul.CreateRegistry(host, appName, address)
+	} else {
+		return nil, fmt.Errorf("register %s is not supported", register)
 	}
-	if register == constant.REGISTRY_CONSUL {
-		return consul.CreateConsulServer(host, appName, address)
+	if err != nil {
+		return nil, fmt.Errorf("register occur error,%s", err.Error())
 	}
-	return nil, fmt.Errorf("register %s is not supported", register)
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	fmt.Println(dir)
+	h := server.Default(server.WithHostPorts(host), server.WithRegistry(r, &re.Info{
+		ServiceName: appName,
+		Addr:        utils.NewNetAddr("tcp", host),
+		Weight:      1,
+		Tags:        nil,
+	}))
+	router.AddRouter(h, dir)
+	return h, nil
 }
