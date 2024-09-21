@@ -6,8 +6,10 @@ import (
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/common/regex"
 	"github.com/IceFoxs/open-gateway/db/mysql"
+	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/rpc"
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"
+	"github.com/IceFoxs/open-gateway/server/handler"
 	rsaUtil "github.com/IceFoxs/open-gateway/util/rsa"
 	hessian "github.com/apache/dubbo-go-hessian2"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -32,7 +34,16 @@ func AddRouter(h *server.Hertz, dir string) {
 		g, _ := mysql.GetGatewayChannelConfig(req.AppId)
 		c.JSON(consts.StatusOK, g)
 	})
-
+	h.POST("/selectAppMethods", func(ctx context.Context, c *app.RequestContext) {
+		var req model.GatewayMethodRequest
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, err)
+			return
+		}
+		g, _ := handler.QueryGatewayMethodInfo(req)
+		c.JSON(consts.StatusOK, g)
+	})
 	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
 		var req common.GatewaySystemReq
 		err := c.BindAndValidate(&req)

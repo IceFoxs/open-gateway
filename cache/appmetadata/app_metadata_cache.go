@@ -18,7 +18,7 @@ var (
 
 type AppMetadataCache struct {
 	appMetadata cmap.ConcurrentMap[string, model.AppMetadata]
-	methods     cmap.ConcurrentMap[string, bool]
+	methods     cmap.ConcurrentMap[string, string]
 }
 
 func GetAppMetadataCache() *AppMetadataCache {
@@ -29,7 +29,7 @@ func GetAppMetadataCache() *AppMetadataCache {
 func initCache() {
 	appMetadataCache = &AppMetadataCache{
 		appMetadata: cmap.New[model.AppMetadata](),
-		methods:     cmap.New[bool](),
+		methods:     cmap.New[string](),
 	}
 	hlog.SystemLogger().Infof("init appMetadataCache cache")
 }
@@ -37,11 +37,16 @@ func initCache() {
 func (a *AppMetadataCache) GetAllMethods() []string {
 	return a.methods.Keys()
 }
+
+func (a *AppMetadataCache) GetAppName(methodName string) string {
+	appname, _ := a.methods.Get(methodName)
+	return appname
+}
 func (a *AppMetadataCache) PutCache(appMetadata model.AppMetadata) {
 	a.appMetadata.Set(appMetadata.AppName, appMetadata)
 	if len(appMetadata.Methods) > 0 {
 		for _, method := range appMetadata.Methods {
-			a.methods.Set(method, true)
+			a.methods.Set(method, appMetadata.AppName)
 		}
 	}
 }
