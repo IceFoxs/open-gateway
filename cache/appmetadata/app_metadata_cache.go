@@ -50,14 +50,17 @@ func (a *AppMetadataCache) PutCache(appMetadata model.AppMetadata) {
 		}
 	}
 }
-func (g *AppMetadataCache) AddListen() {
+func (g *AppMetadataCache) AddListen(appname string) {
 	for _, k := range g.appMetadata.Keys() {
-		registry.GetRegisterClient().Subscribe(k, constant.APP_METADATA,
-			appMetadataCache.Listen)
-		registry.GetRegisterClient().Subscribe(k, constant.HTTP_APP_METADATA,
-			appMetadataCache.Listen)
+		if appname == k {
+			registry.GetRegisterClient().Subscribe(k, constant.APP_METADATA,
+				appMetadataCache.Listen)
+			registry.GetRegisterClient().Subscribe(k, constant.HTTP_APP_METADATA,
+				appMetadataCache.Listen)
+		}
 	}
 }
+
 func (g *AppMetadataCache) Listen(group, dataId, data string) {
 	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
 	g.RefreshCacheByAppName([]string{dataId})
@@ -70,17 +73,21 @@ func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 		hlog.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
 		return
 	}
-	hlog.Infof("AppMetadata GetConfig[%s] is %s", appName, data)
+	hlog.Infof("AppMetadata GetConfig[%s][%s] is %s", appName, group, data)
 	var amm model.AppMetadata
 	err = json.Unmarshal([]byte(data), &amm)
 	if err != nil {
+		amm = model.AppMetadata{
+			AppName: appName,
+			Methods: []string{},
+		}
 		hlog.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
-		return
+		appMetadataCache.PutCache(amm)
+	} else {
+		hlog.Infof("AppMetadataCache [%s] is %s", appName, amm)
+		appMetadataCache.PutCache(amm)
 	}
-	hlog.Infof("AppMetadataCache [%s] is %s", appName, amm)
-	appMetadataCache.PutCache(amm)
 }
-
 func (a *AppMetadataCache) RefreshAllCache(appNames []string) {
 	for _, name := range appNames {
 		a.RefreshCache(name, constant.APP_METADATA)
@@ -92,10 +99,13 @@ func (a *AppMetadataCache) RefreshAllCache(appNames []string) {
 
 func (a *AppMetadataCache) RefreshCacheByAppName(appNames []string) {
 	for _, name := range appNames {
-		a.AddListen()
 		a.RefreshCache(name, constant.APP_METADATA)
 		hlog.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
 		a.RefreshCache(name, constant.HTTP_APP_METADATA)
 		hlog.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
+	}
+	for _, name := range appNames {
+		hlog.Infof("AppMetadata addListen [%s]", name)
+		a.AddListen(name)
 	}
 }

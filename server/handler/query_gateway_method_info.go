@@ -18,13 +18,23 @@ func QueryGatewayMethodInfo(req model.GatewayMethodRequest) (model.GatewayMethod
 	sort.Strings(methods)
 	var methodDetails = make([]model.GatewayMethodDetail, 0)
 	for _, method := range methods {
-		gm, _ := gatewaymethod.GetGatewayMethodCache().GetCache(method)
-		m, _ := json.Marshal(gm)
-		methodDetails = append(methodDetails, model.GatewayMethodDetail{
-			MethodMetaInfo: string(m),
-			MethodName:     gm.GatewayMethodName,
-			SystemName:     appmetadata.GetAppMetadataCache().GetAppName(gm.GatewayMethodName),
-		})
+		gm, ok := gatewaymethod.GetGatewayMethodCache().GetCache(method)
+		if ok {
+			var m []byte = nil
+			if &gm != nil {
+				m, _ = json.Marshal(gm)
+			}
+			methodDetails = append(methodDetails, model.GatewayMethodDetail{
+				MethodMetaInfo: string(m),
+				MethodName:     gm.GatewayMethodName,
+				SystemName:     appmetadata.GetAppMetadataCache().GetAppName(gm.GatewayMethodName),
+			})
+		} else {
+			methodDetails = append(methodDetails, model.GatewayMethodDetail{
+				MethodName: method,
+				SystemName: appmetadata.GetAppMetadataCache().GetAppName(method),
+			})
+		}
 	}
 	res.Total = int64(len(methods))
 	res.MethodDetails = paginate(methodDetails, req.PageIndex, req.PageSize)
