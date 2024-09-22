@@ -74,6 +74,15 @@ func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 		return
 	}
 	hlog.Infof("AppMetadata GetConfig[%s][%s] is %s", appName, group, data)
+	if len(data) == 0 {
+		amm := model.AppMetadata{
+			AppName: appName,
+			Methods: []string{},
+		}
+		hlog.Errorf("AppMetadata GetConfig[%s][%s] is empty", appName, group)
+		appMetadataCache.PutCache(amm)
+		return
+	}
 	var amm model.AppMetadata
 	err = json.Unmarshal([]byte(data), &amm)
 	if err != nil {
