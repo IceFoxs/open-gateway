@@ -52,7 +52,7 @@ func (g *GatewaySystemCache) Listen(group, dataId, data string) {
 	g.RefreshCache()
 	amc := appmetadata.GetAppMetadataCache()
 	amc.RefreshCacheByAppName(g.GetAllAppName())
-	gatewaymethod.GetGatewayMethodCache().RefreshAllCache()
+	gatewaymethod.GetGatewayMethodCache().RefreshAllCache(amc.GetAllMethods())
 }
 
 func (*GatewaySystemCache) GetCache(appId string) (GatewaySystem, bool) {

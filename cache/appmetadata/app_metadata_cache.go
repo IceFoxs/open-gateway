@@ -1,6 +1,7 @@
 package appmetadata
 
 import (
+	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
@@ -61,7 +62,8 @@ func (g *AppMetadataCache) AddListen() {
 }
 func (g *AppMetadataCache) Listen(group, dataId, data string) {
 	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
-	g.RefreshAllCache([]string{dataId})
+	g.RefreshCacheByAppName([]string{dataId})
+	gatewaymethod.GetGatewayMethodCache().RefreshAllCache(g.GetAllMethods())
 }
 
 func (a *AppMetadataCache) RefreshCache(appName string, group string) {
@@ -92,13 +94,7 @@ func (a *AppMetadataCache) RefreshAllCache(appNames []string) {
 
 func (a *AppMetadataCache) RefreshCacheByAppName(appNames []string) {
 	for _, name := range appNames {
-		//registry.GetRegisterClient().Subscribe(name, constant.APP_METADATA, func(group, dataId, data string) {
-		//	appMetadataCache.Listen(group, dataId, data)
-		//})
-		//registry.GetRegisterClient().Subscribe(name, constant.HTTP_APP_METADATA, func(group, dataId, data string) {
-		//	appMetadataCache.Listen(group, dataId, data)
-		//})
-
+		a.AddListen()
 		a.RefreshCache(name, constant.APP_METADATA)
 		hlog.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
 		a.RefreshCache(name, constant.HTTP_APP_METADATA)

@@ -42,9 +42,10 @@ func main() {
 	appNames := gsc.GetAllAppName()
 	amc := appmetadata.GetAppMetadataCache()
 	amc.RefreshCacheByAppName(appNames)
-	amc.AddListen()
+	//amc.AddListen()
 	gmc := gatewaymethod.GetGatewayMethodCache()
-	gmc.RefreshAllCache()
+	methods := amc.GetAllMethods()
+	gmc.RefreshAllCache(methods)
 	http.GetHttpClient()
 	sync.GetConfChangeClientHelper()
 	if register == "" {

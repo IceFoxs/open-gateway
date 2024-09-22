@@ -1,7 +1,6 @@
 package gatewaymethod
 
 import (
-	"github.com/IceFoxs/open-gateway/cache/appmetadata"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
@@ -51,11 +50,20 @@ func (g *GatewayMethodCache) RefreshCache(filename string) {
 	g.PutCache(filename, gmm)
 }
 
-func (g *GatewayMethodCache) RefreshAllCache() {
-	amc := appmetadata.GetAppMetadataCache()
-	methods := amc.GetAllMethods()
+func (g *GatewayMethodCache) AddListen(method string) {
+	registry.GetRegisterClient().Subscribe(method, constant.GATEWAY_META_DATA, func(group, dataId, data string) {
+		gatewayMethodCache.Listen(group, dataId, data)
+	})
+}
+func (g *GatewayMethodCache) Listen(group, dataId, data string) {
+	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	g.RefreshCache(dataId)
+}
+
+func (g *GatewayMethodCache) RefreshAllCache(methods []string) {
 	for _, method := range methods {
 		g.RefreshCache(method)
+		g.AddListen(method)
 	}
 }
 
