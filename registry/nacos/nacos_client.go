@@ -3,6 +3,7 @@ package nacos
 import (
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/nacos"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
@@ -11,15 +12,13 @@ type NacosRegisterClient struct {
 	Client config_client.IConfigClient
 }
 
-func NewRegisterClient(host string, port uint64, username string, password string) (*NacosRegisterClient, error) {
-	client, err := nacos.CreateConfigClient(host, port, username, password)
-	if err != nil {
-		return nil, err
-	}
+func NewRegisterClient() (*NacosRegisterClient, error) {
+	client := nacos.GetConfigClient()
+
 	rc := &NacosRegisterClient{
 		Client: client,
 	}
-	return rc, err
+	return rc, nil
 }
 
 func (rc *NacosRegisterClient) PublishConfig(key string, group string, value string) error {
@@ -48,6 +47,8 @@ func (rc *NacosRegisterClient) Subscribe(key string, group string, f common.List
 		},
 	})
 	if err != nil {
+		hlog.Errorf("nacos regrister Subscribe key[%s] group[%s] failed", key, group,
+			err.Error())
 		return
 	}
 }

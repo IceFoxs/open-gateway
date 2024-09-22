@@ -57,8 +57,8 @@ func (g *GatewayMethodCache) RefreshAllCache() {
 	for _, method := range methods {
 		g.RefreshCache(method)
 	}
-
 }
+
 func (g *GatewayMethodCache) GetCache(gatewayMethodName string) (model.GatewayMethodMetadata, bool) {
 	return g.m.Get(gatewayMethodName)
 }

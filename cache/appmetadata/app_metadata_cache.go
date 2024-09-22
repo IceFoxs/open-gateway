@@ -1,7 +1,6 @@
 package appmetadata
 
 import (
-	"github.com/IceFoxs/open-gateway/cache/gatewaysystem"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
@@ -50,6 +49,20 @@ func (a *AppMetadataCache) PutCache(appMetadata model.AppMetadata) {
 		}
 	}
 }
+func (g *AppMetadataCache) AddListen() {
+	for _, k := range g.appMetadata.Keys() {
+		registry.GetRegisterClient().Subscribe(k, constant.APP_METADATA, func(group, dataId, data string) {
+			appMetadataCache.Listen(group, dataId, data)
+		})
+		registry.GetRegisterClient().Subscribe(k, constant.HTTP_APP_METADATA, func(group, dataId, data string) {
+			appMetadataCache.Listen(group, dataId, data)
+		})
+	}
+}
+func (g *AppMetadataCache) Listen(group, dataId, data string) {
+	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	g.RefreshAllCache([]string{dataId})
+}
 
 func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 	data, err := registry.GetRegisterClient().GetConfig(appName, group)
@@ -68,14 +81,27 @@ func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 	appMetadataCache.PutCache(amm)
 }
 
-func (a *AppMetadataCache) RefreshAllCache() {
-	gsc := gatewaysystem.GetGatewaySystemCache()
-	appNames := gsc.GetAllAppName()
+func (a *AppMetadataCache) RefreshAllCache(appNames []string) {
 	for _, name := range appNames {
 		a.RefreshCache(name, constant.APP_METADATA)
 		hlog.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
 		a.RefreshCache(name, constant.HTTP_APP_METADATA)
 		hlog.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
+	}
+}
 
+func (a *AppMetadataCache) RefreshCacheByAppName(appNames []string) {
+	for _, name := range appNames {
+		//registry.GetRegisterClient().Subscribe(name, constant.APP_METADATA, func(group, dataId, data string) {
+		//	appMetadataCache.Listen(group, dataId, data)
+		//})
+		//registry.GetRegisterClient().Subscribe(name, constant.HTTP_APP_METADATA, func(group, dataId, data string) {
+		//	appMetadataCache.Listen(group, dataId, data)
+		//})
+
+		a.RefreshCache(name, constant.APP_METADATA)
+		hlog.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
+		a.RefreshCache(name, constant.HTTP_APP_METADATA)
+		hlog.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
 	}
 }

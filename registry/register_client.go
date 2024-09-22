@@ -6,8 +6,6 @@ import (
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/registry/nacos"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"strconv"
-	"strings"
 	"sync"
 )
 
@@ -41,15 +39,9 @@ func GetRegisterClient() *Registry {
 }
 
 func initRegisterClient() {
-	address := conf.GetConf().Registry.RegistryAddress[0]
-	username := conf.GetConf().Registry.Username
-	password := conf.GetConf().Registry.Password
 	registerType := conf.GetConf().Registry.RegisterType
 	if registerType == constant.REGISTRY_NACOS {
-		addresses := strings.Split(address, ":")
-		host := addresses[0]
-		port, _ := strconv.ParseUint(addresses[1], 0, 64)
-		var rc, err = nacos.NewRegisterClient(host, port, username, password)
+		var rc, err = nacos.NewRegisterClient()
 		if err != nil {
 			hlog.Errorf("InitRegisterClient failed %s", err)
 			return

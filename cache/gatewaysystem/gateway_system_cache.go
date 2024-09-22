@@ -1,7 +1,10 @@
 package gatewaysystem
 
 import (
+	"github.com/IceFoxs/open-gateway/cache/appmetadata"
+	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/db/mysql"
+	sy "github.com/IceFoxs/open-gateway/sync"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"sync"
@@ -28,6 +31,7 @@ func GetGatewaySystemCache() *GatewaySystemCache {
 
 func initCache() {
 	gatewaySystemCache = &GatewaySystemCache{m: cmap.New[GatewaySystem]()}
+	sy.GetConfChangeClientHelper().Subscribe("GATEWAY_SYSTEM", "FPS_GROUP", gatewaySystemCache.Listen)
 	hlog.SystemLogger().Infof("init GatewaySystem cache")
 }
 func (*GatewaySystemCache) GetAllAppName() []string {
@@ -37,11 +41,18 @@ func (*GatewaySystemCache) PutCache(ga GatewaySystem) {
 	gatewaySystemCache.m.Set(ga.SystemId, ga)
 }
 
-func (*GatewaySystemCache) RefreshCache() {
+func (g *GatewaySystemCache) RefreshCache() {
 	gsc, _ := mysql.GetGatewaySystemConfig("")
 	for _, config := range gsc {
-		gatewaySystemCache.PutCache(GatewaySystem{SystemId: config.SystemId, SystemName: config.SystemName})
+		g.PutCache(GatewaySystem{SystemId: config.SystemId, SystemName: config.SystemName})
 	}
+}
+func (g *GatewaySystemCache) Listen(group, dataId, data string) {
+	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	g.RefreshCache()
+	amc := appmetadata.GetAppMetadataCache()
+	amc.RefreshCacheByAppName(g.GetAllAppName())
+	gatewaymethod.GetGatewayMethodCache().RefreshAllCache()
 }
 
 func (*GatewaySystemCache) GetCache(appId string) (GatewaySystem, bool) {

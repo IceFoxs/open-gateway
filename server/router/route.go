@@ -54,6 +54,10 @@ func AddRouter(h *server.Hertz, dir string) {
 		sync.GetConfChangeClientHelper().Publish("GATEWAY_CHANNEL", "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString())
 		c.JSON(consts.StatusOK, "ok")
 	})
+	h.GET("/gateway/refresh", func(ctx context.Context, c *app.RequestContext) {
+		sync.GetConfChangeClientHelper().Publish("GATEWAY_SYSTEM", "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString())
+		c.JSON(consts.StatusOK, "ok")
+	})
 
 	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
 		var req common.GatewaySystemReq
