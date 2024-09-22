@@ -16,4 +16,6 @@ const RPC_DUBOO = "dubbo"
 
 const RPC_HTTP = "http"
 const RPC_INTERFACE_TYPE = "interface"
-const RPC_SERVICE_TYPE = "interface"
+const RPC_SERVICE_TYPE = "service"
+const ENCRYPT_TYPE_AES = "AES"
+const ENCRYPT_TYPE_NONE = "NONE"

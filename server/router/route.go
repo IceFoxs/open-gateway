@@ -2,20 +2,26 @@ package router
 
 import (
 	"context"
+	"encoding/base64"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/common/regex"
+	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/rpc"
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"
 	"github.com/IceFoxs/open-gateway/server/handler"
+	"github.com/IceFoxs/open-gateway/sync"
+	"github.com/IceFoxs/open-gateway/util/aes"
 	rsaUtil "github.com/IceFoxs/open-gateway/util/rsa"
 	hessian "github.com/apache/dubbo-go-hessian2"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/google/uuid"
+	"strings"
 	"time"
 )
 
@@ -44,6 +50,11 @@ func AddRouter(h *server.Hertz, dir string) {
 		g, _ := handler.QueryGatewayMethodInfo(req)
 		c.JSON(consts.StatusOK, g)
 	})
+	h.GET("/channelConfig/refresh", func(ctx context.Context, c *app.RequestContext) {
+		sync.GetConfChangeClientHelper().Publish("GATEWAY_CHANNEL", "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString())
+		c.JSON(consts.StatusOK, "ok")
+	})
+
 	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
 		var req common.GatewaySystemReq
 		err := c.BindAndValidate(&req)
@@ -72,7 +83,13 @@ func AddRouter(h *server.Hertz, dir string) {
 		var fr, _ = c.Get(common.FILENAME_REQ)
 		fileReq := fr.(*regex.FilenameReq)
 		hlog.Infof("fileReq %s", fileReq)
-		rpc.Invoke(context.TODO(), c, fileReq.FilenamePre, req.BizContent)
+		bizContent, ok := c.Get(common.REQ_BODY)
+		if !ok {
+			bizContent = req.BizContent
+		}
+
+		hlog.Infof("filename:%s,bizContent:%s", fileReq.FilenamePre, bizContent)
+		rpc.Invoke(context.TODO(), c, fileReq.FilenamePre, bizContent)
 	})
 }
 
@@ -110,11 +127,16 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 	req := r.(common.RequiredReq)
 	var fr, _ = c.Get(common.FILENAME_REQ)
 	fileReq := fr.(*regex.FilenameReq)
+	cache := gatewayconfig.GetGatewayConfigCache()
+	gc, _ := cache.GetCache(fileReq.AppId)
+	if req.SignType != gc.SignType {
+		hlog.Errorf("signType  not match  %s", req.SignType)
+		c.Abort()
+		c.JSON(consts.StatusOK, common.Error(957, "签名类型不匹配"))
+	}
 	if req.SignType == "NONE" {
 		return
 	}
-	cache := gatewayconfig.GetGatewayConfigCache()
-	gc, _ := cache.GetCache(fileReq.AppId)
 	publicKey, _ := rsaUtil.Base64PublicKeyToRSA(gc.RsaPublicKey)
 	var param = make(map[string]interface{})
 	param["bizContent"] = req.BizContent
@@ -132,4 +154,25 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, common.Error(954, "验签失败:"+err.Error()))
 	}
 	// 验证签名的有效性
+	if gc.AesType != req.EncryptType {
+		hlog.Errorf("encryptType not match")
+		c.Abort()
+		c.JSON(consts.StatusOK, common.Error(955, "encryptType not match"))
+		return
+	}
+	if gc.AesType == constant.ENCRYPT_TYPE_AES {
+		de, e := base64.StdEncoding.DecodeString(req.BizContent)
+		if e != nil {
+			hlog.Errorf("base64 decode error %s", e)
+			c.Abort()
+			c.JSON(consts.StatusOK, common.Error(955, "加解密失败"))
+		}
+		body := aes.AesDecryptECB(de, []byte(gc.AesKey))
+		c.Set(common.REQ_BODY, string(body))
+		return
+	}
+	if gc.AesType == constant.ENCRYPT_TYPE_NONE {
+		c.Set(common.REQ_BODY, req.BizContent)
+	}
+
 }

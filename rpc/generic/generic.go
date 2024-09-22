@@ -241,6 +241,7 @@ func NewRefConf(iface, protocol string) config.ReferenceConfig {
 }
 
 func NewRefConf1(iface, registry string, registryType string, protocol string, address string, username string, password string) config.ReferenceConfig {
+	check := false
 	registryConfig := &config.RegistryConfig{
 		Protocol:     registry,
 		Address:      address,
@@ -256,6 +257,7 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 		Generic:        "true",
 		Retries:        "0",
 		RequestTimeout: "5000",
+		Check:          &check,
 	}
 	metadata := &config.MetadataReportConfig{
 		Protocol: registry,
@@ -278,11 +280,17 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 }
 
 func Invoke(refConf config.ReferenceConfig, methodName string, parameterName string, param interface{}) (interface{}, error) {
+	paramTypes := []string{}
+	params := []hessian.Object{}
+	if len(parameterName) != 0 {
+		paramTypes = append(paramTypes, parameterName)
+		params = append(params, param)
+	}
 	resp, err := refConf.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		methodName,
-		[]string{parameterName},
-		[]hessian.Object{param},
+		paramTypes,
+		params,
 	)
 	if err != nil {
 		return nil, err

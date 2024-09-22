@@ -5,6 +5,7 @@ import "encoding/json"
 const (
 	REQ          = "req"
 	FILENAME_REQ = "filenameReq"
+	REQ_BODY     = "reqBody"
 )
 
 type RequiredReq struct {

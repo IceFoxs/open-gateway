@@ -1,6 +1,9 @@
 package mysql
 
-import "github.com/IceFoxs/open-gateway/model"
+import (
+	"github.com/IceFoxs/open-gateway/model"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+)
 
 func QueryGatewayChannelConfig(keyword string, page, pageSize int64) ([]*model.GatewayChannelConfig, int64, error) {
 	db := DB.Model(model.GatewayChannelConfig{})
@@ -27,5 +30,9 @@ func GetGatewayChannelConfig(keyword string) ([]*model.GatewayChannelConfig, err
 	if err := db.Find(&res).Error; err != nil {
 		return nil, err
 	}
+	for _, g := range res {
+		hlog.Infof("加载的渠道号是:%s", g.AppId)
+	}
+
 	return res, nil
 }

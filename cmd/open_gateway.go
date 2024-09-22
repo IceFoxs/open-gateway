@@ -14,6 +14,8 @@ import (
 	"github.com/IceFoxs/open-gateway/server/consul"
 	na "github.com/IceFoxs/open-gateway/server/nacos"
 	"github.com/IceFoxs/open-gateway/server/router"
+	"github.com/IceFoxs/open-gateway/sync"
+	"github.com/IceFoxs/open-gateway/sync/config/nacos"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -22,6 +24,7 @@ import (
 )
 
 func main() {
+	nacos.GetConfChangeClient()
 	address := conf.GetConf().Registry.RegistryAddress[0]
 	username := conf.GetConf().Registry.Username
 	password := conf.GetConf().Registry.Password
@@ -41,6 +44,7 @@ func main() {
 	gmc := gatewaymethod.GetGatewayMethodCache()
 	gmc.RefreshAllCache()
 	http.GetHttpClient()
+	sync.GetConfChangeClientHelper()
 	if register == "" {
 		panic("app register can not empty, please check your config")
 	}
