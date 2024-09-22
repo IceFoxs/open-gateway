@@ -52,12 +52,10 @@ func (a *AppMetadataCache) PutCache(appMetadata model.AppMetadata) {
 }
 func (g *AppMetadataCache) AddListen() {
 	for _, k := range g.appMetadata.Keys() {
-		registry.GetRegisterClient().Subscribe(k, constant.APP_METADATA, func(group, dataId, data string) {
-			appMetadataCache.Listen(group, dataId, data)
-		})
-		registry.GetRegisterClient().Subscribe(k, constant.HTTP_APP_METADATA, func(group, dataId, data string) {
-			appMetadataCache.Listen(group, dataId, data)
-		})
+		registry.GetRegisterClient().Subscribe(k, constant.APP_METADATA,
+			appMetadataCache.Listen)
+		registry.GetRegisterClient().Subscribe(k, constant.HTTP_APP_METADATA,
+			appMetadataCache.Listen)
 	}
 }
 func (g *AppMetadataCache) Listen(group, dataId, data string) {

@@ -1,6 +1,7 @@
 package gatewaymethod
 
 import (
+	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
@@ -39,21 +40,18 @@ func (g *GatewayMethodCache) RefreshCache(filename string) {
 		hlog.Errorf("GetConfig %s failed,error is %s", filename, err.Error())
 		return
 	}
-	hlog.Infof("GetConfig[%s] is %s", filename, data)
 	var gmm model.GatewayMethodMetadata
 	err = json.Unmarshal([]byte(data), &gmm)
 	if err != nil {
 		hlog.Errorf("GetConfig %s failed,error is %s", filename, err.Error())
 		return
 	}
-	hlog.Infof("GatewayMethodMetadata [%s] is %s", filename, gmm)
+	hlog.Infof("GatewayMethodMetadata [%s] is %s", filename, common.ToJSON(gmm))
 	g.PutCache(filename, gmm)
 }
 
 func (g *GatewayMethodCache) AddListen(method string) {
-	registry.GetRegisterClient().Subscribe(method, constant.GATEWAY_META_DATA, func(group, dataId, data string) {
-		gatewayMethodCache.Listen(group, dataId, data)
-	})
+	registry.GetRegisterClient().Subscribe(method, constant.GATEWAY_META_DATA, gatewayMethodCache.Listen)
 }
 func (g *GatewayMethodCache) Listen(group, dataId, data string) {
 	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
@@ -62,8 +60,9 @@ func (g *GatewayMethodCache) Listen(group, dataId, data string) {
 
 func (g *GatewayMethodCache) RefreshAllCache(methods []string) {
 	for _, method := range methods {
-		g.RefreshCache(method)
 		g.AddListen(method)
+		g.RefreshCache(method)
+
 	}
 }
 
