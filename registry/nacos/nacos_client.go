@@ -9,7 +9,7 @@ import (
 )
 
 type NacosRegisterClient struct {
-	Client config_client.IConfigClient
+	Client *config_client.IConfigClient
 }
 
 func NewRegisterClient() (*NacosRegisterClient, error) {
@@ -22,7 +22,7 @@ func NewRegisterClient() (*NacosRegisterClient, error) {
 }
 
 func (rc *NacosRegisterClient) PublishConfig(key string, group string, value string) error {
-	_, err := rc.Client.PublishConfig(vo.ConfigParam{
+	_, err := (*rc.Client).PublishConfig(vo.ConfigParam{
 		DataId:  key,
 		Group:   group,
 		Content: value,
@@ -31,7 +31,7 @@ func (rc *NacosRegisterClient) PublishConfig(key string, group string, value str
 }
 
 func (rc *NacosRegisterClient) GetConfig(key string, group string) (string, error) {
-	data, err := rc.Client.GetConfig(vo.ConfigParam{
+	data, err := (*rc.Client).GetConfig(vo.ConfigParam{
 		DataId: key,
 		Group:  group,
 	})
@@ -39,7 +39,7 @@ func (rc *NacosRegisterClient) GetConfig(key string, group string) (string, erro
 }
 
 func (rc *NacosRegisterClient) Subscribe(key string, group string, f common.Listener) {
-	err := rc.Client.ListenConfig(vo.ConfigParam{
+	err := (*rc.Client).ListenConfig(vo.ConfigParam{
 		DataId: key,
 		Group:  group,
 		OnChange: func(namespace, group, dataId, data string) {

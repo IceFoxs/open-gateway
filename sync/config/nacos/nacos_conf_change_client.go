@@ -17,11 +17,11 @@ var (
 )
 
 type NacosConfChangeClient struct {
-	ClientConfig config_client.IConfigClient
+	ClientConfig *config_client.IConfigClient
 }
 
 func (nc *NacosConfChangeClient) Publish(confType string, confGroup string, confContent string) {
-	_, err := nc.ClientConfig.PublishConfig(vo.ConfigParam{
+	_, err := (*nc.ClientConfig).PublishConfig(vo.ConfigParam{
 		DataId:  confType,
 		Group:   confGroup,
 		Content: confContent,
@@ -32,7 +32,7 @@ func (nc *NacosConfChangeClient) Publish(confType string, confGroup string, conf
 }
 
 func (nc *NacosConfChangeClient) Subscribe(confType string, confGroup string, listener common.Listener) {
-	err := nc.ClientConfig.ListenConfig(vo.ConfigParam{
+	err := (*nc.ClientConfig).ListenConfig(vo.ConfigParam{
 		DataId: confType,
 		Group:  confGroup,
 		OnChange: func(namespace, group, dataId, data string) {

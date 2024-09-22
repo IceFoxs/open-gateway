@@ -16,11 +16,11 @@ import (
 )
 
 var (
-	configClient config_client.IConfigClient
+	configClient *config_client.IConfigClient
 	once         sync.Once
 )
 
-func GetConfigClient() config_client.IConfigClient {
+func GetConfigClient() *config_client.IConfigClient {
 	once.Do(initConfigClient)
 	return configClient
 }
@@ -43,7 +43,7 @@ func initConfigClient() {
 		hlog.Infof("initNacosConfigClient success")
 	}
 }
-func CreateConfigClient(host string, port uint64, username string, password string) (iClient config_client.IConfigClient, err error) {
+func CreateConfigClient(host string, port uint64, username string, password string) (c *config_client.IConfigClient, err error) {
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
 	}
@@ -59,14 +59,14 @@ func CreateConfigClient(host string, port uint64, username string, password stri
 		constant.WithCacheDir(path+"/tmp/nacos/cache"),
 		constant.WithLogLevel("debug"),
 	)
-
 	// create config client
-	iClient, err = clients.NewConfigClient(
+	iClient, err := clients.NewConfigClient(
 		vo.NacosClientParam{
 			ClientConfig:  &cc,
 			ServerConfigs: sc,
 		},
 	)
+	c = &iClient
 	return
 }
 
