@@ -40,6 +40,10 @@ func (g *GatewayMethodCache) RefreshCache(filename string) {
 		hlog.Errorf("GetConfig %s failed,error is %s", filename, err.Error())
 		return
 	}
+	if len(data) == 0 {
+		hlog.Errorf("Config[%s][%s] changed is empty", filename, constant.GATEWAY_META_DATA)
+		return
+	}
 	var gmm model.GatewayMethodMetadata
 	err = json.Unmarshal([]byte(data), &gmm)
 	if err != nil {
