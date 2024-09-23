@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/middlewares/client/sd"
 	"github.com/cloudwego/hertz/pkg/common/config"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/dubbogo/gost/log/logger"
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/hertz-contrib/registry/consul"
 	"log"
@@ -31,7 +32,7 @@ func main1() {
 		if err != nil {
 			hlog.Fatal(err)
 		}
-		hlog.Infof("code=%d,body=%s\n", status, string(body))
+		logger.Infof("code=%d,body=%s\n", status, string(body))
 	}
 
 }

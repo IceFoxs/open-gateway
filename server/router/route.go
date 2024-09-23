@@ -18,8 +18,8 @@ import (
 	hessian "github.com/apache/dubbo-go-hessian2"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/dubbogo/gost/log/logger"
 	"github.com/google/uuid"
 	"strings"
 	"time"
@@ -86,13 +86,14 @@ func AddRouter(h *server.Hertz, dir string) {
 		req := r.(common.RequiredReq)
 		var fr, _ = c.Get(common.FILENAME_REQ)
 		fileReq := fr.(*regex.FilenameReq)
-		hlog.Infof("fileReq %s", fileReq)
+		logger.Infof("fileReq:%s", fileReq)
+		logger.Infof("Req:%s", common.ToJSON(req))
 		bizContent, ok := c.Get(common.REQ_BODY)
 		if !ok {
 			bizContent = req.BizContent
 		}
 
-		hlog.Infof("filename:%s,bizContent:%s", fileReq.FilenamePre, bizContent)
+		logger.Infof("filename:%s,bizContent:%s", fileReq.FilenamePre, bizContent)
 		rpc.Invoke(context.TODO(), c, fileReq.FilenamePre, bizContent)
 	})
 }
@@ -102,14 +103,14 @@ func validFileName(ctx context.Context, c *app.RequestContext) {
 	var req common.RequiredReq
 	err := c.BindAndValidate(&req)
 	if err != nil {
-		hlog.Errorf("validFileName error: %s", err.Error())
+		logger.Errorf("validFileName error: %s", err.Error())
 		c.Abort()
 		c.JSON(consts.StatusOK, common.Error(500, err.Error()))
 		return
 	}
 	filenameReq, err := regex.MatchFileName(req.Filename)
 	if err != nil {
-		hlog.Errorf("MatchFileName error: %s", err.Error())
+		logger.Errorf("MatchFileName error: %s", err.Error())
 		c.Abort()
 		c.JSON(consts.StatusOK, common.Error(600, err.Error()))
 		return
@@ -123,7 +124,7 @@ func validFileName(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, common.Error(301, "账号不存在"))
 		return
 	}
-	hlog.Infof("validFileName output json:%s", common.ToJSON(req))
+	logger.Infof("validFileName output json:%s", common.ToJSON(req))
 }
 
 func validSign(ctx context.Context, c *app.RequestContext) {
@@ -134,7 +135,7 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 	cache := gatewayconfig.GetGatewayConfigCache()
 	gc, _ := cache.GetCache(fileReq.AppId)
 	if req.SignType != gc.SignType {
-		hlog.Errorf("signType  not match  %s", req.SignType)
+		logger.Errorf("signType not match  %s", req.SignType)
 		c.Abort()
 		c.JSON(consts.StatusOK, common.Error(957, "签名类型不匹配"))
 		return
@@ -154,14 +155,14 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 	sortedParams := rsaUtil.SortParam(param)
 	err := rsaUtil.RSAVerifyByString(sortedParams, req.Sign, publicKey)
 	if err != nil {
-		hlog.Errorf("Signature verification failed %s", err)
+		logger.Errorf("Signature verification failed %s", err)
 		c.Abort()
 		c.JSON(consts.StatusOK, common.Error(954, "验签失败:"+err.Error()))
 		return
 	}
 	// 验证签名的有效性
 	if gc.AesType != req.EncryptType {
-		hlog.Errorf("encryptType not match")
+		logger.Errorf("encryptType not match")
 		c.Abort()
 		c.JSON(consts.StatusOK, common.Error(955, "encryptType not match"))
 		return
@@ -169,7 +170,7 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 	if gc.AesType == constant.ENCRYPT_TYPE_AES {
 		de, e := base64.StdEncoding.DecodeString(req.BizContent)
 		if e != nil {
-			hlog.Errorf("base64 decode error %s", e)
+			logger.Errorf("base64 decode error %s", e)
 			c.Abort()
 			c.JSON(consts.StatusOK, common.Error(955, "加解密失败"))
 			return

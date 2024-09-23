@@ -2,7 +2,7 @@ package regex
 
 import (
 	"errors"
-	"fmt"
+	"github.com/dubbogo/gost/log/logger"
 	"regexp"
 )
 
@@ -26,10 +26,10 @@ func MatchFileName(filename string) (*FilenameReq, error) {
 	var timestamp string
 	// 检查是否匹配
 	if len(matches) > 6 {
-		fmt.Println("Match found:", matches)
+		logger.Infof("Match found: %s", matches)
 		// 输出匹配到的每个部分（模拟元组）
 		for i, v := range matches {
-			fmt.Printf("Group %d: %s\n", i, v)
+			logger.Infof("Group %d: %s\n", i, v)
 			appid = matches[4]
 			filenamePre = matches[1] + "_" + matches[2] + "_" + matches[3]
 			timestamp = matches[5]

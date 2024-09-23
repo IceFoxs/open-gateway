@@ -3,7 +3,7 @@ package gatewayconfig
 import (
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	sy "github.com/IceFoxs/open-gateway/sync"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/dubbogo/gost/log/logger"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"sync"
 )
@@ -35,7 +35,7 @@ func GetGatewayConfigCache() *GatewayConfigCache {
 
 func initCache() {
 	gatewayConfigCache = &GatewayConfigCache{m: cmap.New[GatewayConfig]()}
-	hlog.SystemLogger().Infof("init GatewayConfig cache")
+	logger.Infof("init GatewayConfig cache")
 	sy.GetConfChangeClientHelper().Subscribe("GATEWAY_CHANNEL", "FPS_GROUP", gatewayConfigCache.Listen)
 }
 
@@ -43,7 +43,7 @@ func (*GatewayConfigCache) PutCache(gatewayConfig GatewayConfig) {
 	gatewayConfigCache.m.Set(gatewayConfig.AppId, gatewayConfig)
 }
 func (g *GatewayConfigCache) Listen(group, dataId, data string) {
-	hlog.SystemLogger().Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	logger.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
 	g.RefreshCache()
 }
 func (g *GatewayConfigCache) RefreshCache() {

@@ -9,7 +9,7 @@ import (
 
 func TestNacosRegisterClient(t *testing.T) {
 	var rc registry.RegisterClient
-	rc, _ = nacos.NewRegisterClient("127.0.0.1", 8848, "nacos", "nacos")
+	rc, _ = nacos.NewRegisterClient()
 	// create config client
 	err := rc.PublishConfig("131", "gatewayMetadata", "13213")
 	if err != nil {

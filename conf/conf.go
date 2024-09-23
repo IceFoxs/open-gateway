@@ -2,8 +2,7 @@ package conf
 
 import (
 	"fmt"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"github.com/kr/pretty"
+	"github.com/dubbogo/gost/log/logger"
 	"gopkg.in/validator.v2"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -63,7 +62,7 @@ func initConf() {
 	fmt.Println(dir)
 	prefix := "config"
 	confFileRelPath := dir + "/" + filepath.Join(prefix, filepath.Join(GetEnv(), "conf.yaml"))
-	hlog.SystemLogger().Infof("confFileRelPath - %v", confFileRelPath)
+	logger.Infof("confFileRelPath - %v", confFileRelPath)
 	content, err := ioutil.ReadFile(confFileRelPath)
 	if err != nil {
 		panic(err)
@@ -71,15 +70,14 @@ func initConf() {
 	conf = new(Config)
 	err = yaml.Unmarshal(content, conf)
 	if err != nil {
-		hlog.SystemLogger().Errorf("parse yaml error - %v", err)
+		logger.Errorf("parse yaml error - %v", err)
 		panic(err)
 	}
 	if err := validator.Validate(conf); err != nil {
-		hlog.SystemLogger().Errorf("validate config error - %v", err)
+		logger.Errorf("validate config error - %v", err)
 		panic(err)
 	}
 	conf.Env = GetEnv()
-	pretty.Printf("%+v\n", conf)
 }
 
 func GetEnv() string {

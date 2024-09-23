@@ -5,6 +5,7 @@ import (
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/util"
 	"github.com/cloudwego/hertz/pkg/common/json"
+	"github.com/dubbogo/gost/log/logger"
 	"testing"
 )
 
@@ -15,9 +16,7 @@ func TestGenericClient(t *testing.T) {
 	if err != nil {
 		return
 	}
-	fmt.Printf("map:%s", common.ToJSON(data))
-	fmt.Println()
-
+	logger.Infof("map:%s", common.ToJSON(data))
 	fmt.Printf("map:%s", common.ToJSON(util.ConvertHessianMap(data)))
 
 	//re := ge.NewRefConf1("com.hundsun.manager.model.proto.ConfRefreshRpcService", "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")

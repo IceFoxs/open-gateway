@@ -3,7 +3,7 @@ package nacos
 import (
 	"github.com/IceFoxs/open-gateway/conf"
 	con "github.com/IceFoxs/open-gateway/constant"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/dubbogo/gost/log/logger"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
@@ -37,10 +37,10 @@ func initConfigClient() {
 		client, err := CreateConfigClient(host, port, username, password)
 		configClient = client
 		if err != nil {
-			hlog.Errorf("initNacosConfigClient failed %s", err)
+			logger.Errorf("initNacosConfigClient failed %s", err)
 			return
 		}
-		hlog.Infof("initNacosConfigClient success")
+		logger.Infof("initNacosConfigClient success")
 	}
 }
 func CreateConfigClient(host string, port uint64, username string, password string) (c *config_client.IConfigClient, err error) {

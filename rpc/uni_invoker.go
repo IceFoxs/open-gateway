@@ -10,19 +10,19 @@ import (
 	"github.com/IceFoxs/open-gateway/rpc/http"
 	"github.com/IceFoxs/open-gateway/util"
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/json"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/dubbogo/gost/log/logger"
 	"time"
 )
 
 func Invoke(ctx context.Context, c *app.RequestContext, filename string, param interface{}) {
-	hlog.Infof("Invoke filename:[%s]", filename)
+	logger.Infof("Invoke filename:[%s]", filename)
 	gmm, ok := gatewaymethod.GetGatewayMethodCache().GetCache(filename)
 	if !ok {
 		c.JSON(consts.StatusOK, common.Error(900, "未找到服务调用信息"))
 	}
-	hlog.Infof("found rpc invoke metadata --------------- %s", gmm)
+	logger.Infof("found rpc invoke metadata --------------- %s", gmm)
 	if gmm.RpcType == constant.RPC_DUBOO {
 		re := ge.NewRefConf1(gmm.InterfaceName, "nacos", constant.RPC_INTERFACE_TYPE, "dubbo", "127.0.0.1:8848", "nacos", "nacos")
 		time.Sleep(1 * time.Second)
@@ -31,7 +31,7 @@ func Invoke(ctx context.Context, c *app.RequestContext, filename string, param i
 			c.JSON(consts.StatusOK, common.Error(900, err.Error()))
 			return
 		}
-		hlog.Infof("toMap %s", common.ToJSON(toMap))
+		logger.Infof("toMap %s", common.ToJSON(toMap))
 		util.ConvertHessianMap(toMap)
 		data, err := ge.Invoke(re, gmm.MethodName, gmm.ParameterTypeName, util.ConvertHessianMap(toMap))
 		if err != nil {

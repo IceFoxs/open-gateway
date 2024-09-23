@@ -5,8 +5,8 @@ import (
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/json"
+	"github.com/dubbogo/gost/log/logger"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"sync"
 )
@@ -31,7 +31,7 @@ func initCache() {
 		appMetadata: cmap.New[model.AppMetadata](),
 		methods:     cmap.New[string](),
 	}
-	hlog.SystemLogger().Infof("init appMetadataCache cache")
+	logger.Infof("init appMetadataCache cache")
 }
 
 func (a *AppMetadataCache) GetAllMethods() []string {
@@ -62,7 +62,7 @@ func (g *AppMetadataCache) AddListen(appname string) {
 }
 
 func (g *AppMetadataCache) Listen(group, dataId, data string) {
-	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	logger.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
 	g.RefreshCacheByAppName([]string{dataId})
 	gatewaymethod.GetGatewayMethodCache().RefreshAllCache(g.GetAllMethods())
 }
@@ -70,16 +70,16 @@ func (g *AppMetadataCache) Listen(group, dataId, data string) {
 func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 	data, err := registry.GetRegisterClient().GetConfig(appName, group)
 	if err != nil {
-		hlog.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
+		logger.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
 		return
 	}
-	hlog.Infof("AppMetadata GetConfig[%s][%s] is %s", appName, group, data)
+	logger.Infof("AppMetadata GetConfig[%s][%s] is %s", appName, group, data)
 	if len(data) == 0 {
 		amm := model.AppMetadata{
 			AppName: appName,
 			Methods: []string{},
 		}
-		hlog.Errorf("AppMetadata GetConfig[%s][%s] is empty", appName, group)
+		logger.Errorf("AppMetadata GetConfig[%s][%s] is empty", appName, group)
 		appMetadataCache.PutCache(amm)
 		return
 	}
@@ -90,31 +90,31 @@ func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 			AppName: appName,
 			Methods: []string{},
 		}
-		hlog.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
+		logger.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
 		appMetadataCache.PutCache(amm)
 	} else {
-		hlog.Infof("AppMetadataCache [%s] is %s", appName, amm)
+		logger.Infof("AppMetadataCache [%s] is %s", appName, amm)
 		appMetadataCache.PutCache(amm)
 	}
 }
 func (a *AppMetadataCache) RefreshAllCache(appNames []string) {
 	for _, name := range appNames {
 		a.RefreshCache(name, constant.APP_METADATA)
-		hlog.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
+		logger.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
 		a.RefreshCache(name, constant.HTTP_APP_METADATA)
-		hlog.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
+		logger.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
 	}
 }
 
 func (a *AppMetadataCache) RefreshCacheByAppName(appNames []string) {
 	for _, name := range appNames {
 		a.RefreshCache(name, constant.APP_METADATA)
-		hlog.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
+		logger.Infof("AppMetadata RefreshAllCache APP_METADATA [%s]", name)
 		a.RefreshCache(name, constant.HTTP_APP_METADATA)
-		hlog.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
+		logger.Infof("AppMetadata RefreshAllCache HTTP_APP_METADATA [%s]", name)
 	}
 	for _, name := range appNames {
-		hlog.Infof("AppMetadata addListen [%s]", name)
+		logger.Infof("AppMetadata addListen [%s]", name)
 		a.AddListen(name)
 	}
 }

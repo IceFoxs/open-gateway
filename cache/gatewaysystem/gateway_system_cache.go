@@ -5,7 +5,7 @@ import (
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	sy "github.com/IceFoxs/open-gateway/sync"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/dubbogo/gost/log/logger"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"sync"
 )
@@ -32,7 +32,7 @@ func GetGatewaySystemCache() *GatewaySystemCache {
 func initCache() {
 	gatewaySystemCache = &GatewaySystemCache{m: cmap.New[GatewaySystem]()}
 	sy.GetConfChangeClientHelper().Subscribe("GATEWAY_SYSTEM", "FPS_GROUP", gatewaySystemCache.Listen)
-	hlog.SystemLogger().Infof("init GatewaySystem cache")
+	logger.Infof("init GatewaySystem cache")
 }
 func (*GatewaySystemCache) GetAllAppName() []string {
 	return gatewaySystemCache.m.Keys()
@@ -48,7 +48,7 @@ func (g *GatewaySystemCache) RefreshCache() {
 	}
 }
 func (g *GatewaySystemCache) Listen(group, dataId, data string) {
-	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	logger.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
 	g.RefreshCache()
 	amc := appmetadata.GetAppMetadataCache()
 	amc.RefreshCacheByAppName(g.GetAllAppName())
