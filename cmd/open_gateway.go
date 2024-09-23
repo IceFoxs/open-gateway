@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"errors"
@@ -16,15 +16,15 @@ import (
 	"github.com/IceFoxs/open-gateway/server/router"
 	"github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config/nacos"
-	_ "github.com/apache/skywalking-go"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/utils"
+	"github.com/dubbogo/gost/log/logger"
 	"os"
 )
 
-func main() {
+func Start() {
 	nacos.GetConfChangeClient()
 	address := conf.GetConf().Registry.RegistryAddress[0]
 	username := conf.GetConf().Registry.Username
@@ -55,8 +55,7 @@ func main() {
 	if len(staticPath) == 0 {
 		staticPath, _ = os.Getwd()
 	}
-	hlog.Infof("static path is %s", staticPath)
-
+	logger.Infof("static path is %s", staticPath)
 	h, err := CreateServer(register, host, appName, address, username, password)
 	if err != nil {
 		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())
