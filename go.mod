@@ -14,6 +14,7 @@ require (
 )
 
 require (
+	github.com/apache/skywalking-go v0.5.0
 	github.com/google/uuid v1.3.0
 	github.com/hertz-contrib/registry/nacos/v2 v2.0.0-20240618152458-11c3cac90e4f
 	github.com/kr/pretty v0.3.0
@@ -33,7 +34,6 @@ require (
 	github.com/alibaba/sentinel-golang v1.0.4 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1704 // indirect
 	github.com/apache/dubbo-getty v1.4.9 // indirect
-	github.com/apache/skywalking-go v0.5.0 // indirect
 	github.com/armon/go-metrics v0.3.10 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
