@@ -1,4 +1,4 @@
-package main
+package consul
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"log"
 )
 
-func main() {
+func main1() {
 	client, err := client.NewClient()
 	if err != nil {
 		panic(err)

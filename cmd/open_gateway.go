@@ -55,6 +55,7 @@ func main() {
 		staticPath, _ = os.Getwd()
 	}
 	hlog.Infof("static path is %s", staticPath)
+
 	h, err := CreateServer(register, host, appName, address, username, password)
 	if err != nil {
 		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())

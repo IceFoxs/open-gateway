@@ -137,6 +137,7 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 		hlog.Errorf("signType  not match  %s", req.SignType)
 		c.Abort()
 		c.JSON(consts.StatusOK, common.Error(957, "签名类型不匹配"))
+		return
 	}
 	if req.SignType == "NONE" {
 		return
@@ -156,6 +157,7 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 		hlog.Errorf("Signature verification failed %s", err)
 		c.Abort()
 		c.JSON(consts.StatusOK, common.Error(954, "验签失败:"+err.Error()))
+		return
 	}
 	// 验证签名的有效性
 	if gc.AesType != req.EncryptType {
@@ -170,6 +172,7 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 			hlog.Errorf("base64 decode error %s", e)
 			c.Abort()
 			c.JSON(consts.StatusOK, common.Error(955, "加解密失败"))
+			return
 		}
 		body := aes.AesDecryptECB(de, []byte(gc.AesKey))
 		c.Set(common.REQ_BODY, string(body))
