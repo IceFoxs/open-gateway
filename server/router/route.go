@@ -29,7 +29,26 @@ func AddRouter(h *server.Hertz, dir string) {
 	h.GET("/ping", func(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, "ok")
 	})
+	h.POST("/decryptContent", func(ctx context.Context, c *app.RequestContext) {
+		var req common.DecryptContentReq
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, err)
+			return
+		}
 
+		cache := gatewayconfig.GetGatewayConfigCache()
+		gc, _ := cache.GetCache(req.AppId)
+		de, e := base64.StdEncoding.DecodeString(req.EncryptContent)
+		if e != nil {
+			logger.Errorf("base64 decode error %s", e)
+			c.Abort()
+			c.JSON(consts.StatusOK, common.Error(955, "加解密失败"))
+			return
+		}
+		body := aes.AesDecryptECB(de, []byte(gc.AesKey))
+		c.Data(consts.StatusOK, "application/json", body)
+	})
 	h.POST("/selectByAppId", func(ctx context.Context, c *app.RequestContext) {
 		var req common.GatewayConfigReq
 		err := c.BindAndValidate(&req)

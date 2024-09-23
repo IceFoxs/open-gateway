@@ -21,6 +21,11 @@ type GatewayConfigReq struct {
 	AppId string `json:"appId,required"`
 }
 
+type DecryptContentReq struct {
+	AppId          string `json:"appId,required"`
+	EncryptContent string `json:"encryptContent,required"`
+}
+
 type GatewaySystemReq struct {
 	SysId string `json:"sysId,required"`
 }
