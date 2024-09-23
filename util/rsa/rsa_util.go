@@ -20,7 +20,7 @@ import (
 
 type SignAlgo struct{}
 
-func SortParam(param map[string]interface{}) string {
+func SortParam(param map[string]interface{}, appendFilename bool) string {
 	keys := make([]string, 0, len(param))
 	for key := range param {
 		keys = append(keys, key)
@@ -46,11 +46,14 @@ func SortParam(param map[string]interface{}) string {
 		}
 
 	}
-	return strings.Join(sortedParams, "&") + "&filename=" + param["filename"].(string)
+	if appendFilename {
+		return strings.Join(sortedParams, "&") + "&filename=" + param["filename"].(string)
+	}
+	return strings.Join(sortedParams, "&")
 }
 
 func (s *SignAlgo) Sign(data map[string]interface{}, secret []byte) string {
-	str := SortParam(data)
+	str := SortParam(data, false)
 	str += "&key=" + string(secret)
 	hash := md5.Sum(secret)
 	return hex.EncodeToString(hash[:])

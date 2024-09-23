@@ -44,6 +44,14 @@ func Error(code int, msg string) CommonRes {
 	}
 }
 
+func ErrorWithSign(code int, msg string, sign string) CommonRes {
+	return CommonRes{
+		Sign:       sign,
+		ErrorMsg:   msg,
+		StatusCode: code,
+	}
+}
+
 func Success(code int, bizContent string, sign string) CommonRes {
 	return CommonRes{
 		ErrorMsg:   "请求成功",
@@ -53,19 +61,27 @@ func Success(code int, bizContent string, sign string) CommonRes {
 	}
 }
 
-func Succ(code int, i interface{}, sign string) CommonRes {
+func Succ(code int, msg string, i interface{}, sign string) CommonRes {
 	content, err := json.Marshal(i)
 	if err != nil {
 		return Error(500, err.Error())
 	}
 	return CommonRes{
-		ErrorMsg:   "请求成功",
+		ErrorMsg:   msg,
 		StatusCode: code,
 		BizContent: string(content),
 		Sign:       sign,
 	}
 }
 
+func SuccContent(code int, msg string, content string, sign string) CommonRes {
+	return CommonRes{
+		ErrorMsg:   msg,
+		StatusCode: code,
+		BizContent: content,
+		Sign:       sign,
+	}
+}
 func ToJSON(i interface{}) string {
 	content, err := json.Marshal(i)
 	if err != nil {

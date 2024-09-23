@@ -111,9 +111,8 @@ func AddRouter(h *server.Hertz, dir string) {
 		if !ok {
 			bizContent = req.BizContent
 		}
-
 		logger.Infof("filename:%s,bizContent:%s", fileReq.FilenamePre, bizContent)
-		rpc.Invoke(context.TODO(), c, fileReq.FilenamePre, bizContent)
+		rpc.Invoke(context.TODO(), c, req, fileReq, bizContent)
 	})
 }
 
@@ -171,7 +170,7 @@ func validSign(ctx context.Context, c *app.RequestContext) {
 	param["encryptType"] = req.EncryptType
 	param["timestamp"] = req.Timestamp
 	param["sign"] = req.Sign
-	sortedParams := rsaUtil.SortParam(param)
+	sortedParams := rsaUtil.SortParam(param, true)
 	err := rsaUtil.RSAVerifyByString(sortedParams, req.Sign, publicKey)
 	if err != nil {
 		logger.Errorf("Signature verification failed %s", err)

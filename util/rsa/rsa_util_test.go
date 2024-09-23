@@ -25,7 +25,7 @@ func TestRsa(*testing.T) {
 
 	secret := []byte("1234567890123456")
 
-	sortedParams := rsaUtil.SortParam(param)
+	sortedParams := rsaUtil.SortParam(param, false)
 	println("Sorted Params:", sortedParams)
 
 	signature := sign.Sign(param, secret)
