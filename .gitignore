@@ -3,3 +3,4 @@ dist
 go.sum
 tmp
 polaris
+logs
