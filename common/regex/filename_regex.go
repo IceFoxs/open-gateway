@@ -28,12 +28,9 @@ func MatchFileName(filename string) (*FilenameReq, error) {
 	if len(matches) > 6 {
 		logger.Infof("Match found: %s", matches)
 		// 输出匹配到的每个部分（模拟元组）
-		for i, v := range matches {
-			logger.Infof("Group %d: %s\n", i, v)
-			appid = matches[4]
-			filenamePre = matches[1] + "_" + matches[2] + "_" + matches[3]
-			timestamp = matches[5]
-		}
+		appid = matches[4]
+		filenamePre = matches[1] + "_" + matches[2] + "_" + matches[3]
+		timestamp = matches[5]
 	} else {
 		return nil, errors.New("File name not match")
 	}
