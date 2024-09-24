@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"github.com/IceFoxs/open-gateway/cache/appmetadata"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
@@ -27,18 +26,13 @@ import (
 )
 
 func Start() {
-	dir, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(dir)
+	log := conf.GetConf().Logger
 	logger.InitLogger(&logger.Config{
 		LumberjackConfig: &lumberjack.Logger{
-			Filename:   dir + "/logs/open-gateway.log",
-			MaxSize:    1,
-			MaxBackups: 3,
-			MaxAge:     30,
+			Filename:   log.FileName,
+			MaxSize:    log.MaxSize,
+			MaxBackups: log.MaxBackups,
+			MaxAge:     log.MaxAge,
 		},
 	})
 	nacos.GetConfChangeClient()

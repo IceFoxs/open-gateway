@@ -16,12 +16,19 @@ var (
 	once sync.Once
 )
 
+type Logger struct {
+	FileName   string `yaml:"filename"`
+	MaxSize    int    `yaml:"max_size"`
+	MaxBackups int    `yaml:"max_backups"`
+	MaxAge     int    `yaml:"max_age"`
+}
 type Config struct {
 	Env      string
 	App      App      `yaml:"app"`
 	MySQL    MySQL    `yaml:"mysql"`
 	Redis    Redis    `yaml:"redis"`
 	Registry Registry `yaml:"registry"`
+	Logger   Logger   `yaml:"logger"`
 }
 type App struct {
 	Host       string `yaml:"host"`
