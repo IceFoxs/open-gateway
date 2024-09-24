@@ -3,10 +3,12 @@ package rpc
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/common/regex"
+	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	ge "github.com/IceFoxs/open-gateway/rpc/generic"
@@ -18,6 +20,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/json"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/dubbogo/gost/log/logger"
+	"strconv"
 )
 
 func Invoke(ctx context.Context, c *app.RequestContext, req common.RequiredReq, fileReq *regex.FilenameReq, param interface{}) {
@@ -37,7 +40,27 @@ func Invoke(ctx context.Context, c *app.RequestContext, req common.RequiredReq, 
 		}
 		logger.Infof("toMap %s", common.ToJSON(toMap))
 		util.ConvertHessianMap(toMap)
-		data, err := ge.Invoke(re, gmm.MethodName, gmm.ParameterTypeName, util.ConvertHessianMap(toMap))
+		var wrapResp = conf.GetConf().Registry.WrapResp
+		if len(wrapResp) == 0 {
+			if len(c.GetHeader(constant.WRAP_RESP_HEADER)) == 0 {
+				wrapResp = constant.FALSE
+			} else {
+				wrapResp = string(c.GetHeader(constant.WRAP_RESP_HEADER))
+			}
+		}
+		data, err := ge.Invoke(re, gmm.MethodName, gmm.ParameterTypeName, util.ConvertHessianMap(toMap), wrapResp)
+		if constant.TRUE == wrapResp {
+			res := data.(map[string]interface{})
+			codeStr := fmt.Sprint(res["code"])
+			msg := fmt.Sprint(res["message"])
+			if codeStr == "200" {
+				Success(ctx, c, req, fileReq, res["data"])
+			} else {
+				code, _ := strconv.Atoi(codeStr)
+				Error(ctx, c, req, fileReq, code, msg)
+			}
+			return
+		}
 		if err != nil {
 			Error(ctx, c, req, fileReq, 900, err.Error())
 			return

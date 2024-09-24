@@ -52,6 +52,7 @@ type Registry struct {
 	Username        string   `yaml:"username"`
 	Password        string   `yaml:"password"`
 	RegisterType    string   `yaml:"register_type"`
+	WrapResp        string   `yaml:"wrap_resp"`
 }
 
 // GetConf gets configuration instance

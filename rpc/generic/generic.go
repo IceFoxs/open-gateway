@@ -3,7 +3,6 @@ package generic
 import (
 	"context"
 	"dubbo.apache.org/dubbo-go/v3/common/constant"
-	"errors"
 	"github.com/IceFoxs/open-gateway/util"
 	"time"
 )
@@ -13,7 +12,7 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/config/generic"
 	_ "dubbo.apache.org/dubbo-go/v3/imports"
 	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
-
+	con "github.com/IceFoxs/open-gateway/constant"
 	hessian "github.com/apache/dubbo-go-hessian2"
 
 	"github.com/dubbogo/gost/log/logger"
@@ -280,7 +279,7 @@ func NewRefConf1(iface, registry string, registryType string, protocol string, a
 	return refConf
 }
 
-func Invoke(refConf config.ReferenceConfig, methodName string, parameterName string, param interface{}) (interface{}, error) {
+func Invoke(refConf config.ReferenceConfig, methodName string, parameterName string, param interface{}, wrapResp string) (interface{}, error) {
 	paramTypes := []string{}
 	params := []hessian.Object{}
 	if len(parameterName) != 0 {
@@ -289,7 +288,7 @@ func Invoke(refConf config.ReferenceConfig, methodName string, parameterName str
 	}
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, constant.AttachmentKey, map[string]interface{}{
-		"wrap_resp": "true",
+		con.WRAP_RESP_HEADER: wrapResp,
 	})
 	resp, err := refConf.GetRPCService().(*generic.GenericService).Invoke(
 		ctx,
@@ -297,12 +296,12 @@ func Invoke(refConf config.ReferenceConfig, methodName string, parameterName str
 		paramTypes,
 		params,
 	)
-	if err != nil {
-		return nil, err
-	}
+	//if err != nil {
+	//	return nil, err
+	//}
 	logger.Infof("Invoke method,%s res: %+v", methodName, resp)
 	if resp != nil {
 		return util.DealResp(resp, false)
 	}
-	return nil, errors.New("服务调用异常")
+	return nil, err
 }

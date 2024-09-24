@@ -94,7 +94,7 @@ func AddRouter(h *server.Hertz, dir string) {
 		var m = make(map[string]hessian.Object)
 		m["confType"] = "BANK_TEST"
 		m["confContent"] = "TEST|20240930"
-		data, _ := ge.Invoke(re, "confRefresh", "com.hundsun.manager.model.req.ConfRefreshRequest", m)
+		data, _ := ge.Invoke(re, "confRefresh", "com.hundsun.manager.model.req.ConfRefreshRequest", m, "false")
 
 		c.JSON(consts.StatusOK, data)
 	})

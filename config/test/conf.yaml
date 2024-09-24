@@ -9,6 +9,7 @@ registry:
   username: "nacos"
   password: "nacos"
   register_type: "nacos"
+  wrap_resp:
 mysql:
   dsn: "root:123456@tcp(127.0.0.1:3306)/fps_pay?charset=utf8mb4&parseTime=True&loc=Local"
 
