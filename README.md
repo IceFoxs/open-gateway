@@ -21,3 +21,8 @@ upx --force-macos -o output_file input_file
 解压
 upx -d -o example_uncompressed.exe example_compressed.exe
 ```
+
+### windows编译
+```shell
+go build  trimpath -o ./dist/opengateway.exe  ./cmd/opengateway/
+```
