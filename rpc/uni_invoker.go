@@ -49,6 +49,10 @@ func Invoke(ctx context.Context, c *app.RequestContext, req common.RequiredReq, 
 			}
 		}
 		data, err := ge.Invoke(re, gmm.MethodName, gmm.ParameterTypeName, util.ConvertHessianMap(toMap), wrapResp)
+		if data == nil {
+			Error(ctx, c, req, fileReq, 900, "服务调用异常")
+			return
+		}
 		if constant.TRUE == wrapResp {
 			res := data.(map[string]interface{})
 			codeStr := fmt.Sprint(res["code"])
