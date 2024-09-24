@@ -9,7 +9,6 @@ import (
 	"github.com/IceFoxs/open-gateway/util"
 	"github.com/dubbogo/gost/log/logger"
 	"sync"
-	"time"
 )
 import (
 	_ "dubbo.apache.org/dubbo-go/v3/cluster/loadbalance/ringhash"
@@ -156,11 +155,6 @@ func (dc *Client) create(key string, iface string) *generic.GenericService {
 	}
 	_ = refConf.Init(dc.rootConfig)
 	refConf.GenericLoad(iface)
-	//useNacosRegister := false
-	// todo: GenericLoad should guarantee it
-	//if useNacosRegister {
-	time.Sleep(1000 * time.Millisecond)
-	//}
 	clientService := refConf.GetRPCService().(*generic.GenericService)
 	dc.GenericServicePool[key] = clientService
 	return clientService
