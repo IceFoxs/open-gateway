@@ -55,8 +55,8 @@ func CreateConfigClient(host string, port uint64, username string, password stri
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir(path+"/tmp/nacos/log"),
-		constant.WithCacheDir(path+"/tmp/nacos/cache"),
+		constant.WithLogDir(path+"/logs/nacos/log"),
+		constant.WithCacheDir(path+"/logs/nacos/cache"),
 		constant.WithLogLevel("debug"),
 	)
 	// create config client
@@ -81,8 +81,8 @@ func CreateNamingClient(host string, port uint64, username string, password stri
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir(path+"/tmp/nacos/log"),
-		constant.WithCacheDir(path+"/tmp/nacos/cache"),
+		constant.WithLogDir(path+"/logs/nacos/log"),
+		constant.WithCacheDir(path+"/logs/nacos/cache"),
 		constant.WithLogLevel("debug"),
 	)
 
