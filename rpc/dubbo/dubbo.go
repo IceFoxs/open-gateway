@@ -28,9 +28,10 @@ var (
 		Organization: constant.SERVEICE_NAME,
 		Name:         constant.SERVEICE_NAME,
 		Module:       constant.SERVEICE_NAME,
-		Version:      "",
-		Owner:        constant.SERVEICE_NAME,
-		Environment:  "pro",
+		//版本不能设置
+		Version:     "",
+		Owner:       constant.SERVEICE_NAME,
+		Environment: "pro",
 	}
 )
 
