@@ -10,12 +10,10 @@ import (
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/rpc"
-	ge "github.com/IceFoxs/open-gateway/rpc/generic"
 	"github.com/IceFoxs/open-gateway/server/handler"
 	"github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/util/aes"
 	rsaUtil "github.com/IceFoxs/open-gateway/util/rsa"
-	hessian "github.com/apache/dubbo-go-hessian2"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -88,18 +86,7 @@ func AddRouter(h *server.Hertz, dir string) {
 		g, _ := mysql.GetGatewaySystemConfig(req.SysId)
 		c.JSON(consts.StatusOK, g)
 	})
-	h.GET("/generic", func(ctx context.Context, c *app.RequestContext) {
-		re := ge.NewRefConf1("com.hundsun.manager.model.proto.ConfRefreshRpcService", "nacos", "interface", "dubbo", "127.0.0.1:8848", "nacos", "nacos")
-		time.Sleep(1 * time.Second)
-		var m = make(map[string]hessian.Object)
-		m["confType"] = "BANK_TEST"
-		m["confContent"] = "TEST|20240930"
-		data, _ := ge.Invoke(re, "confRefresh", "com.hundsun.manager.model.req.ConfRefreshRequest", m, "false")
-
-		c.JSON(consts.StatusOK, data)
-	})
 	h.StaticFS("/", &app.FS{Root: dir + "/static", IndexNames: []string{"index.html"}})
-
 	h.POST("/api/json", validFileName, validSign, func(ctx context.Context, c *app.RequestContext) {
 		var r, _ = c.Get(common.REQ)
 		req := r.(common.RequiredReq)

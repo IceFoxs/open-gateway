@@ -11,7 +11,7 @@ import (
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
-	ge "github.com/IceFoxs/open-gateway/rpc/generic"
+	"github.com/IceFoxs/open-gateway/rpc/dubbo"
 	"github.com/IceFoxs/open-gateway/rpc/http"
 	"github.com/IceFoxs/open-gateway/util"
 	"github.com/IceFoxs/open-gateway/util/aes"
@@ -32,7 +32,6 @@ func Invoke(ctx context.Context, c *app.RequestContext, req common.RequiredReq, 
 	}
 	logger.Infof("found rpc invoke metadata --------------- %s", gmm)
 	if gmm.RpcType == constant.RPC_DUBOO {
-		re := ge.NewRefConf1(gmm.InterfaceName, "nacos", constant.RPC_INTERFACE_TYPE, "dubbo", "127.0.0.1:8848", "nacos", "nacos")
 		toMap, err := util.JsonStringToMap(param.(string))
 		if err != nil {
 			Error(ctx, c, req, fileReq, 900, err.Error())
@@ -48,7 +47,11 @@ func Invoke(ctx context.Context, c *app.RequestContext, req common.RequiredReq, 
 				wrapResp = string(c.GetHeader(constant.WRAP_RESP_HEADER))
 			}
 		}
-		data, err := ge.Invoke(re, gmm.MethodName, gmm.ParameterTypeName, util.ConvertHessianMap(toMap), wrapResp)
+		//re := ge.NewRefConf1(gmm.InterfaceName, "nacos", constant.RPC_INTERFACE_TYPE, "dubbo", "127.0.0.1:8848", "nacos", "nacos")
+		//data, err := ge.Invoke(re, gmm.MethodName, gmm.ParameterTypeName, util.ConvertHessianMap(toMap), wrapResp)
+
+		client := dubbo.SingletonDubboClient()
+		data, err := client.Invoke(gmm, util.ConvertHessianMap(toMap), wrapResp)
 		if data == nil {
 			Error(ctx, c, req, fileReq, 900, "服务调用异常")
 			return

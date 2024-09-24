@@ -10,6 +10,7 @@ import (
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db"
 	"github.com/IceFoxs/open-gateway/registry"
+	"github.com/IceFoxs/open-gateway/rpc/dubbo"
 	"github.com/IceFoxs/open-gateway/rpc/http"
 	"github.com/IceFoxs/open-gateway/server/consul"
 	na "github.com/IceFoxs/open-gateway/server/nacos"
@@ -43,6 +44,7 @@ func Start() {
 	host := conf.GetConf().App.Host
 	staticPath := conf.GetConf().App.StaticPath
 	appName := conf.GetConf().App.Name
+	dubbo.SingletonDubboClient()
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
 	registry.GetRegisterClient()

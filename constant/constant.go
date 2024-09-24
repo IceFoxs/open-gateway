@@ -1,6 +1,6 @@
 package constant
 
-const TEST_SERVEICE = "open-gateway"
+const SERVEICE_NAME = "open-gateway"
 
 const REGISTRY_NACOS = "nacos"
 

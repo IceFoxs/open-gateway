@@ -28,7 +28,7 @@ func main1() {
 	r := consul.NewConsulResolver(consulClient)
 	client.Use(sd.Discovery(r))
 	for i := 0; i < 10; i++ {
-		status, body, err := client.Get(context.Background(), nil, "http://"+con.TEST_SERVEICE+"/ping?", config.WithSD(true))
+		status, body, err := client.Get(context.Background(), nil, "http://"+con.SERVEICE_NAME+"/ping?", config.WithSD(true))
 		if err != nil {
 			hlog.Fatal(err)
 		}

@@ -11,6 +11,9 @@ type GatewayMethodMetadata struct {
 	AppName           string `json:"appName"`
 }
 
-func (gm *GatewayMethodMetadata) getReferenceKey() string {
-	return gm.InterfaceName + "-" + gm.MethodName + "-" + gm.ParameterTypeName
+func (gm *GatewayMethodMetadata) GetReferenceKey() string {
+	if len(gm.ParameterTypeName) == 0 {
+		return gm.InterfaceName + "_" + gm.MethodName + "_"
+	}
+	return gm.InterfaceName + "_" + gm.MethodName + "_" + gm.ParameterTypeName
 }

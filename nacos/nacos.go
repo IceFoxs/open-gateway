@@ -29,8 +29,8 @@ func initConfigClient() {
 	address := conf.GetConf().Registry.RegistryAddress[0]
 	username := conf.GetConf().Registry.Username
 	password := conf.GetConf().Registry.Password
-	registerType := conf.GetConf().Registry.RegisterType
-	if registerType == con.REGISTRY_NACOS {
+	register := conf.GetConf().Registry.Register
+	if register == con.REGISTRY_NACOS {
 		addresses := strings.Split(address, ":")
 		host := addresses[0]
 		port, _ := strconv.ParseUint(addresses[1], 0, 64)

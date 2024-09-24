@@ -39,7 +39,7 @@ func GetRegisterClient() *Registry {
 }
 
 func initRegisterClient() {
-	registerType := conf.GetConf().Registry.RegisterType
+	registerType := conf.GetConf().Registry.Register
 	if registerType == constant.REGISTRY_NACOS {
 		var rc, err = nacos.NewRegisterClient()
 		if err != nil {
