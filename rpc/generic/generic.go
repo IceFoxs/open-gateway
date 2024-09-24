@@ -2,6 +2,7 @@ package generic
 
 import (
 	"context"
+	"dubbo.apache.org/dubbo-go/v3/common/constant"
 	"errors"
 	"github.com/IceFoxs/open-gateway/util"
 	"time"
@@ -286,8 +287,12 @@ func Invoke(refConf config.ReferenceConfig, methodName string, parameterName str
 		paramTypes = append(paramTypes, parameterName)
 		params = append(params, param)
 	}
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, constant.AttachmentKey, map[string]interface{}{
+		"wrap_resp": "true",
+	})
 	resp, err := refConf.GetRPCService().(*generic.GenericService).Invoke(
-		context.TODO(),
+		ctx,
 		methodName,
 		paramTypes,
 		params,

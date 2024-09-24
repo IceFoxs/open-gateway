@@ -58,6 +58,19 @@ POST http://127.0.0.1:8888/api/json
 Content-Type: application/json
 
 {
+  "bizContent":  "{\"pageNo\": \"1\",\"pageSize\": \"1\"}",
+  "encryptType": "NONE",
+  "filename": "FPS_MANAGER_SIGNLIST_REQ_990102_20240813164335632.json",
+  "sign": "",
+  "signType": "NONE",
+  "timestamp": "2024-08-13T16:43:35",
+  "version": "2.0"
+}
+###
+POST http://127.0.0.1:8888/api/json
+Content-Type: application/json
+
+{
     "bizContent": "{\"pageNo\":\"1\",\"pageSize\":10}",
     "encryptType": "NONE",
     "filename": "FPS_MANAGER_GETBANKCHANNELCONFIG_REQ_990102_20240813164335632.json",
