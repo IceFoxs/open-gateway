@@ -5,6 +5,7 @@ import (
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
+	"github.com/IceFoxs/open-gateway/rpc/dubbo"
 	"github.com/cloudwego/hertz/pkg/common/json"
 	"github.com/dubbogo/gost/log/logger"
 	cmap "github.com/orcaman/concurrent-map/v2"
@@ -52,6 +53,8 @@ func (g *GatewayMethodCache) RefreshCache(filename string) {
 	}
 	logger.Infof("GatewayMethodMetadata [%s] is %s", filename, common.ToJSON(gmm))
 	g.PutCache(filename, gmm)
+	client := dubbo.SingletonDubboClient()
+	client.Get(gmm.GetReferenceKey(), gmm.InterfaceName)
 }
 
 func (g *GatewayMethodCache) AddListen(method string) {
@@ -66,7 +69,6 @@ func (g *GatewayMethodCache) RefreshAllCache(methods []string) {
 	for _, method := range methods {
 		g.AddListen(method)
 		g.RefreshCache(method)
-
 	}
 }
 
