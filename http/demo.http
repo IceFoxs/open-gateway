@@ -28,6 +28,7 @@ Content-Type: application/json
 ###
 POST http://127.0.0.1:8888/api/json
 Content-Type: application/json
+wrap_resp: true
 
 {
   "bizContent": "{\"confType\": \"BANK_TEST\",\"confContent\": \"TEST|20240930\"}",
