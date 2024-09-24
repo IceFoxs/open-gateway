@@ -44,7 +44,7 @@ func Start() {
 	host := conf.GetConf().App.Host
 	staticPath := conf.GetConf().App.StaticPath
 	appName := conf.GetConf().App.Name
-	dubbo.SingletonDubboClient()
+	dubbo.InitDefaultDubboClient()
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
 	registry.GetRegisterClient()

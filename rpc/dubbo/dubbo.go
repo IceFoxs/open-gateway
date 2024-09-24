@@ -46,7 +46,7 @@ type Client struct {
 func SingletonDubboClient() *Client {
 	if dubboClient == nil {
 		onceClient.Do(func() {
-			InitDefaultDubboClient()
+			dubboClient = NewDubboClient()
 		})
 	}
 	return dubboClient
@@ -155,7 +155,7 @@ func (dc *Client) create(key string, iface string) *generic.GenericService {
 		panic(err)
 	}
 	_ = refConf.Init(dc.rootConfig)
-	refConf.GenericLoad(iface)
+	refConf.GenericLoad(key)
 	clientService := refConf.GetRPCService().(*generic.GenericService)
 	dc.GenericServicePool[key] = clientService
 	return clientService
