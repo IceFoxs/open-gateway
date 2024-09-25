@@ -78,6 +78,7 @@ func AddRouter(h *server.Hertz, dir string) {
 				AesKey:              req.AesKey,
 				AesType:             req.AesType,
 				SignType:            req.SignType,
+				IsEnable:            req.IsEnable,
 			},
 		})
 		if err != nil {
@@ -94,19 +95,18 @@ func AddRouter(h *server.Hertz, dir string) {
 			c.JSON(consts.StatusInternalServerError, err)
 			return
 		}
-		err = mysql.CreateGatewayChannelConfig([]*model.GatewayChannelConfig{
-			{
-				AppId:               req.AppId,
-				AppName:             req.AppName,
-				CallbackUrl:         req.CallbackUrl,
-				RsaPrivateKey:       req.RsaPrivateKey,
-				RsaPublicKey:        req.RsaPublicKey,
-				ClientRsaPrivateKey: req.ClientRsaPrivateKey,
-				ClientRsaPublicKey:  req.ClientRsaPublicKey,
-				AesKey:              req.AesKey,
-				AesType:             req.AesType,
-				SignType:            req.SignType,
-			},
+		err = mysql.UpdateGatewayChannelConfig(&model.GatewayChannelConfig{
+			AppId:               req.AppId,
+			AppName:             req.AppName,
+			CallbackUrl:         req.CallbackUrl,
+			RsaPrivateKey:       req.RsaPrivateKey,
+			RsaPublicKey:        req.RsaPublicKey,
+			ClientRsaPrivateKey: req.ClientRsaPrivateKey,
+			ClientRsaPublicKey:  req.ClientRsaPublicKey,
+			AesKey:              req.AesKey,
+			AesType:             req.AesType,
+			SignType:            req.SignType,
+			IsEnable:            req.IsEnable,
 		})
 		if err != nil {
 			c.JSON(consts.StatusOK, 0)
