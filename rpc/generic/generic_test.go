@@ -4,6 +4,7 @@ import (
 	"context"
 	"dubbo.apache.org/dubbo-go/v3/common/constant"
 	"github.com/IceFoxs/open-gateway/util"
+	"testing"
 	"time"
 )
 
@@ -23,7 +24,7 @@ import (
 const appName = "dubbo.io"
 
 // export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/generic/default/go-client/conf/dubbogo.yml
-func main() {
+func TestGenericClient(t *testing.T) {
 	// register POJOs
 	// generic invocation samples using hessian serialization on Dubbo protocol
 	dubboRefConf := NewRefConf("org.apache.dubbo.samples.UserProvider", dubbo.DUBBO)

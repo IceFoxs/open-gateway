@@ -3,6 +3,7 @@ package rsa
 import (
 	"bytes"
 	"crypto"
+	"crypto/hmac"
 	"crypto/md5"
 	"crypto/rand"
 	"crypto/rsa"
@@ -90,6 +91,12 @@ func ZeroPadding(data []byte, blockSize int) []byte {
 	padding := blockSize - len(data)%blockSize
 	padText := bytes.Repeat([]byte{0}, padding)
 	return append(data, padText...)
+}
+func HmacSha256ToBase64(key string, data string) string {
+	mac := hmac.New(sha256.New, []byte(key))
+	_, _ = mac.Write([]byte(data))
+	encode := mac.Sum(nil)
+	return base64.StdEncoding.EncodeToString(encode)
 }
 
 // ZeroUnpadding 去除ZeroPadding填充数据
