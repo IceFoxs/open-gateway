@@ -8,3 +8,5 @@ bin/log
 bin/cache
 bin/opengateway
 bin/opengateway.exe
+bin.zip
+bin/static
