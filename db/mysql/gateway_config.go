@@ -40,6 +40,5 @@ func GetGatewayChannelConfig(keyword string) ([]*model.GatewayChannelConfig, err
 	for _, g := range res {
 		hlog.Infof("加载的渠道号是:%s", g.AppId)
 	}
-
 	return res, nil
 }
