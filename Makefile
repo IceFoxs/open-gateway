@@ -5,6 +5,8 @@ run:
 	go run   $(currentPath)/cmd/opengateway/
 build:
 	go build  -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
+build-linux:
+	go build -buildvcs=false  -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
 run-with-skywalking-macos:
 	go run  -toolexec="$(currentPath)/skywalking-go/bin/skywalking-go-agent-0.5.0-darwin-amd64 -config $(currentPath)/skywalking-go/config/config.yaml" -a $(currentPath)/cmd/opengatewaysky/
 build-with-skywalking-macos:
