@@ -94,9 +94,10 @@ func initConf() {
 		panic(err)
 	}
 	conf.Env = GetEnv()
-	conf.BaseDir = dir
+	if len(conf.BaseDir) == 0 {
+		conf.BaseDir = dir
+	}
 }
-
 func GetEnv() string {
 	e := os.Getenv("GO_ENV")
 	if len(e) == 0 {
