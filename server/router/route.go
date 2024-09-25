@@ -3,7 +3,9 @@ package router
 import (
 	"context"
 	"encoding/base64"
+	"github.com/IceFoxs/open-gateway/cache/appmetadata"
 	"github.com/IceFoxs/open-gateway/cache/gatewayconfig"
+	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/common/regex"
 	"github.com/IceFoxs/open-gateway/constant"
@@ -57,6 +59,31 @@ func AddRouter(h *server.Hertz, dir string) {
 		g, _ := mysql.GetGatewayChannelConfig(req.AppId)
 		c.JSON(consts.StatusOK, g)
 	})
+	h.POST("/addSystemConfig", func(ctx context.Context, c *app.RequestContext) {
+		var req model.GatewaySystemConfig
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, err)
+			return
+		}
+		err = mysql.CreateGatewaySystem([]*model.GatewaySystemConfig{
+			{
+				SystemId:   req.SystemId,
+				SystemName: req.SystemName,
+			},
+		})
+		if err != nil {
+			c.JSON(consts.StatusOK, 0)
+			return
+		}
+		appmetadata.GetAppMetadataCache().RefreshCacheByAppName([]string{req.SystemId})
+		a, ok := appmetadata.GetAppMetadataCache().GetAppMetadata(req.SystemId)
+		if ok {
+			gatewaymethod.GetGatewayMethodCache().RefreshAllCache(a.Methods)
+		}
+		c.JSON(consts.StatusOK, 1)
+	})
+
 	h.POST("/selectAppMethods", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewayMethodRequest
 		err := c.BindAndValidate(&req)

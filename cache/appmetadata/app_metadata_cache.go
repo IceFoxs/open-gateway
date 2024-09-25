@@ -38,6 +38,9 @@ func (a *AppMetadataCache) GetAllMethods() []string {
 	return a.methods.Keys()
 }
 
+func (a *AppMetadataCache) GetAppMetadata(appId string) (model.AppMetadata, bool) {
+	return a.appMetadata.Get(appId)
+}
 func (a *AppMetadataCache) GetAppName(methodName string) string {
 	appname, _ := a.methods.Get(methodName)
 	return appname
