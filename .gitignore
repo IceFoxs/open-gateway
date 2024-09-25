@@ -4,3 +4,6 @@ go.sum
 tmp
 polaris
 logs
+bin/log
+bin/cache
+bin/opengateway

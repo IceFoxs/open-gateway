@@ -12,12 +12,15 @@ while getopts "o" opt; do
     ;;
   esac
 done
+export SERVER="opengateway"
+if [ ! -d "${BASE_DIR}/logs" ]; then
+  mkdir ${BASE_DIR}/logs
+fi
 if [ -n "${OUTLOG}" ]; then
     OUT_LOG_DIR=${BASE_DIR}/${OUTLOG}
 else
-    OUT_LOG_DIR=/dev/null
+    OUT_LOG_DIR="${BASE_DIR}/logs/${SERVER}.log"
 fi
-export SERVER="opengateway"
 export APP_IDENTITY="opengateway.opengateway"
 chmod u+x ${BASE_DIR}/${SERVER}
 echo "${BASE_DIR}/${SERVER} ${APP_IDENTITY}"

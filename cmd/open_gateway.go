@@ -22,20 +22,19 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/dubbogo/gost/log/logger"
-	"github.com/natefinch/lumberjack"
 	"os"
 )
 
 func Start() {
-	log := conf.GetConf().Logger
-	logger.InitLogger(&logger.Config{
-		LumberjackConfig: &lumberjack.Logger{
-			Filename:   log.FileName,
-			MaxSize:    log.MaxSize,
-			MaxBackups: log.MaxBackups,
-			MaxAge:     log.MaxAge,
-		},
-	})
+	//log := conf.GetConf().Logger
+	//logger.InitLogger(&logger.Config{
+	//	LumberjackConfig: &lumberjack.Logger{
+	//		Filename:   log.FileName,
+	//		MaxSize:    log.MaxSize,
+	//		MaxBackups: log.MaxBackups,
+	//		MaxAge:     log.MaxAge,
+	//	},
+	//})
 	nacos.GetConfChangeClient()
 	address := conf.GetConf().Registry.RegistryAddress[0]
 	username := conf.GetConf().Registry.Username
