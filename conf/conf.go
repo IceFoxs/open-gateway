@@ -32,11 +32,10 @@ type Config struct {
 	BaseDir  string   `yaml:"base_dir"`
 }
 type App struct {
-	Host       string `yaml:"host"`
-	Name       string `yaml:"name"`
-	StaticPath string `yaml:"static_path"`
-	Register   string `yaml:"register"`
-	Weight     int    `yaml:"weight"`
+	Host     string `yaml:"host"`
+	Name     string `yaml:"name"`
+	Register string `yaml:"register"`
+	Weight   int    `yaml:"weight"`
 }
 type MySQL struct {
 	DSN string `yaml:"dsn"`

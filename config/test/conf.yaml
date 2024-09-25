@@ -2,7 +2,7 @@ app:
   host: 127.0.0.1:8888
   name: open-gateway
   register: nacos
-  static_path: /Users/icefox/Documents/hundsun/scs/scs-settle/fps-open-gateway/fps-open-gateway-service/src/main/resources
+  weight: 0
 registry:
   register: nacos
   registry_address:
