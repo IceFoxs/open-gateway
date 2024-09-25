@@ -41,7 +41,7 @@ func Start() {
 	password := conf.GetConf().Registry.Password
 	register := conf.GetConf().App.Register
 	host := conf.GetConf().App.Host
-	staticPath := conf.GetConf().App.StaticPath
+	staticPath := conf.GetConf().BaseDir
 	appName := conf.GetConf().App.Name
 	dubbo.InitDefaultDubboClient()
 	dsn := conf.GetConf().MySQL.DSN

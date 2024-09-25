@@ -29,6 +29,7 @@ type Config struct {
 	Redis    Redis    `yaml:"redis"`
 	Registry Registry `yaml:"registry"`
 	Logger   Logger   `yaml:"logger"`
+	BaseDir  string   `yaml:"base_dir"`
 }
 type App struct {
 	Host       string `yaml:"host"`
@@ -65,10 +66,14 @@ func GetConf() *Config {
 }
 
 func initConf() {
-	dir, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-		return
+	dir := os.Getenv("BASE_DIR")
+	if len(dir) == 0 {
+		var err error
+		dir, err = os.Getwd()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 	fmt.Println(dir)
 	prefix := "config"
@@ -89,6 +94,7 @@ func initConf() {
 		panic(err)
 	}
 	conf.Env = GetEnv()
+	conf.BaseDir = dir
 }
 
 func GetEnv() string {

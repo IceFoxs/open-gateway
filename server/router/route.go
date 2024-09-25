@@ -26,6 +26,7 @@ import (
 )
 
 func AddRouter(h *server.Hertz, dir string) {
+	h.StaticFS("/", &app.FS{Root: dir + "/web/static", IndexNames: []string{"index.html"}})
 	h.GET("/ping", func(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, "ok")
 	})
@@ -157,7 +158,6 @@ func AddRouter(h *server.Hertz, dir string) {
 		sync.GetConfChangeClientHelper().Publish("GATEWAY_SYSTEM", "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString())
 		c.JSON(consts.StatusOK, "ok")
 	})
-
 	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
 		var req common.GatewaySystemReq
 		err := c.BindAndValidate(&req)
@@ -168,7 +168,7 @@ func AddRouter(h *server.Hertz, dir string) {
 		g, _ := mysql.GetGatewaySystemConfig(req.SysId)
 		c.JSON(consts.StatusOK, g)
 	})
-	h.StaticFS("/", &app.FS{Root: dir + "/static", IndexNames: []string{"index.html"}})
+
 	h.POST("/api/json", validFileName, validSign, func(ctx context.Context, c *app.RequestContext) {
 		var r, _ = c.Get(common.REQ)
 		req := r.(common.RequiredReq)
