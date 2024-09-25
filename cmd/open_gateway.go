@@ -89,10 +89,14 @@ func CreateServer(register string, host string, appName string, address string, 
 	if err != nil {
 		return nil, err
 	}
+	weight := conf.GetConf().App.Weight
+	if weight <= 0 {
+		weight = 1
+	}
 	h := server.Default(server.WithHostPorts(host), server.WithRegistry(r, &re.Info{
 		ServiceName: appName,
 		Addr:        utils.NewNetAddr("tcp", host),
-		Weight:      1,
+		Weight:      weight,
 		Tags:        nil,
 	}))
 	return h, nil
