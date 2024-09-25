@@ -1,7 +1,7 @@
 package model
 
 type GatewayChannelConfig struct {
-	AppId               string `json:"appId" column:"app_id"`
+	AppId               string `json:"appId" column:"app_id" gorm:"primarykey"`
 	AppName             string `json:"appName" column:"app_name"`
 	AesKey              string `json:"aesKey" column:"aes_key"`
 	AesType             string `json:"aesType" column:"aes_type"`

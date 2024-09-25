@@ -59,6 +59,61 @@ func AddRouter(h *server.Hertz, dir string) {
 		g, _ := mysql.GetGatewayChannelConfig(req.AppId)
 		c.JSON(consts.StatusOK, g)
 	})
+	h.POST("/addChannelConfig", func(ctx context.Context, c *app.RequestContext) {
+		var req model.GatewayChannelConfig
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, err)
+			return
+		}
+		err = mysql.CreateGatewayChannelConfig([]*model.GatewayChannelConfig{
+			{
+				AppId:               req.AppId,
+				AppName:             req.AppName,
+				CallbackUrl:         req.CallbackUrl,
+				RsaPrivateKey:       req.RsaPrivateKey,
+				RsaPublicKey:        req.RsaPublicKey,
+				ClientRsaPrivateKey: req.ClientRsaPrivateKey,
+				ClientRsaPublicKey:  req.ClientRsaPublicKey,
+				AesKey:              req.AesKey,
+				AesType:             req.AesType,
+				SignType:            req.SignType,
+			},
+		})
+		if err != nil {
+			c.JSON(consts.StatusOK, 0)
+			return
+		}
+		c.JSON(consts.StatusOK, 1)
+	})
+
+	h.POST("/updateChannelConfig", func(ctx context.Context, c *app.RequestContext) {
+		var req model.GatewayChannelConfig
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, err)
+			return
+		}
+		err = mysql.CreateGatewayChannelConfig([]*model.GatewayChannelConfig{
+			{
+				AppId:               req.AppId,
+				AppName:             req.AppName,
+				CallbackUrl:         req.CallbackUrl,
+				RsaPrivateKey:       req.RsaPrivateKey,
+				RsaPublicKey:        req.RsaPublicKey,
+				ClientRsaPrivateKey: req.ClientRsaPrivateKey,
+				ClientRsaPublicKey:  req.ClientRsaPublicKey,
+				AesKey:              req.AesKey,
+				AesType:             req.AesType,
+				SignType:            req.SignType,
+			},
+		})
+		if err != nil {
+			c.JSON(consts.StatusOK, 0)
+			return
+		}
+		c.JSON(consts.StatusOK, 1)
+	})
 	h.POST("/addSystemConfig", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewaySystemConfig
 		err := c.BindAndValidate(&req)

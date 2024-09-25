@@ -21,6 +21,9 @@ func QueryGatewayChannelConfig(keyword string, page, pageSize int64) ([]*model.G
 	return res, total, nil
 }
 
+func CreateGatewayChannelConfig(gscs []*model.GatewayChannelConfig) error {
+	return DB.Create(gscs).Error
+}
 func GetGatewayChannelConfig(keyword string) ([]*model.GatewayChannelConfig, error) {
 	db := DB.Model(model.GatewayChannelConfig{})
 	if len(keyword) != 0 {
