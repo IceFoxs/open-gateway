@@ -13,7 +13,7 @@ type RequiredReq struct {
 	Sign        string `json:"sign,required"`
 	Filename    string `json:"filename,required" vd:"@:len($)>0; msg:'filename不能为空'"`
 	EncryptType string `json:"encryptType,required" vd:"@:len($)>0; msg:'encryptType不能为空'"`
-	BizContent  string `json:"bizContent,required" vd:"@:len($)>0; msg:'bizContent不能为空'"`
+	BizContent  string `json:"bizContent,required"`
 	Timestamp   string `json:"timestamp,required" vd:"@:len($)>0; msg:'timestamp不能为空'"`
 	Version     string `json:"version,required" vd:"@:len($)>0; msg:'version不能为空'"`
 }
