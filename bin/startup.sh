@@ -20,4 +20,5 @@ fi
 export SERVER="opengateway"
 export APP_IDENTITY="opengateway.opengateway"
 chmod u+x ${BASE_DIR}/${SERVER}
+echo "${BASE_DIR}/${SERVER} ${APP_IDENTITY}"
 nohup ${BASE_DIR}/${SERVER} ${APP_IDENTITY} >> $OUT_LOG_DIR 2>&1 &
