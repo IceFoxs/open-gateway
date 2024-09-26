@@ -123,7 +123,7 @@ func CreateServer(register string, host string, appName string, address string, 
 	var r re.Registry
 	var err error
 	if register == constant.REGISTRY_NACOS {
-		r, err = na.CreateRegistry(address, username, password)
+		r, err = na.CreateRegistry()
 	} else if register == constant.REGISTRY_CONSUL {
 		r, err = consul.CreateRegistry(host, appName, address)
 	} else {

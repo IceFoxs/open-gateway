@@ -6,7 +6,7 @@ import (
 	"github.com/hertz-contrib/registry/nacos/v2"
 )
 
-func CreateRegistry(address string, username string, password string) (registry.Registry, error) {
+func CreateRegistry() (registry.Registry, error) {
 	namingClient := na.GetNamingClient()
 	r := nacos.NewNacosRegistry(namingClient)
 	return r, nil

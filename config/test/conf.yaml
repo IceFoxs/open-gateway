@@ -3,7 +3,7 @@ app:
   name: open-gateway
   register: nacos
   weight: 0
-  web_path: web
+  web_path: /Users/icefox/Documents/nacos/opengateway-macos/web
 registry:
   register: nacos
   registry_address:
