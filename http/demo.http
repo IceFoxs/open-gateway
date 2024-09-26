@@ -74,7 +74,7 @@ Content-Type: application/json
 wrap_resp: true
 
 {
-    "bizContent": "{\"pageNo\":\"1\",\"pageSize\":10}",
+    "bizContent": "{\"pageNo\":\"1s\",\"pageSize\":10}",
     "encryptType": "NONE",
     "filename": "FPS_MANAGER_GETBANKCHANNELCONFIG_REQ_990102_20240813164335632.json",
     "sign": "",

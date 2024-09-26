@@ -3,12 +3,12 @@ package dubbo
 import (
 	"context"
 	dcn "dubbo.apache.org/dubbo-go/v3/common/constant"
+	"dubbo.apache.org/dubbo-go/v3/config/generic"
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/util"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"github.com/dubbogo/gost/log/logger"
 	"sync"
 )
 import (
@@ -17,7 +17,6 @@ import (
 )
 import (
 	dg "dubbo.apache.org/dubbo-go/v3/config"
-	"dubbo.apache.org/dubbo-go/v3/config/generic"
 	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
 	hessian "github.com/apache/dubbo-go-hessian2"
 )
@@ -57,7 +56,7 @@ func SingletonDubboClient() *Client {
 func InitDefaultDubboClient() {
 	dubboClient = NewDubboClient()
 	if err := dubboClient.Apply(); err != nil {
-		logger.Warnf("dubbo client apply error %s", err)
+		hlog.Warnf("dubbo client apply error %s", err)
 	}
 }
 
@@ -99,10 +98,25 @@ func (dc *Client) Apply() error {
 		Username: username,
 		Password: password,
 	}
+	logger := dg.NewLoggerConfigBuilder().SetDriver("zap").
+		SetLevel("info").
+		SetFileName(conf.GetConf().BaseDir + "/logs/dubbo.log").
+		SetFileMaxAge(10).
+		SetFileMaxSize(100).
+		SetFileMaxBackups(5).
+		SetFileCompress(true).
+		SetFormat("text").
+		SetAppender("file").
+		Build()
+	err := logger.Init()
+	if err != nil {
+		return err
+	}
 	rootConfig := dg.NewRootConfigBuilder().
 		SetApplication(defaultApplication).
 		AddRegistry(registry, registryConfig).
 		SetMetadataReport(metadata).
+		SetLogger(logger).
 		Build()
 	if err := dg.Load(dg.WithRootConfig(rootConfig)); err != nil {
 		panic(err)
@@ -126,7 +140,7 @@ func (dc *Client) check(key string) bool {
 
 // Get find a dubbo GenericService
 func (dc *Client) Get(key string, iface string) *generic.GenericService {
-	logger.Infof("key :%s,iface: %s", key, iface)
+	hlog.Infof("key :%s,iface: %s", key, iface)
 	if dc.check(key) {
 		return dc.get(key)
 	}

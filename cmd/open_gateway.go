@@ -76,7 +76,6 @@ func Start() {
 			getLogWriter(lumberjackLogger),
 			config.Level)
 	})))
-	//logger.SetOutput(lumberjackLogger)
 	hlog.SetLogger(logger)
 	nacos.GetConfChangeClient()
 	address := conf.GetConf().Registry.RegistryAddress[0]
