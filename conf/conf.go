@@ -69,18 +69,27 @@ func GetConf() *Config {
 }
 
 func initConf() {
-	dir := os.Getenv("BASE_DIR")
-	if len(dir) == 0 {
-		var err error
-		dir, err = os.Getwd()
-		if err != nil {
-			fmt.Println(err)
-			return
+	confPath := os.Getenv("CONF_PATH")
+	hlog.Infof("CONF_DIR:%s", confPath)
+	var confFileRelPath string
+	var dir string
+	if len(confPath) == 0 {
+		dir = os.Getenv("BASE_DIR")
+		if len(dir) == 0 {
+			var err error
+			dir, err = os.Getwd()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 		}
+		hlog.Infof("BASE_DIR:%s", dir)
+		prefix := "config"
+		confFileRelPath = dir + "/" + filepath.Join(prefix, filepath.Join(GetEnv(), "conf.yaml"))
+	} else {
+		hlog.Infof("CONF_DIR:%s", confPath)
+		confFileRelPath = confPath
 	}
-	hlog.Infof("BASE_DIR:%s", dir)
-	prefix := "config"
-	confFileRelPath := dir + "/" + filepath.Join(prefix, filepath.Join(GetEnv(), "conf.yaml"))
 	hlog.Infof("confFileRelPath - %v", confFileRelPath)
 	content, err := ioutil.ReadFile(confFileRelPath)
 	if err != nil {

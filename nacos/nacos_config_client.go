@@ -8,6 +8,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -53,8 +54,8 @@ func CreateConfigClient(host string, port uint64, username string, password stri
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir(conf.GetConf().BaseDir+"/logs/nacos/log"),
-		constant.WithCacheDir(conf.GetConf().BaseDir+"/logs/nacos/cache"),
+		constant.WithLogDir(conf.GetConf().BaseDir+string(filepath.Separator)+"logs"+string(filepath.Separator)+"nacos"+string(filepath.Separator)+"log"),
+		constant.WithCacheDir(conf.GetConf().BaseDir+string(filepath.Separator)+"logs"+string(filepath.Separator)+"nacos"+string(filepath.Separator)+"cache"),
 		constant.WithLogLevel("debug"),
 	)
 	// create config client

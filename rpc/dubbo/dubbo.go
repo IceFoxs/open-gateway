@@ -102,10 +102,14 @@ func (dc *Client) Apply() error {
 		Address:  address,
 		Username: username,
 		Password: password,
+		Params: map[string]string{
+			"nacos.cacheDir": conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "metadata" + string(filepath.Separator) + "log",
+			"nacos.logDir":   conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "metadata" + string(filepath.Separator) + "cache",
+		},
 	}
 	logger := dg.NewLoggerConfigBuilder().SetDriver("zap").
 		SetLevel("info").
-		SetFileName(conf.GetConf().BaseDir + "/logs/dubbo.log").
+		SetFileName(conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo.log").
 		SetFileMaxAge(10).
 		SetFileMaxSize(100).
 		SetFileMaxBackups(5).
@@ -122,7 +126,7 @@ func (dc *Client) Apply() error {
 		AddRegistry(registry, registryConfig).
 		SetMetadataReport(metadata).
 		SetLogger(logger).
-		SetCacheFile(conf.GetConf().BaseDir + "/logs/dubbo").
+		SetCacheFile(conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo").
 		Build()
 	if err := dg.Load(dg.WithRootConfig(rootConfig)); err != nil {
 		panic(err)
