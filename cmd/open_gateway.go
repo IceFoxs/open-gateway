@@ -69,6 +69,7 @@ func Start() {
 		MaxSize:    log.MaxSize,
 		MaxBackups: log.MaxBackups,
 		MaxAge:     log.MaxAge,
+		Compress:   true,
 	}
 	logger := hertzzap.NewLogger(hertzzap.WithZapOptions(zap.WrapCore(func(zapcore.Core) zapcore.Core {
 		return zapcore.NewCore(
