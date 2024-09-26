@@ -9,6 +9,7 @@ import (
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/util"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"path/filepath"
 	"sync"
 )
 import (
@@ -92,8 +93,8 @@ func (dc *Client) Apply() error {
 		Simplified:   true,
 		RegistryType: registryType,
 		Params: map[string]string{
-			"nacos.cacheDir": conf.GetConf().BaseDir + "/logs/dubbo/log",
-			"nacos.logDir":   conf.GetConf().BaseDir + "/logs/dubbo/cache",
+			"nacos.cacheDir": conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo" + string(filepath.Separator) + "log",
+			"nacos.logDir":   conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo" + string(filepath.Separator) + "cache",
 		},
 	}
 	metadata := &dg.MetadataReportConfig{
