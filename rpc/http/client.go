@@ -6,8 +6,6 @@ import (
 	con "github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/rpc/http/nacos_client"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"strconv"
-	"strings"
 	"sync"
 )
 
@@ -34,15 +32,9 @@ func (hc *HttpClient) Post(ctx context.Context, appname string, path string, par
 }
 
 func initClient() {
-	address := conf.GetConf().Registry.RegistryAddress[0]
-	username := conf.GetConf().Registry.Username
-	password := conf.GetConf().Registry.Password
 	register := conf.GetConf().Registry.Register
 	if register == con.REGISTRY_NACOS {
-		addresses := strings.Split(address, ":")
-		host := addresses[0]
-		port, _ := strconv.ParseUint(addresses[1], 0, 64)
-		discoveryClient, _ := nacos_client.NewDiscoveryClient(host, port, username, password)
+		discoveryClient, _ := nacos_client.NewDiscoveryClient()
 		httpClient = &HttpClient{discoveryClient: discoveryClient}
 		hlog.Infof("init nacos  http client success")
 	}

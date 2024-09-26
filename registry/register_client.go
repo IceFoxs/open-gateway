@@ -39,8 +39,8 @@ func GetRegisterClient() *Registry {
 }
 
 func initRegisterClient() {
-	registerType := conf.GetConf().Registry.Register
-	if registerType == constant.REGISTRY_NACOS {
+	register := conf.GetConf().Registry.Register
+	if register == constant.REGISTRY_NACOS {
 		var rc, err = nacos.NewRegisterClient()
 		if err != nil {
 			hlog.Errorf("InitRegisterClient failed %s", err)

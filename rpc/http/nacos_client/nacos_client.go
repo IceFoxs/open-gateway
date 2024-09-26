@@ -17,11 +17,8 @@ type NacosDiscoveryClient struct {
 	Client *c.Client
 }
 
-func NewDiscoveryClient(host string, port uint64, username string, password string) (*NacosDiscoveryClient, error) {
-	namingClient, err := na.CreateNamingClient(host, port, username, password)
-	if err != nil {
-		return nil, err
-	}
+func NewDiscoveryClient() (*NacosDiscoveryClient, error) {
+	namingClient := na.GetNamingClient()
 	client, err := c.NewClient()
 	if err != nil {
 		panic(err)
