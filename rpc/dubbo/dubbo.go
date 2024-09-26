@@ -4,6 +4,7 @@ import (
 	"context"
 	dcn "dubbo.apache.org/dubbo-go/v3/common/constant"
 	"dubbo.apache.org/dubbo-go/v3/config/generic"
+	"encoding/json"
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
@@ -93,8 +94,8 @@ func (dc *Client) Apply() error {
 		Simplified:   true,
 		RegistryType: registryType,
 		Params: map[string]string{
-			"nacos.cacheDir": conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo" + string(filepath.Separator) + "log",
-			"nacos.logDir":   conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo" + string(filepath.Separator) + "cache",
+			"nacos.cacheDir": conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo" + string(filepath.Separator) + "cache",
+			"nacos.logDir":   conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "dubbo" + string(filepath.Separator) + "log",
 		},
 	}
 	metadata := &dg.MetadataReportConfig{
@@ -103,8 +104,8 @@ func (dc *Client) Apply() error {
 		Username: username,
 		Password: password,
 		Params: map[string]string{
-			"nacos.cacheDir": conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "metadata" + string(filepath.Separator) + "log",
-			"nacos.logDir":   conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "metadata" + string(filepath.Separator) + "cache",
+			"nacos.cacheDir": conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "metadata" + string(filepath.Separator) + "cache",
+			"nacos.logDir":   conf.GetConf().BaseDir + string(filepath.Separator) + "logs" + string(filepath.Separator) + "metadata" + string(filepath.Separator) + "log",
 		},
 	}
 	logger := dg.NewLoggerConfigBuilder().SetDriver("zap").
@@ -206,9 +207,12 @@ func (dc *Client) Invoke(gmm model.GatewayMethodMetadata, param interface{}, wra
 	//if err != nil {
 	//	return nil, err
 	//}
-	hlog.Infof("Invoke method,%s res: %+v", gmm.GatewayMethodName, resp)
+	var body interface{}
 	if resp != nil {
-		return util.DealResp(resp, false)
+		body, err = util.DealResp(resp, false)
+		bodyStr, _ := json.Marshal(body)
+		hlog.Infof("Invoke method,%s res: %s", gmm.GatewayMethodName, bodyStr)
+		return body, err
 	}
 	return nil, err
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db"
+	n "github.com/IceFoxs/open-gateway/nacos"
 	"github.com/IceFoxs/open-gateway/registry"
 	"github.com/IceFoxs/open-gateway/rpc/dubbo"
 	"github.com/IceFoxs/open-gateway/rpc/http"
@@ -78,6 +79,8 @@ func Start() {
 			config.Level)
 	})))
 	hlog.SetLogger(logger)
+	n.GetNamingClient()
+	n.GetConfigClient()
 	nacos.GetConfChangeClient()
 	address := conf.GetConf().Registry.RegistryAddress[0]
 	username := conf.GetConf().Registry.Username

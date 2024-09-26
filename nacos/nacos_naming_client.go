@@ -7,6 +7,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/v2/common/logger"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"path/filepath"
 	"strconv"
@@ -52,11 +53,12 @@ func CreateNamingClient(host string, port uint64, username string, password stri
 		constant.WithPassword(password),
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
-		constant.WithNotLoadCacheAtStart(true),
+		constant.WithNotLoadCacheAtStart(false),
 		constant.WithLogDir(conf.GetConf().BaseDir+string(filepath.Separator)+"logs"+string(filepath.Separator)+"nacos"+string(filepath.Separator)+"log"),
 		constant.WithCacheDir(conf.GetConf().BaseDir+string(filepath.Separator)+"logs"+string(filepath.Separator)+"nacos"+string(filepath.Separator)+"cache"),
 		constant.WithLogLevel("debug"),
 	)
+	_ = logger.InitLogger(logger.BuildLoggerConfig(cc))
 	iClient, err = clients.NewNamingClient(
 		vo.NacosClientParam{
 			ClientConfig:  &cc,

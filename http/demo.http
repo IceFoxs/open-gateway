@@ -60,7 +60,7 @@ Content-Type: application/json
 wrap_resp: true
 
 {
-  "bizContent":  "{\"pageNo\": \"\",\"pageSize\": \"1\"}",
+  "bizContent":  "{\"pageNo\": \"1\",\"pageSize\": \"1\"}",
   "encryptType": "NONE",
   "filename": "FPS_MANAGER_SIGNLIST_REQ_990102_20240813164335632.json",
   "sign": "",
