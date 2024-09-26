@@ -19,7 +19,7 @@ fi
 if [ -n "${OUTLOG}" ]; then
     OUT_LOG_DIR=${BASE_DIR}/${OUTLOG}
 else
-    OUT_LOG_DIR="${BASE_DIR}/logs/${SERVER}.log"
+    OUT_LOG_DIR=/dev/null
 fi
 export APP_IDENTITY="opengateway.opengateway"
 chmod u+x ${BASE_DIR}/${SERVER}
