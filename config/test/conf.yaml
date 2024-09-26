@@ -3,6 +3,7 @@ app:
   name: open-gateway
   register: nacos
   weight: 0
+  web_path: web
 registry:
   register: nacos
   registry_address:

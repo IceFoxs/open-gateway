@@ -8,6 +8,7 @@ import (
 	"github.com/IceFoxs/open-gateway/cache/gatewaymethod"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/common/regex"
+	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	"github.com/IceFoxs/open-gateway/model"
@@ -22,12 +23,19 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/dubbogo/gost/log/logger"
 	"github.com/google/uuid"
+	"path/filepath"
 	"strings"
 	"time"
 )
 
 func AddRouter(h *server.Hertz, dir string) {
-	h.StaticFS("/", &app.FS{Root: dir + "/web/static", IndexNames: []string{"index.html"}})
+	var webPath string
+	if strings.HasPrefix(conf.GetConf().App.WebPath, string(filepath.Separator)) || strings.HasPrefix(conf.GetConf().App.WebPath, ":") {
+		webPath = conf.GetConf().App.WebPath
+	} else {
+		webPath = dir + string(filepath.Separator) + conf.GetConf().App.WebPath
+	}
+	h.StaticFS("/", &app.FS{Root: webPath, IndexNames: []string{"index.html"}})
 	h.GET("/ping", func(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, "ok")
 	})

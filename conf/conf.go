@@ -38,6 +38,7 @@ type App struct {
 	Name     string `yaml:"name"`
 	Register string `yaml:"register"`
 	Weight   int    `yaml:"weight"`
+	WebPath  string `yaml:"web_path"`
 }
 type MySQL struct {
 	DSN string `yaml:"dsn"`

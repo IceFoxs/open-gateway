@@ -9,7 +9,6 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
-	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -18,16 +17,17 @@ import (
 var (
 	configClient *config_client.IConfigClient
 	namingClient naming_client.INamingClient
+	onceClient   sync.Once
 	once         sync.Once
 )
 
 func GetConfigClient() *config_client.IConfigClient {
-	once.Do(initConfigClient)
+	onceClient.Do(initConfigClient)
 	return configClient
 }
 
 func GetNamingClient() naming_client.INamingClient {
-	once.Do(initConfigClient)
+	once.Do(initNamingClient)
 	return namingClient
 }
 
@@ -42,13 +42,6 @@ func initConfigClient() {
 		port, _ := strconv.ParseUint(addresses[1], 0, 64)
 		client, err := CreateConfigClient(host, port, username, password)
 		configClient = client
-		if err != nil {
-			hlog.Errorf("initNacosConfigClient failed %s", err)
-			return
-		}
-		hlog.Infof("initNacosConfigClient success")
-		n, err := CreateNamingClient(host, port, username, password)
-		namingClient = n
 		if err != nil {
 			hlog.Errorf("initNacosConfigClient failed %s", err)
 			return
@@ -78,7 +71,6 @@ func CreateConfigClient(host string, port uint64, username string, password stri
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
 	}
-	path, _ := os.Getwd()
 	//create ClientConfig
 	cc := *constant.NewClientConfig(
 		constant.WithUsername(username),
@@ -86,8 +78,8 @@ func CreateConfigClient(host string, port uint64, username string, password stri
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir(path+"/logs/nacos/log"),
-		constant.WithCacheDir(path+"/logs/nacos/cache"),
+		constant.WithLogDir(conf.GetConf().BaseDir+"/logs/nacos/log"),
+		constant.WithCacheDir(conf.GetConf().BaseDir+"/logs/nacos/cache"),
 		constant.WithLogLevel("debug"),
 	)
 	// create config client
@@ -105,15 +97,14 @@ func CreateNamingClient(host string, port uint64, username string, password stri
 	sc := []constant.ServerConfig{
 		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
 	}
-	path, _ := os.Getwd()
 	cc := *constant.NewClientConfig(
 		constant.WithUsername(username),
 		constant.WithPassword(password),
 		constant.WithNamespaceId(""),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
-		constant.WithLogDir(path+"/logs/nacos/log"),
-		constant.WithCacheDir(path+"/logs/nacos/cache"),
+		constant.WithLogDir(conf.GetConf().BaseDir+"/logs/nacos/log"),
+		constant.WithCacheDir(conf.GetConf().BaseDir+"/logs/nacos/cache"),
 		constant.WithLogLevel("debug"),
 	)
 	iClient, err = clients.NewNamingClient(
