@@ -2,9 +2,9 @@ cur_mkfile :=$(abspath $(lastword $(MAKEFILE_LIST)))
 currentPath :=$(patsubst %/, %, $(dir $(cur_mkfile)))
 targetName := opengateway
 run:
-	go run   $(currentPath)/cmd/opengateway/
+	go run -v  $(currentPath)/cmd/opengateway/
 build:
-	go build  -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
+	go build  -v -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
 build-linux:
 	go build -buildvcs=false  -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
 run-with-skywalking-macos:

@@ -71,6 +71,7 @@ func Start() {
 	if err != nil {
 		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())
 	}
+	//pprof.Register(h)
 	router.AddRouter(h, staticPath)
 	h.Spin()
 
