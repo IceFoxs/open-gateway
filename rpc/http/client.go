@@ -5,7 +5,7 @@ import (
 	"github.com/IceFoxs/open-gateway/conf"
 	con "github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/rpc/http/nacos_client"
-	"github.com/dubbogo/gost/log/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"strconv"
 	"strings"
 	"sync"
@@ -44,6 +44,6 @@ func initClient() {
 		port, _ := strconv.ParseUint(addresses[1], 0, 64)
 		discoveryClient, _ := nacos_client.NewDiscoveryClient(host, port, username, password)
 		httpClient = &HttpClient{discoveryClient: discoveryClient}
-		logger.Infof("init nacos  http client success")
+		hlog.Infof("init nacos  http client success")
 	}
 }

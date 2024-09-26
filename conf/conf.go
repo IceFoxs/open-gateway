@@ -2,7 +2,7 @@ package conf
 
 import (
 	"fmt"
-	"github.com/dubbogo/gost/log/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"gopkg.in/validator.v2"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -21,6 +21,8 @@ type Logger struct {
 	MaxSize    int    `yaml:"max_size"`
 	MaxBackups int    `yaml:"max_backups"`
 	MaxAge     int    `yaml:"max_age"`
+	//json console
+	Encoding string `yaml:"encoding"`
 }
 type Config struct {
 	Env      string
@@ -75,10 +77,10 @@ func initConf() {
 			return
 		}
 	}
-	fmt.Println(dir)
+	hlog.Infof("BASE_DIR:%s", dir)
 	prefix := "config"
 	confFileRelPath := dir + "/" + filepath.Join(prefix, filepath.Join(GetEnv(), "conf.yaml"))
-	logger.Infof("confFileRelPath - %v", confFileRelPath)
+	hlog.Infof("confFileRelPath - %v", confFileRelPath)
 	content, err := ioutil.ReadFile(confFileRelPath)
 	if err != nil {
 		panic(err)
@@ -86,11 +88,11 @@ func initConf() {
 	conf = new(Config)
 	err = yaml.Unmarshal(content, conf)
 	if err != nil {
-		logger.Errorf("parse yaml error - %v", err)
+		hlog.Errorf("parse yaml error - %v", err)
 		panic(err)
 	}
 	if err := validator.Validate(conf); err != nil {
-		logger.Errorf("validate config error - %v", err)
+		hlog.Errorf("validate config error - %v", err)
 		panic(err)
 	}
 	conf.Env = GetEnv()

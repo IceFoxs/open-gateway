@@ -2,7 +2,7 @@ package regex
 
 import (
 	"errors"
-	"github.com/dubbogo/gost/log/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"regexp"
 )
 
@@ -26,7 +26,7 @@ func MatchFileName(filename string) (*FilenameReq, error) {
 	var timestamp string
 	// 检查是否匹配
 	if len(matches) > 6 {
-		logger.Infof("Match found: %s", matches)
+		hlog.Infof("Match found: %s", matches)
 		// 输出匹配到的每个部分（模拟元组）
 		appid = matches[4]
 		filenamePre = matches[1] + "_" + matches[2] + "_" + matches[3]

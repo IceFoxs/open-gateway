@@ -5,7 +5,7 @@ import (
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/registry/nacos"
-	"github.com/dubbogo/gost/log/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"sync"
 )
 
@@ -43,12 +43,12 @@ func initRegisterClient() {
 	if registerType == constant.REGISTRY_NACOS {
 		var rc, err = nacos.NewRegisterClient()
 		if err != nil {
-			logger.Errorf("InitRegisterClient failed %s", err)
+			hlog.Errorf("InitRegisterClient failed %s", err)
 			return
 		}
 		rgs = &Registry{
 			registerClient: rc,
 		}
-		logger.Infof("InitRegisterClient success")
+		hlog.Infof("InitRegisterClient success")
 	}
 }

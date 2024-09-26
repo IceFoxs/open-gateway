@@ -3,7 +3,7 @@ package gatewayconfig
 import (
 	"github.com/IceFoxs/open-gateway/db/mysql"
 	sy "github.com/IceFoxs/open-gateway/sync"
-	"github.com/dubbogo/gost/log/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"sync"
 )
@@ -35,7 +35,7 @@ func GetGatewayConfigCache() *GatewayConfigCache {
 
 func initCache() {
 	gatewayConfigCache = &GatewayConfigCache{m: cmap.New[GatewayConfig]()}
-	logger.Infof("init GatewayConfig cache")
+	hlog.Infof("init GatewayConfig cache")
 	sy.GetConfChangeClientHelper().Subscribe("GATEWAY_CHANNEL", "FPS_GROUP", gatewayConfigCache.Listen)
 }
 
@@ -43,13 +43,13 @@ func (*GatewayConfigCache) PutCache(gatewayConfig GatewayConfig) {
 	gatewayConfigCache.m.Set(gatewayConfig.AppId, gatewayConfig)
 }
 func (g *GatewayConfigCache) Listen(group, dataId, data string) {
-	logger.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
 	g.RefreshCache()
 }
 func (g *GatewayConfigCache) RefreshCache() {
 	configs, _ := mysql.GetGatewayChannelConfig("")
 	for _, config := range configs {
-		logger.Infof("加载的渠道号是:%s", config.AppId)
+		hlog.Infof("加载的渠道号是:%s", config.AppId)
 		gConfig := GatewayConfig{
 			AppId:         config.AppId,
 			AppName:       config.AppName,

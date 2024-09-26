@@ -1,6 +1,9 @@
 package common
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+)
 
 const (
 	REQ          = "req"
@@ -37,6 +40,7 @@ type CommonRes struct {
 }
 
 func Error(code int, msg string) CommonRes {
+	hlog.Error("response :%s ,%s", code, msg)
 	return CommonRes{
 		Sign:       "NONE",
 		ErrorMsg:   msg,
@@ -45,6 +49,7 @@ func Error(code int, msg string) CommonRes {
 }
 
 func ErrorWithSign(code int, msg string, sign string) CommonRes {
+	hlog.Error("response code :%s ,msg: %s", code, msg)
 	return CommonRes{
 		Sign:       sign,
 		ErrorMsg:   msg,
@@ -53,6 +58,7 @@ func ErrorWithSign(code int, msg string, sign string) CommonRes {
 }
 
 func Success(code int, bizContent string, sign string) CommonRes {
+	hlog.Error("response code :%s ,content:%s,sign:%s", code, bizContent, sign)
 	return CommonRes{
 		ErrorMsg:   "请求成功",
 		StatusCode: code,
@@ -66,6 +72,7 @@ func Succ(code int, msg string, i interface{}, sign string) CommonRes {
 	if err != nil {
 		return Error(500, err.Error())
 	}
+	hlog.Error("response code: %s ,content: %s ,sign: %s", code, content, sign)
 	return CommonRes{
 		ErrorMsg:   msg,
 		StatusCode: code,
@@ -75,6 +82,7 @@ func Succ(code int, msg string, i interface{}, sign string) CommonRes {
 }
 
 func SuccContent(code int, msg string, content string, sign string) CommonRes {
+	hlog.Error("response code: %s ,msg:%s ,content: %s ,sign: %s", code, msg, content, sign)
 	return CommonRes{
 		ErrorMsg:   msg,
 		StatusCode: code,

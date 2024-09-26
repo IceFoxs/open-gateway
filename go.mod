@@ -17,6 +17,7 @@ require (
 require (
 	github.com/apache/skywalking-go v0.5.0
 	github.com/google/uuid v1.3.0
+	github.com/hertz-contrib/logger/zap v1.1.0
 	github.com/hertz-contrib/registry/nacos/v2 v2.0.0-20240618152458-11c3cac90e4f
 	github.com/orcaman/concurrent-map/v2 v2.0.1
 	gopkg.in/validator.v2 v2.0.1
@@ -62,7 +63,6 @@ require (
 	github.com/envoyproxy/go-control-plane v0.11.0 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.10.0 // indirect
 	github.com/fatih/color v1.9.0 // indirect
-	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-co-op/gocron v1.9.0 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
@@ -78,7 +78,6 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/pprof v0.0.0-20211214055906-6f57359322fd // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -92,7 +91,6 @@ require (
 	github.com/hashicorp/vault/sdk v0.7.0 // indirect
 	github.com/henrylee2cn/ameda v1.4.10 // indirect
 	github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8 // indirect
-	github.com/hertz-contrib/pprof v0.1.2 // indirect
 	github.com/influxdata/tdigest v0.0.1 // indirect
 	github.com/jinzhu/copier v0.3.5 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -159,7 +157,7 @@ require (
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	go.uber.org/zap v1.21.0 // indirect
+	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/net v0.17.0 // indirect

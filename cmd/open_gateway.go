@@ -21,20 +21,63 @@ import (
 	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/utils"
-	"github.com/dubbogo/gost/log/logger"
+	hertzzap "github.com/hertz-contrib/logger/zap"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 )
 
+func getEncoder(z *zap.Config) zapcore.Encoder {
+	if z.Encoding == "json" {
+		return zapcore.NewJSONEncoder(z.EncoderConfig)
+	} else if z.Encoding == "console" {
+		return zapcore.NewConsoleEncoder(z.EncoderConfig)
+	}
+	return nil
+}
+
+// getLogWriter get Lumberjack writer by LumberjackConfig
+func getLogWriter(l *lumberjack.Logger) zapcore.WriteSyncer {
+	return zapcore.AddSync(l)
+}
 func Start() {
-	//log := conf.GetConf().Logger
-	//logger.InitLogger(&logger.Config{
-	//	LumberjackConfig: &lumberjack.Logger{
-	//		Filename:   log.FileName,
-	//		MaxSize:    log.MaxSize,
-	//		MaxBackups: log.MaxBackups,
-	//		MaxAge:     log.MaxAge,
-	//	},
-	//})
+	log := conf.GetConf().Logger
+	// 提供压缩和删除
+	zapLoggerEncoderConfig := zapcore.EncoderConfig{
+		TimeKey:        "time",
+		LevelKey:       "level",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		MessageKey:     "message",
+		StacktraceKey:  "stacktrace",
+		EncodeLevel:    zapcore.CapitalColorLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeDuration: zapcore.SecondsDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+	}
+	config := &zap.Config{
+		Level:            zap.NewAtomicLevelAt(zap.DebugLevel),
+		Development:      false,
+		Encoding:         log.Encoding,
+		EncoderConfig:    zapLoggerEncoderConfig,
+		OutputPaths:      []string{"stdout", log.FileName},
+		ErrorOutputPaths: []string{"stderr", log.FileName},
+	}
+	lumberjackLogger := &lumberjack.Logger{
+		Filename:   log.FileName,
+		MaxSize:    log.MaxSize,
+		MaxBackups: log.MaxBackups,
+		MaxAge:     log.MaxAge,
+	}
+	logger := hertzzap.NewLogger(hertzzap.WithZapOptions(zap.WrapCore(func(zapcore.Core) zapcore.Core {
+		return zapcore.NewCore(
+			getEncoder(config),
+			getLogWriter(lumberjackLogger),
+			config.Level)
+	})))
+	//logger.SetOutput(lumberjackLogger)
+	hlog.SetLogger(logger)
 	nacos.GetConfChangeClient()
 	address := conf.GetConf().Registry.RegistryAddress[0]
 	username := conf.GetConf().Registry.Username
@@ -66,7 +109,7 @@ func Start() {
 	if len(staticPath) == 0 {
 		staticPath, _ = os.Getwd()
 	}
-	logger.Infof("static path is %s", staticPath)
+	hlog.Infof("static path is %s", staticPath)
 	h, err := CreateServer(register, host, appName, address, username, password)
 	if err != nil {
 		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())

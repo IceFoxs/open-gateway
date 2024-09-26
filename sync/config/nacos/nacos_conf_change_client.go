@@ -5,6 +5,7 @@ import (
 	na "github.com/IceFoxs/open-gateway/nacos"
 	sy "github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/dubbogo/gost/log/logger"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
@@ -40,7 +41,7 @@ func (nc *NacosConfChangeClient) Subscribe(confType string, confGroup string, li
 		},
 	})
 	if err != nil {
-		logger.Errorf("Listen config dataId:[%s] group:[%s],failed : %s", confType, confGroup, err.Error())
+		hlog.Errorf("Listen config dataId:[%s] group:[%s],failed : %s", confType, confGroup, err.Error())
 	}
 }
 func GetConfChangeClient() config.ConfChangeClient {

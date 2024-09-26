@@ -17,27 +17,27 @@ import (
 	"github.com/IceFoxs/open-gateway/util/aes"
 	rsaUtil "github.com/IceFoxs/open-gateway/util/rsa"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/json"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/dubbogo/gost/log/logger"
 	"strconv"
 )
 
 func Invoke(ctx context.Context, c *app.RequestContext, req common.RequiredReq, fileReq *regex.FilenameReq, param interface{}) {
-	logger.Infof("Invoke filename:[%s]", fileReq.FilenamePre)
+	hlog.Infof("Invoke filename:[%s]", fileReq.FilenamePre)
 	gmm, ok := gatewaymethod.GetGatewayMethodCache().GetCache(fileReq.FilenamePre)
 	if !ok {
 		Error(ctx, c, req, fileReq, 900, "未找到服务调用信息")
 		return
 	}
-	logger.Infof("found rpc invoke metadata --------------- %s", gmm)
+	hlog.Infof("found rpc invoke metadata --------------- %s", gmm)
 	if gmm.RpcType == constant.RPC_DUBOO {
 		toMap, err := util.JsonStringToMap(param.(string))
 		if err != nil {
 			Error(ctx, c, req, fileReq, 900, err.Error())
 			return
 		}
-		logger.Infof("toMap %s", common.ToJSON(toMap))
+		hlog.Infof("toMap %s", common.ToJSON(toMap))
 		util.ConvertHessianMap(toMap)
 		var wrapResp = conf.GetConf().Registry.WrapResp
 		if len(wrapResp) == 0 {

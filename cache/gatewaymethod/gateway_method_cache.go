@@ -6,8 +6,8 @@ import (
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/registry"
 	"github.com/IceFoxs/open-gateway/rpc/dubbo"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/json"
-	"github.com/dubbogo/gost/log/logger"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"sync"
 )
@@ -28,7 +28,7 @@ func GetGatewayMethodCache() *GatewayMethodCache {
 
 func initCache() {
 	gatewayMethodCache = &GatewayMethodCache{m: cmap.New[model.GatewayMethodMetadata]()}
-	logger.Infof("init GatewaySystem cache")
+	hlog.Infof("init GatewaySystem cache")
 }
 
 func (g *GatewayMethodCache) PutCache(filename string, gm model.GatewayMethodMetadata) {
@@ -38,20 +38,20 @@ func (g *GatewayMethodCache) PutCache(filename string, gm model.GatewayMethodMet
 func (g *GatewayMethodCache) RefreshCache(filename string) {
 	data, err := registry.GetRegisterClient().GetConfig(filename, constant.GATEWAY_META_DATA)
 	if err != nil {
-		logger.Errorf("GetConfig %s failed,error is %s", filename, err.Error())
+		hlog.Errorf("GetConfig %s failed,error is %s", filename, err.Error())
 		return
 	}
 	if len(data) == 0 {
-		logger.Errorf("Config[%s][%s] changed is empty", filename, constant.GATEWAY_META_DATA)
+		hlog.Errorf("Config[%s][%s] changed is empty", filename, constant.GATEWAY_META_DATA)
 		return
 	}
 	var gmm model.GatewayMethodMetadata
 	err = json.Unmarshal([]byte(data), &gmm)
 	if err != nil {
-		logger.Errorf("GetConfig %s failed,error is %s", filename, err.Error())
+		hlog.Errorf("GetConfig %s failed,error is %s", filename, err.Error())
 		return
 	}
-	logger.Infof("GatewayMethodMetadata [%s] is %s", filename, common.ToJSON(gmm))
+	hlog.Infof("GatewayMethodMetadata [%s] is %s", filename, common.ToJSON(gmm))
 	g.PutCache(filename, gmm)
 	client := dubbo.SingletonDubboClient()
 	client.Get(gmm.GetReferenceKey(), gmm.InterfaceName)
@@ -61,7 +61,7 @@ func (g *GatewayMethodCache) AddListen(method string) {
 	registry.GetRegisterClient().Subscribe(method, constant.GATEWAY_META_DATA, gatewayMethodCache.Listen)
 }
 func (g *GatewayMethodCache) Listen(group, dataId, data string) {
-	logger.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
+	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
 	g.RefreshCache(dataId)
 }
 

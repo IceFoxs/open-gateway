@@ -3,7 +3,7 @@ package nacos
 import (
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/nacos"
-	"github.com/dubbogo/gost/log/logger"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
@@ -47,7 +47,7 @@ func (rc *NacosRegisterClient) Subscribe(key string, group string, f common.List
 		},
 	})
 	if err != nil {
-		logger.Errorf("nacos regrister Subscribe key[%s] group[%s] failed", key, group,
+		hlog.Errorf("nacos regrister Subscribe key[%s] group[%s] failed", key, group,
 			err.Error())
 		return
 	}

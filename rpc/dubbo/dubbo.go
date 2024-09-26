@@ -7,6 +7,7 @@ import (
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/util"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/dubbogo/gost/log/logger"
 	"sync"
 )
@@ -145,7 +146,7 @@ func (dc *Client) create(key string, iface string) *generic.GenericService {
 		RequestTimeout: requestTimeout,
 		Check:          &check,
 	}
-	logger.Debugf("[opengateway] client dubbo timeout val %v", refConf.RequestTimeout)
+	hlog.Debugf("[opengateway] client dubbo timeout val %v", refConf.RequestTimeout)
 	dc.lock.Lock()
 	defer dc.lock.Unlock()
 	if service, ok := dc.GenericServicePool[key]; ok {
@@ -181,7 +182,7 @@ func (dc *Client) Invoke(gmm model.GatewayMethodMetadata, param interface{}, wra
 	//if err != nil {
 	//	return nil, err
 	//}
-	logger.Infof("Invoke method,%s res: %+v", gmm.GatewayMethodName, resp)
+	hlog.Infof("Invoke method,%s res: %+v", gmm.GatewayMethodName, resp)
 	if resp != nil {
 		return util.DealResp(resp, false)
 	}
