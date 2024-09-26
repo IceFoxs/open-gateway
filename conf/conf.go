@@ -70,7 +70,6 @@ func GetConf() *Config {
 
 func initConf() {
 	confPath := os.Getenv("CONF_PATH")
-	hlog.Infof("CONF_DIR:%s", confPath)
 	var confFileRelPath string
 	var dir string
 	if len(confPath) == 0 {
@@ -87,7 +86,7 @@ func initConf() {
 		prefix := "config"
 		confFileRelPath = dir + "/" + filepath.Join(prefix, filepath.Join(GetEnv(), "conf.yaml"))
 	} else {
-		hlog.Infof("CONF_DIR:%s", confPath)
+		hlog.Infof("CONF_PATH:%s", confPath)
 		confFileRelPath = confPath
 	}
 	hlog.Infof("confFileRelPath - %v", confFileRelPath)

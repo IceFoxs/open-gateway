@@ -13,6 +13,7 @@ while getopts "o" opt; do
   esac
 done
 export SERVER="opengateway"
+export CONF_PATH=${BASE_DIR}/config/conf.yaml
 if [ ! -d "${BASE_DIR}/logs" ]; then
   mkdir ${BASE_DIR}/logs
 fi
