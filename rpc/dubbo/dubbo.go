@@ -91,6 +91,10 @@ func (dc *Client) Apply() error {
 		Password:     password,
 		Simplified:   true,
 		RegistryType: registryType,
+		Params: map[string]string{
+			"nacos.cacheDir": conf.GetConf().BaseDir + "/logs/dubbo/log",
+			"nacos.logDir":   conf.GetConf().BaseDir + "/logs/dubbo/cache",
+		},
 	}
 	metadata := &dg.MetadataReportConfig{
 		Protocol: registry,
@@ -117,6 +121,7 @@ func (dc *Client) Apply() error {
 		AddRegistry(registry, registryConfig).
 		SetMetadataReport(metadata).
 		SetLogger(logger).
+		SetCacheFile(conf.GetConf().BaseDir + "/logs/dubbo").
 		Build()
 	if err := dg.Load(dg.WithRootConfig(rootConfig)); err != nil {
 		panic(err)

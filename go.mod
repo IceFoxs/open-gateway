@@ -19,7 +19,9 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/hertz-contrib/logger/zap v1.1.0
 	github.com/hertz-contrib/registry/nacos/v2 v2.0.0-20240618152458-11c3cac90e4f
+	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/orcaman/concurrent-map/v2 v2.0.1
+	go.uber.org/zap v1.23.0
 	gopkg.in/validator.v2 v2.0.1
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.5.7
@@ -113,7 +115,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
 	github.com/nyaruka/phonenumbers v1.0.55 // indirect
 	github.com/oliveagle/jsonpath v0.0.0-20180606110733-2e52cf6e6852 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
@@ -157,7 +158,6 @@ require (
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
