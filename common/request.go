@@ -21,9 +21,6 @@ type RequiredReq struct {
 	Timestamp   string `json:"timestamp,required" vd:"@:len($)>0; msg:'timestamp不能为空'"`
 	Version     string `json:"version,required" vd:"@:len($)>0; msg:'version不能为空'"`
 }
-type GatewayConfigReq struct {
-	AppId string `json:"appId,required"`
-}
 
 type DecryptContentReq struct {
 	AppId          string `json:"appId,required"`

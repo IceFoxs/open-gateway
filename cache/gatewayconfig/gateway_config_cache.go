@@ -47,7 +47,7 @@ func (g *GatewayConfigCache) Listen(group, dataId, data string) {
 	g.RefreshCache()
 }
 func (g *GatewayConfigCache) RefreshCache() {
-	configs, _ := mysql.GetGatewayChannelConfig("")
+	configs, _ := mysql.GetGatewayConfig("")
 	for _, config := range configs {
 		hlog.Infof("加载的渠道号是:%s", config.AppId)
 		gConfig := GatewayConfig{

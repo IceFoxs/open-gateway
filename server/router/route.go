@@ -63,23 +63,31 @@ func AddRouter(h *server.Hertz, dir string) {
 		c.Data(consts.StatusOK, "application/json", body)
 	})
 	h.POST("/selectByAppId", func(ctx context.Context, c *app.RequestContext) {
-		var req common.GatewayConfigReq
+		var req model.GatewayConfigReq
 		err := c.BindAndValidate(&req)
 		if err != nil {
 			c.JSON(consts.StatusInternalServerError, err)
 			return
 		}
-		g, _ := mysql.GetGatewayChannelConfig(req.AppId)
+		if req.PageSize != 0 {
+			var res = model.GatewayConfigResponse{}
+			g, total, _ := mysql.QueryGatewayConfigByPage(req.AppId, req.PageIndex, req.PageSize)
+			res.Models = g
+			res.Total = total
+			c.JSON(consts.StatusOK, res)
+			return
+		}
+		g, _ := mysql.GetGatewayConfig(req.AppId)
 		c.JSON(consts.StatusOK, g)
 	})
 	h.POST("/addChannelConfig", func(ctx context.Context, c *app.RequestContext) {
-		var req model.GatewayChannelConfig
+		var req model.GatewayConfig
 		err := c.BindAndValidate(&req)
 		if err != nil {
 			c.JSON(consts.StatusInternalServerError, err)
 			return
 		}
-		err = mysql.CreateGatewayChannelConfig([]*model.GatewayChannelConfig{
+		err = mysql.CreateGatewayConfig([]*model.GatewayConfig{
 			{
 				AppId:               req.AppId,
 				AppName:             req.AppName,
@@ -102,13 +110,13 @@ func AddRouter(h *server.Hertz, dir string) {
 	})
 
 	h.POST("/updateChannelConfig", func(ctx context.Context, c *app.RequestContext) {
-		var req model.GatewayChannelConfig
+		var req model.GatewayConfig
 		err := c.BindAndValidate(&req)
 		if err != nil {
 			c.JSON(consts.StatusInternalServerError, err)
 			return
 		}
-		err = mysql.UpdateGatewayChannelConfig(&model.GatewayChannelConfig{
+		err = mysql.UpdateGatewayConfig(&model.GatewayConfig{
 			AppId:               req.AppId,
 			AppName:             req.AppName,
 			CallbackUrl:         req.CallbackUrl,

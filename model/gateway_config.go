@@ -1,6 +1,6 @@
 package model
 
-type GatewayChannelConfig struct {
+type GatewayConfig struct {
 	AppId               string `json:"appId" column:"app_id" gorm:"primarykey"`
 	AppName             string `json:"appName" column:"app_name"`
 	AesKey              string `json:"aesKey" column:"aes_key"`
@@ -14,6 +14,6 @@ type GatewayChannelConfig struct {
 	CallbackUrl         string `json:"callbackUrl" column:"callback_url"`
 }
 
-func (c *GatewayChannelConfig) TableName() string {
+func (c *GatewayConfig) TableName() string {
 	return "gateway_channel_config"
 }
