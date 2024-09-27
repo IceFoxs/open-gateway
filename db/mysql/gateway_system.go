@@ -8,7 +8,7 @@ func CreateGatewaySystem(gscs []*model.GatewaySystemConfig) error {
 func GetGatewaySystemConfigByPage(keyword string, page, pageSize int64) ([]*model.GatewaySystemConfig, int64, error) {
 	db := DB.Model(model.GatewaySystemConfig{})
 	if len(keyword) != 0 {
-		db = db.Where(DB.Or("system_name like ?", "%"+keyword+"%"))
+		db = db.Where(DB.Or("system_name like ?", "%"+keyword+"%")).Or("system_id like ?", "%"+keyword+"%")
 	}
 	var total int64
 	if err := db.Count(&total).Error; err != nil {
