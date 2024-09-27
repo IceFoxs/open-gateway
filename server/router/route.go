@@ -23,17 +23,20 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/dubbogo/gost/log/logger"
 	"github.com/google/uuid"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
 
 func AddRouter(h *server.Hertz, dir string) {
-	var webPath string
-	if strings.HasPrefix(conf.GetConf().App.WebPath, string(filepath.Separator)) || strings.HasPrefix(conf.GetConf().App.WebPath, ":") {
-		webPath = conf.GetConf().App.WebPath
-	} else {
-		webPath = dir + string(filepath.Separator) + conf.GetConf().App.WebPath
+	var webPath = os.Getenv(constant.WEB_PATH)
+	if len(webPath) == 0 {
+		if strings.HasPrefix(conf.GetConf().App.WebPath, string(filepath.Separator)) || strings.HasPrefix(conf.GetConf().App.WebPath, ":") {
+			webPath = conf.GetConf().App.WebPath
+		} else {
+			webPath = dir + string(filepath.Separator) + conf.GetConf().App.WebPath
+		}
 	}
 	h.StaticFS("/", &app.FS{Root: webPath, IndexNames: []string{"index.html"}})
 	h.GET("/ping", func(ctx context.Context, c *app.RequestContext) {
