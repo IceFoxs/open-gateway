@@ -12,3 +12,4 @@ bin.zip
 bin/static
 bin/web
 dist/*.zip
+scripts/
