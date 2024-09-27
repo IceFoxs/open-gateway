@@ -5,18 +5,16 @@ run:
 	go run -v  $(currentPath)/cmd/opengateway/
 build:
 	go build  -v -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
-build-macos:
-	@rm -rf  $(currentPath)/bin/$(targetName)
+build-macos-zip:
 	@rm -rf  $(currentPath)/dist/$(targetName)-macos.zip
 	go build  -v -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
-	cp $(currentPath)/dist/$(targetName) $(currentPath)/bin/$(targetName)
 	cd $(currentPath)/bin && zip -r  $(currentPath)/dist/$(targetName)-macos.zip   ./*
-build-linux:
-	@rm -rf  $(currentPath)/bin/$(targetName)
+	cd $(currentPath)/dist && zip -r $(currentPath)/dist/$(targetName)-macos.zip   ./*
+build-linux-zip:
 	@rm -rf  $(currentPath)/dist/$(targetName)-linux.zip
 	go build  -v -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
-	cp $(currentPath)/dist/$(targetName) $(currentPath)/bin/$(targetName)
 	cd $(currentPath)/bin && zip -r  $(currentPath)/dist/$(targetName)-linux.zip   ./*
+	cd $(currentPath)/dist && zip -r $(currentPath)/dist/$(targetName)-linux.zip   ./*
 build-linux:
 	go build -buildvcs=false  -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
 run-with-skywalking-macos:
