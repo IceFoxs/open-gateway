@@ -10,4 +10,5 @@ bin/opengateway
 bin/opengateway.exe
 bin.zip
 bin/static
+bin/web
 dist/*.zip
