@@ -30,9 +30,6 @@ type DecryptContentReq struct {
 	EncryptContent string `json:"encryptContent,required"`
 }
 
-type GatewaySystemReq struct {
-	SysId string `json:"sysId,required"`
-}
 type CommonRes struct {
 	BizContent string `json:"bizContent"`
 	ErrorMsg   string `json:"errorMsg"`

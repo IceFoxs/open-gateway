@@ -171,13 +171,23 @@ func AddRouter(h *server.Hertz, dir string) {
 		c.JSON(consts.StatusOK, "ok")
 	})
 	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
-		var req common.GatewaySystemReq
+		var req model.GatewaySystemReq
 		err := c.BindAndValidate(&req)
 		if err != nil {
 			c.JSON(consts.StatusInternalServerError, err)
 			return
 		}
-		g, _ := mysql.GetGatewaySystemConfig(req.SysId)
+		var g []*model.GatewaySystemConfig
+		if req.PageSize != 0 {
+			var res = model.GatewaySystemResponse{}
+			var total int64
+			g, total, _ = mysql.GetGatewaySystemConfigByPage(req.SysId, req.PageIndex, req.PageSize)
+			res.Models = g
+			res.Total = total
+			c.JSON(consts.StatusOK, res)
+			return
+		}
+		g, _ = mysql.GetGatewaySystemConfig(req.SysId)
 		c.JSON(consts.StatusOK, g)
 	})
 
