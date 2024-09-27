@@ -29,6 +29,7 @@ else
     OUT_LOG_DIR=/dev/null
 fi
 export APP_IDENTITY="opengateway.opengateway"
+export WEB_PATH=${BASE_DIR}/web/
 chmod u+x ${BASE_DIR}/${SERVER}
 echo "${BASE_DIR}/${SERVER} ${APP_IDENTITY}"
 nohup ${BASE_DIR}/${SERVER} ${APP_IDENTITY} >> $OUT_LOG_DIR 2>&1 &
