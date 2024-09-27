@@ -10,3 +10,4 @@ bin/opengateway
 bin/opengateway.exe
 bin.zip
 bin/static
+dist/*.zip
