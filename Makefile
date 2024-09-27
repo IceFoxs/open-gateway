@@ -12,7 +12,7 @@ build-macos-zip:
 	cd $(currentPath)/dist && zip -r $(currentPath)/dist/$(targetName)-macos.zip   ./*
 build-linux-zip:
 	@rm -rf  $(currentPath)/dist/$(targetName)-linux.zip
-	go build  -v -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
+	go build  -v -buildvcs=false -trimpath -o $(currentPath)/dist/$(targetName)  $(currentPath)/cmd/opengateway/
 	cd $(currentPath)/bin && zip -r  $(currentPath)/dist/$(targetName)-linux.zip   ./*
 	cd $(currentPath)/dist && zip -r $(currentPath)/dist/$(targetName)-linux.zip   ./*
 build-linux:
