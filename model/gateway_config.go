@@ -1,7 +1,7 @@
 package model
 
 type GatewayConfig struct {
-	AppId               string `json:"appId" column:"app_id" gorm:"primarykey"`
+	AppId               string `json:"appId,required" column:"app_id" gorm:"primarykey" vd:"@:len($)>0; msg:'appId不能为空'"`
 	AppName             string `json:"appName" column:"app_name"`
 	AesKey              string `json:"aesKey" column:"aes_key"`
 	AesType             string `json:"aesType" column:"aes_type"`
