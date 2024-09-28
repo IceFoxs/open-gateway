@@ -15,11 +15,11 @@ import (
 )
 
 var (
-	namingClient naming_client.INamingClient
+	namingClient *naming_client.INamingClient
 	onceN        sync.Once
 )
 
-func GetNamingClient() naming_client.INamingClient {
+func GetNamingClient() *naming_client.INamingClient {
 	onceN.Do(initNamingClient)
 	return namingClient
 }
@@ -29,7 +29,7 @@ func initNamingClient() {
 	username := conf.GetConf().Nacos.Username
 	password := conf.GetConf().Nacos.Password
 	n, err := CreateNamingClient(address, username, password)
-	namingClient = n
+	namingClient = &n
 	if err != nil {
 		hlog.Errorf("initNacosNamingClient failed %s", err)
 		return

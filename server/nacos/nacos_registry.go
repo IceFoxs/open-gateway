@@ -8,6 +8,6 @@ import (
 
 func CreateRegistry() (registry.Registry, error) {
 	namingClient := na.GetNamingClient()
-	r := nacos.NewNacosRegistry(namingClient)
+	r := nacos.NewNacosRegistry(*namingClient)
 	return r, nil
 }

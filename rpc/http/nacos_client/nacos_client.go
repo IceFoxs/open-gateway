@@ -23,7 +23,7 @@ func NewDiscoveryClient() (*NacosDiscoveryClient, error) {
 	if err != nil {
 		panic(err)
 	}
-	r := nacos.NewNacosResolver(namingClient)
+	r := nacos.NewNacosResolver(*namingClient)
 	client.Use(sd.Discovery(r, sd.WithLoadBalanceOptions(loadbalance.NewWeightedBalancer(), loadbalance.Options{
 		RefreshInterval: 5 * time.Second,
 		ExpireInterval:  15 * time.Second,
