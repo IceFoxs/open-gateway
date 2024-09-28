@@ -26,15 +26,12 @@ func GetNamingClient() naming_client.INamingClient {
 }
 
 func initNamingClient() {
-	address := conf.GetConf().Registry.RegistryAddress[0]
-	username := conf.GetConf().Registry.Username
-	password := conf.GetConf().Registry.Password
+	address := conf.GetConf().Nacos.Address
+	username := conf.GetConf().Nacos.Username
+	password := conf.GetConf().Nacos.Password
 	register := conf.GetConf().Registry.Register
 	if register == con.REGISTRY_NACOS {
-		addresses := strings.Split(address, ":")
-		host := addresses[0]
-		port, _ := strconv.ParseUint(addresses[1], 0, 64)
-		n, err := CreateNamingClient(host, port, username, password)
+		n, err := CreateNamingClient(address, username, password)
 		namingClient = n
 		if err != nil {
 			hlog.Errorf("initNacosNamingClient failed %s", err)
@@ -43,10 +40,13 @@ func initNamingClient() {
 		hlog.Infof("initNacosNamingClient success")
 	}
 }
-
-func CreateNamingClient(host string, port uint64, username string, password string) (iClient naming_client.INamingClient, err error) {
-	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
+func CreateNamingClient(hosts []string, username string, password string) (iClient naming_client.INamingClient, err error) {
+	var sc []constant.ServerConfig
+	for _, address := range hosts {
+		addresses := strings.Split(address, ":")
+		host := addresses[0]
+		port, _ := strconv.ParseUint(addresses[1], 0, 64)
+		sc = append(sc, *constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")))
 	}
 	cc := *constant.NewClientConfig(
 		constant.WithUsername(username),

@@ -83,9 +83,19 @@ func (dc *Client) Close() error {
 func (dc *Client) Apply() error {
 	registry := conf.GetConf().Registry.Register
 	registryType := conf.GetConf().Registry.RegisterType
-	address := conf.GetConf().Registry.RegistryAddress[0]
-	username := conf.GetConf().Registry.Username
-	password := conf.GetConf().Registry.Password
+	var address string
+	var username string
+	var password string
+	if registry == constant.REGISTRY_NACOS {
+		address = conf.GetConf().Nacos.Address[0]
+		username = conf.GetConf().Nacos.Username
+		password = conf.GetConf().Nacos.Password
+	}
+	if registry == constant.REGISTRY_ZOOKEEPER {
+		address = conf.GetConf().Zookeeper.Address[0]
+		username = conf.GetConf().Zookeeper.Username
+		password = conf.GetConf().Zookeeper.Password
+	}
 	registryConfig := &dg.RegistryConfig{
 		Protocol:     registry,
 		Address:      address,

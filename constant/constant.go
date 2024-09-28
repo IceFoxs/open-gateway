@@ -6,6 +6,8 @@ const REGISTRY_NACOS = "nacos"
 
 const REGISTRY_CONSUL = "consul"
 
+const REGISTRY_ZOOKEEPER = "zookeeper"
+
 const GATEWAY_META_DATA = "gatewayMetadata"
 
 const APP_METADATA = "appMetadata"

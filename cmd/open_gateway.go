@@ -9,13 +9,13 @@ import (
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
 	"github.com/IceFoxs/open-gateway/db"
-	n "github.com/IceFoxs/open-gateway/nacos"
 	"github.com/IceFoxs/open-gateway/registry"
 	"github.com/IceFoxs/open-gateway/rpc/dubbo"
 	"github.com/IceFoxs/open-gateway/rpc/http"
 	"github.com/IceFoxs/open-gateway/server/consul"
 	na "github.com/IceFoxs/open-gateway/server/nacos"
 	"github.com/IceFoxs/open-gateway/server/router"
+	"github.com/IceFoxs/open-gateway/server/zookeeper"
 	"github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config/nacos"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -79,16 +79,7 @@ func Start() {
 			config.Level)
 	})))
 	hlog.SetLogger(logger)
-	n.GetNamingClient()
-	n.GetConfigClient()
 	nacos.GetConfChangeClient()
-	address := conf.GetConf().Registry.RegistryAddress[0]
-	username := conf.GetConf().Registry.Username
-	password := conf.GetConf().Registry.Password
-	register := conf.GetConf().App.Register
-	host := conf.GetConf().App.Host
-	staticPath := conf.GetConf().BaseDir
-	appName := conf.GetConf().App.Name
 	dubbo.InitDefaultDubboClient()
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
@@ -106,30 +97,36 @@ func Start() {
 	gmc.RefreshAllCache(methods)
 	http.GetHttpClient()
 	sync.GetConfChangeClientHelper()
-	if register == "" {
-		panic("app register can not empty, please check your config")
-	}
-	if len(staticPath) == 0 {
-		staticPath, _ = os.Getwd()
-	}
-	hlog.Infof("static path is %s", staticPath)
-	h, err := CreateServer(register, host, appName, address, username, password)
+	h, err := CreateServer()
 	if err != nil {
 		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())
 	}
 	//pprof.Register(h)
+	staticPath := conf.GetConf().BaseDir
+	if len(staticPath) == 0 {
+		staticPath, _ = os.Getwd()
+	}
+	hlog.Infof("static path is %s", staticPath)
 	router.AddRouter(h, staticPath)
 	h.Spin()
 
 }
 
-func CreateServer(register string, host string, appName string, address string, username string, password string) (*server.Hertz, error) {
+func CreateServer() (*server.Hertz, error) {
+	register := conf.GetConf().App.Register
+	if register == "" {
+		panic("app register can not empty, please check your config")
+	}
+	appName := conf.GetConf().App.Name
+	host := conf.GetConf().App.Host
 	var r re.Registry
 	var err error
 	if register == constant.REGISTRY_NACOS {
 		r, err = na.CreateRegistry()
 	} else if register == constant.REGISTRY_CONSUL {
-		r, err = consul.CreateRegistry(host, appName, address)
+		r, err = consul.CreateRegistry()
+	} else if register == constant.REGISTRY_ZOOKEEPER {
+		r, err = zookeeper.CreateRegistry()
 	} else {
 		return nil, errors.New("register[" + register + "]is not supported")
 	}

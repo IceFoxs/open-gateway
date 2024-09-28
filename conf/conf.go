@@ -25,14 +25,36 @@ type Logger struct {
 	Encoding string `yaml:"encoding"`
 }
 type Config struct {
-	Env      string
-	App      App      `yaml:"app"`
-	MySQL    MySQL    `yaml:"mysql"`
-	Redis    Redis    `yaml:"redis"`
-	Registry Registry `yaml:"registry"`
-	Logger   Logger   `yaml:"logger"`
-	BaseDir  string   `yaml:"base_dir"`
+	Env       string
+	App       App       `yaml:"app"`
+	MySQL     MySQL     `yaml:"mysql"`
+	Redis     Redis     `yaml:"redis"`
+	Registry  Registry  `yaml:"registry"`
+	Logger    Logger    `yaml:"logger"`
+	BaseDir   string    `yaml:"base_dir"`
+	Zookeeper Zookeeper `yaml:"zookeeper"`
+	Nacos     Nacos     `yaml:"nacos"`
+	Consul    Consul    `yaml:"consul"`
 }
+
+type Nacos struct {
+	Address  []string `yaml:"address"`
+	Username string   `yaml:"username"`
+	Password string   `yaml:"password"`
+}
+
+type Consul struct {
+	Address []string `yaml:"address"`
+	Token   string   `yaml:"token"`
+	Schema  string   `yaml:"schema"`
+}
+type Zookeeper struct {
+	Address        []string `yaml:"address"`
+	SessionTimeout int64    `yaml:"session_timeout"`
+	Username       string   `yaml:"username"`
+	Password       string   `yaml:"password"`
+}
+
 type App struct {
 	Host     string `yaml:"host"`
 	Name     string `yaml:"name"`
@@ -52,14 +74,11 @@ type Redis struct {
 }
 
 type Registry struct {
-	RegistryAddress []string `yaml:"registry_address"`
-	Username        string   `yaml:"username"`
-	Password        string   `yaml:"password"`
-	RegisterType    string   `yaml:"register_type"`
-	Register        string   `yaml:"register"`
-	WrapResp        string   `yaml:"wrap_resp"`
-	Retries         string   `yaml:"retries"`
-	RequestTimeout  string   `yaml:"request_timeout"`
+	RegisterType   string `yaml:"register_type"`
+	Register       string `yaml:"register"`
+	WrapResp       string `yaml:"wrap_resp"`
+	Retries        string `yaml:"retries"`
+	RequestTimeout string `yaml:"request_timeout"`
 }
 
 // GetConf gets configuration instance

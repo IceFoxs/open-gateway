@@ -26,15 +26,12 @@ func GetConfigClient() *config_client.IConfigClient {
 }
 
 func initConfigClient() {
-	address := conf.GetConf().Registry.RegistryAddress[0]
-	username := conf.GetConf().Registry.Username
-	password := conf.GetConf().Registry.Password
 	register := conf.GetConf().Registry.Register
 	if register == con.REGISTRY_NACOS {
-		addresses := strings.Split(address, ":")
-		host := addresses[0]
-		port, _ := strconv.ParseUint(addresses[1], 0, 64)
-		client, err := CreateConfigClient(host, port, username, password)
+		address := conf.GetConf().Nacos.Address
+		username := conf.GetConf().Nacos.Username
+		password := conf.GetConf().Nacos.Password
+		client, err := CreateConfigClient(address, username, password)
 		configClient = client
 		if err != nil {
 			hlog.Errorf("initNacosConfigClient failed %s", err)
@@ -44,9 +41,13 @@ func initConfigClient() {
 	}
 }
 
-func CreateConfigClient(host string, port uint64, username string, password string) (c *config_client.IConfigClient, err error) {
-	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")),
+func CreateConfigClient(hosts []string, username string, password string) (c *config_client.IConfigClient, err error) {
+	var sc []constant.ServerConfig
+	for _, address := range hosts {
+		addresses := strings.Split(address, ":")
+		host := addresses[0]
+		port, _ := strconv.ParseUint(addresses[1], 0, 64)
+		sc = append(sc, *constant.NewServerConfig(host, port, constant.WithContextPath("/nacos")))
 	}
 	//create ClientConfig
 	cc := *constant.NewClientConfig(

@@ -19,6 +19,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/hertz-contrib/logger/zap v1.1.0
 	github.com/hertz-contrib/registry/nacos/v2 v2.0.0-20240618152458-11c3cac90e4f
+	github.com/hertz-contrib/registry/zookeeper v0.0.0-20240618152458-11c3cac90e4f
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/orcaman/concurrent-map/v2 v2.0.1
 	go.uber.org/zap v1.23.0
@@ -75,6 +76,7 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0 // indirect
 	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/go-zookeeper/zk v1.0.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect

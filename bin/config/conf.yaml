@@ -2,7 +2,7 @@ app:
   host: 127.0.0.1:8888
   name: open-gateway
   register: nacos
-  weight: 1
+  weight: 0
   web_path: /Users/icefox/Documents/nacos/opengateway-macos/web
 registry:
   register: nacos
@@ -16,7 +16,21 @@ registry:
   request_timeout: "5000"
 mysql:
   dsn: "root:123456@tcp(127.0.0.1:3306)/fps_pay?charset=utf8mb4&parseTime=True&loc=Local"
-
+nacos:
+  address:
+    - 127.0.0.1:8848
+  username: "nacos"
+  password: "nacos"
+consul:
+  address:
+    - 127.0.0.1:8500
+  token: ""
+  schema: "http"
+zookeeper:
+  address:
+    - 127.0.0.1:2181
+  username: ""
+  password: ""
 redis:
   address: "127.0.0.1:6379"
   username: ""
@@ -27,3 +41,4 @@ logger:
   max_size: 1
   max_backups: 5
   max_age: 30
+  encoding: console
