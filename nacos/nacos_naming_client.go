@@ -37,7 +37,7 @@ func initNamingClient() {
 	hlog.Infof("initNacosNamingClient success")
 }
 func CreateNamingClient(hosts []string, username string, password string) (iClient naming_client.INamingClient, err error) {
-	var sc []constant.ServerConfig
+	sc := make([]constant.ServerConfig, len(hosts))
 	for _, address := range hosts {
 		addresses := strings.Split(address, ":")
 		host := addresses[0]
