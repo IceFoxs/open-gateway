@@ -38,7 +38,7 @@ func initConfigClient() {
 }
 
 func CreateConfigClient(hosts []string, username string, password string) (c *config_client.IConfigClient, err error) {
-	sc := make([]constant.ServerConfig, len(hosts))
+	var sc []constant.ServerConfig
 	for _, address := range hosts {
 		addresses := strings.Split(address, ":")
 		host := addresses[0]

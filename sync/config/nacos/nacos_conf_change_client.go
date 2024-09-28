@@ -2,6 +2,8 @@ package nacos
 
 import (
 	"github.com/IceFoxs/open-gateway/common"
+	"github.com/IceFoxs/open-gateway/conf"
+	"github.com/IceFoxs/open-gateway/constant"
 	na "github.com/IceFoxs/open-gateway/nacos"
 	sy "github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config"
@@ -44,15 +46,24 @@ func (nc *NacosConfChangeClient) Subscribe(confType string, confGroup string, li
 		hlog.Errorf("Listen config dataId:[%s] group:[%s],failed : %s", confType, confGroup, err.Error())
 	}
 }
+func init() {
+	configType := conf.GetConf().SyncConfig.ConfigType
+	if configType == constant.REGISTRY_NACOS {
+		GetConfChangeClient()
+	}
+}
 func GetConfChangeClient() config.ConfChangeClient {
 	once.Do(initNacosConfChangeClient)
 	return nacosConfChangeClient
 }
 func initNacosConfChangeClient() {
-	nacosConfChangeClient = &NacosConfChangeClient{
-		ClientConfig: na.GetConfigClient(),
-	}
-	if nacosConfChangeClient.(*NacosConfChangeClient).ClientConfig != nil {
-		sy.GetConfChangeClientHelper().BuildConfChangeClient(&nacosConfChangeClient)
+	configType := conf.GetConf().SyncConfig.ConfigType
+	if configType == constant.REGISTRY_NACOS {
+		nacosConfChangeClient = &NacosConfChangeClient{
+			ClientConfig: na.GetConfigClient(),
+		}
+		if nacosConfChangeClient.(*NacosConfChangeClient).ClientConfig != nil {
+			sy.GetConfChangeClientHelper().BuildConfChangeClient(&nacosConfChangeClient)
+		}
 	}
 }

@@ -4,6 +4,8 @@ app:
   register: zookeeper
   weight: 0
   web_path: /Users/icefox/Documents/nacos/opengateway-macos/web
+sync_config:
+  config_type: nacos
 dubbo:
   register: nacos
   register_type: interface

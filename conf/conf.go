@@ -25,18 +25,22 @@ type Logger struct {
 	Encoding string `yaml:"encoding"`
 }
 type Config struct {
-	Env       string
-	App       App       `yaml:"app"`
-	MySQL     MySQL     `yaml:"mysql"`
-	Redis     Redis     `yaml:"redis"`
-	Dubbo     Dubbo     `yaml:"dubbo"`
-	Discovery Discovery `yaml:"discovery"`
-	Registry  Registry  `yaml:"registry"`
-	Logger    Logger    `yaml:"logger"`
-	BaseDir   string    `yaml:"base_dir"`
-	Zookeeper Zookeeper `yaml:"zookeeper"`
-	Nacos     Nacos     `yaml:"nacos"`
-	Consul    Consul    `yaml:"consul"`
+	Env        string
+	App        App        `yaml:"app"`
+	SyncConfig SyncConfig `yaml:"sync_config"`
+	MySQL      MySQL      `yaml:"mysql"`
+	Redis      Redis      `yaml:"redis"`
+	Dubbo      Dubbo      `yaml:"dubbo"`
+	Discovery  Discovery  `yaml:"discovery"`
+	Registry   Registry   `yaml:"registry"`
+	Logger     Logger     `yaml:"logger"`
+	BaseDir    string     `yaml:"base_dir"`
+	Zookeeper  Zookeeper  `yaml:"zookeeper"`
+	Nacos      Nacos      `yaml:"nacos"`
+	Consul     Consul     `yaml:"consul"`
+}
+type SyncConfig struct {
+	ConfigType string `yaml:"config_type"`
 }
 
 type Nacos struct {
