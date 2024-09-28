@@ -10,6 +10,8 @@ dubbo:
   wrap_resp: "true"
   retries: "0"
   request_timeout: "5000"
+registry:
+  register: "nacos"
 discovery:
   httpRegister: "nacos"
 mysql:
