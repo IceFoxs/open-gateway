@@ -81,8 +81,8 @@ func (dc *Client) Close() error {
 
 // Apply init dubbo, config mapping can do here
 func (dc *Client) Apply() error {
-	registry := conf.GetConf().Registry.Register
-	registryType := conf.GetConf().Registry.RegisterType
+	registry := conf.GetConf().Dubbo.Register
+	registryType := conf.GetConf().Dubbo.RegisterType
 	var address string
 	var username string
 	var password string
@@ -169,9 +169,9 @@ func (dc *Client) Get(key string, iface string) *generic.GenericService {
 }
 func (dc *Client) create(key string, iface string) *generic.GenericService {
 	check := false
-	registry := conf.GetConf().Registry.Register
-	retryNum := conf.GetConf().Registry.Retries
-	requestTimeout := conf.GetConf().Registry.RequestTimeout
+	registry := conf.GetConf().Dubbo.Register
+	retryNum := conf.GetConf().Dubbo.Retries
+	requestTimeout := conf.GetConf().Dubbo.RequestTimeout
 	refConf := dg.ReferenceConfig{
 		InterfaceName:  iface,
 		RegistryIDs:    []string{registry},

@@ -39,7 +39,7 @@ func Invoke(ctx context.Context, c *app.RequestContext, req common.RequiredReq, 
 		}
 		hlog.Infof("toMap %s", common.ToJSON(toMap))
 		util.ConvertHessianMap(toMap)
-		var wrapResp = conf.GetConf().Registry.WrapResp
+		var wrapResp = conf.GetConf().Dubbo.WrapResp
 		if len(wrapResp) == 0 {
 			if len(c.GetHeader(constant.WRAP_RESP_HEADER)) == 0 {
 				wrapResp = constant.FALSE

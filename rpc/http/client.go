@@ -32,7 +32,7 @@ func (hc *HttpClient) Post(ctx context.Context, appname string, path string, par
 }
 
 func initClient() {
-	register := conf.GetConf().Registry.Register
+	register := conf.GetConf().Discovery.HttpRegister
 	if register == con.REGISTRY_NACOS {
 		discoveryClient, _ := nacos_client.NewDiscoveryClient()
 		httpClient = &HttpClient{discoveryClient: discoveryClient}

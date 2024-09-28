@@ -14,7 +14,6 @@ type NacosRegisterClient struct {
 
 func NewRegisterClient() (*NacosRegisterClient, error) {
 	client := nacos.GetConfigClient()
-
 	rc := &NacosRegisterClient{
 		Client: client,
 	}

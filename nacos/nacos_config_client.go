@@ -2,7 +2,6 @@ package nacos
 
 import (
 	"github.com/IceFoxs/open-gateway/conf"
-	con "github.com/IceFoxs/open-gateway/constant"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
@@ -26,19 +25,16 @@ func GetConfigClient() *config_client.IConfigClient {
 }
 
 func initConfigClient() {
-	register := conf.GetConf().Registry.Register
-	if register == con.REGISTRY_NACOS {
-		address := conf.GetConf().Nacos.Address
-		username := conf.GetConf().Nacos.Username
-		password := conf.GetConf().Nacos.Password
-		client, err := CreateConfigClient(address, username, password)
-		configClient = client
-		if err != nil {
-			hlog.Errorf("initNacosConfigClient failed %s", err)
-			return
-		}
-		hlog.Infof("initNacosConfigClient success")
+	address := conf.GetConf().Nacos.Address
+	username := conf.GetConf().Nacos.Username
+	password := conf.GetConf().Nacos.Password
+	client, err := CreateConfigClient(address, username, password)
+	configClient = client
+	if err != nil {
+		hlog.Errorf("initNacosConfigClient failed %s", err)
+		return
 	}
+	hlog.Infof("initNacosConfigClient success")
 }
 
 func CreateConfigClient(hosts []string, username string, password string) (c *config_client.IConfigClient, err error) {

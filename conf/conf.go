@@ -29,6 +29,8 @@ type Config struct {
 	App       App       `yaml:"app"`
 	MySQL     MySQL     `yaml:"mysql"`
 	Redis     Redis     `yaml:"redis"`
+	Dubbo     Dubbo     `yaml:"dubbo"`
+	Discovery Discovery `yaml:"discovery"`
 	Registry  Registry  `yaml:"registry"`
 	Logger    Logger    `yaml:"logger"`
 	BaseDir   string    `yaml:"base_dir"`
@@ -72,8 +74,14 @@ type Redis struct {
 	Password string `yaml:"password"`
 	DB       int    `yaml:"db"`
 }
-
+type Discovery struct {
+	HttpRegister string `yaml:"http_register"`
+}
 type Registry struct {
+	Register string `yaml:"register"`
+}
+
+type Dubbo struct {
 	RegisterType   string `yaml:"register_type"`
 	Register       string `yaml:"register"`
 	WrapResp       string `yaml:"wrap_resp"`

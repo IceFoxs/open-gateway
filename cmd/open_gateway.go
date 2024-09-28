@@ -17,7 +17,6 @@ import (
 	"github.com/IceFoxs/open-gateway/server/router"
 	"github.com/IceFoxs/open-gateway/server/zookeeper"
 	"github.com/IceFoxs/open-gateway/sync"
-	"github.com/IceFoxs/open-gateway/sync/config/nacos"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -79,7 +78,7 @@ func Start() {
 			config.Level)
 	})))
 	hlog.SetLogger(logger)
-	nacos.GetConfChangeClient()
+	//nacos.GetConfChangeClient()
 	dubbo.InitDefaultDubboClient()
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
