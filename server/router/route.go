@@ -29,15 +29,21 @@ import (
 	"time"
 )
 
-func AddRouter(h *server.Hertz, dir string) {
+func AddRouter(h *server.Hertz) {
 	var webPath = os.Getenv(constant.WEB_PATH)
 	if len(webPath) == 0 {
 		if strings.HasPrefix(conf.GetConf().App.WebPath, string(filepath.Separator)) || strings.HasPrefix(conf.GetConf().App.WebPath, ":") {
 			webPath = conf.GetConf().App.WebPath
 		} else {
-			webPath = dir + string(filepath.Separator) + conf.GetConf().App.WebPath
+			staticPath := conf.GetConf().BaseDir
+			if len(staticPath) == 0 {
+				staticPath, _ = os.Getwd()
+			}
+			hlog.Infof("static path is %s", staticPath)
+			webPath = staticPath + string(filepath.Separator) + conf.GetConf().App.WebPath
 		}
 	}
+	hlog.Infof("webPath is %s", webPath)
 	h.StaticFS("/", &app.FS{Root: webPath, IndexNames: []string{"index.html"}})
 	h.GET("/ping", func(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, "ok")

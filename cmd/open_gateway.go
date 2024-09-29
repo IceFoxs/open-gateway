@@ -16,7 +16,6 @@ import (
 	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/utils"
-	"os"
 )
 
 func Start() {
@@ -24,13 +23,7 @@ func Start() {
 	if err != nil {
 		hlog.Errorf("create server failed: %s", err.Error())
 	}
-	//pprof.Register(h)
-	staticPath := conf.GetConf().BaseDir
-	if len(staticPath) == 0 {
-		staticPath, _ = os.Getwd()
-	}
-	hlog.Infof("static path is %s", staticPath)
-	router.AddRouter(h, staticPath)
+	router.AddRouter(h)
 	h.Spin()
 
 }
