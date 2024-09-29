@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/IceFoxs/open-gateway/common"
 	"github.com/IceFoxs/open-gateway/conf"
-	"github.com/IceFoxs/open-gateway/constant"
 	sy "github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config"
 	"github.com/IceFoxs/open-gateway/util/zkutils"
@@ -130,22 +129,19 @@ func GetConfChangeClient() config.ConfChangeClient {
 	return zookeeperConfChangeClient
 }
 func initZookeeperConfChangeClient() {
-	configType := conf.GetConf().SyncConfig.ConfigType
-	if configType == constant.REGISTRY_ZOOKEEPER {
-		zkConf := conf.GetConf().Zookeeper
-		sessionTimeout := zkConf.SessionTimeout
-		if sessionTimeout == 0 {
-			sessionTimeout = 40
-		}
-		if len(zkConf.Username) == 0 && len(zkConf.Password) == 0 {
-			hlog.Infof("initZookeeperConfChangeClient NewZookeeperRegistry")
-			newZookeeperRegistry(zkConf.Address, time.Duration(sessionTimeout)*time.Second)
-		} else {
-			newZookeeperRegistryWithAuth(zkConf.Address, time.Duration(sessionTimeout)*time.Second, zkConf.Username, zkConf.Password)
-			hlog.Infof("initZookeeperConfChangeClient NewZookeeperRegistryWithAuth")
-		}
-		if zookeeperConfChangeClient.(*ZookeeperConfChangeClient).conn != nil {
-			sy.GetConfChangeClientHelper().BuildConfChangeClient(&zookeeperConfChangeClient)
-		}
+	zkConf := conf.GetConf().Zookeeper
+	sessionTimeout := zkConf.SessionTimeout
+	if sessionTimeout == 0 {
+		sessionTimeout = 40
+	}
+	if len(zkConf.Username) == 0 && len(zkConf.Password) == 0 {
+		hlog.Infof("initZookeeperConfChangeClient NewZookeeperRegistry")
+		newZookeeperRegistry(zkConf.Address, time.Duration(sessionTimeout)*time.Second)
+	} else {
+		newZookeeperRegistryWithAuth(zkConf.Address, time.Duration(sessionTimeout)*time.Second, zkConf.Username, zkConf.Password)
+		hlog.Infof("initZookeeperConfChangeClient NewZookeeperRegistryWithAuth")
+	}
+	if zookeeperConfChangeClient.(*ZookeeperConfChangeClient).conn != nil {
+		sy.GetConfChangeClientHelper().BuildConfChangeClient(&zookeeperConfChangeClient)
 	}
 }

@@ -16,9 +16,7 @@ import (
 	na "github.com/IceFoxs/open-gateway/server/nacos"
 	"github.com/IceFoxs/open-gateway/server/router"
 	zk "github.com/IceFoxs/open-gateway/server/zookeeper"
-	"github.com/IceFoxs/open-gateway/sync"
-	"github.com/IceFoxs/open-gateway/sync/config/nacos"
-	"github.com/IceFoxs/open-gateway/sync/config/zookeeper"
+	_ "github.com/IceFoxs/open-gateway/sync/imports"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -80,8 +78,6 @@ func Start() {
 			config.Level)
 	})))
 	hlog.SetLogger(logger)
-	nacos.GetConfChangeClient()
-	zookeeper.GetConfChangeClient()
 	dubbo.InitDefaultDubboClient()
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
@@ -93,12 +89,11 @@ func Start() {
 	appNames := gsc.GetAllAppName()
 	amc := appmetadata.GetAppMetadataCache()
 	amc.RefreshCacheByAppName(appNames)
-	//amc.AddListen()
 	gmc := gatewaymethod.GetGatewayMethodCache()
 	methods := amc.GetAllMethods()
 	gmc.RefreshAllCache(methods)
 	http.GetHttpClient()
-	sync.GetConfChangeClientHelper()
+	//sync.GetConfChangeClientHelper()
 	h, err := CreateServer()
 	if err != nil {
 		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())

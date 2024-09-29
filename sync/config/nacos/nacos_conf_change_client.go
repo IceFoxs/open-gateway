@@ -2,8 +2,6 @@ package nacos
 
 import (
 	"github.com/IceFoxs/open-gateway/common"
-	"github.com/IceFoxs/open-gateway/conf"
-	"github.com/IceFoxs/open-gateway/constant"
 	na "github.com/IceFoxs/open-gateway/nacos"
 	sy "github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config"
@@ -52,13 +50,10 @@ func GetConfChangeClient() config.ConfChangeClient {
 	return nacosConfChangeClient
 }
 func initNacosConfChangeClient() {
-	configType := conf.GetConf().SyncConfig.ConfigType
-	if configType == constant.REGISTRY_NACOS {
-		nacosConfChangeClient = &NacosConfChangeClient{
-			ClientConfig: na.GetConfigClient(),
-		}
-		if nacosConfChangeClient.(*NacosConfChangeClient).ClientConfig != nil {
-			sy.GetConfChangeClientHelper().BuildConfChangeClient(&nacosConfChangeClient)
-		}
+	nacosConfChangeClient = &NacosConfChangeClient{
+		ClientConfig: na.GetConfigClient(),
+	}
+	if nacosConfChangeClient.(*NacosConfChangeClient).ClientConfig != nil {
+		sy.GetConfChangeClientHelper().BuildConfChangeClient(&nacosConfChangeClient)
 	}
 }
