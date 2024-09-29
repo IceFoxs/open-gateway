@@ -102,9 +102,8 @@ func GetConf() *Config {
 func initConf() {
 	confPath := os.Getenv("CONF_PATH")
 	var confFileRelPath string
-	var dir string
+	dir := os.Getenv("BASE_DIR")
 	if len(confPath) == 0 {
-		dir = os.Getenv("BASE_DIR")
 		if len(dir) == 0 {
 			var err error
 			dir, err = os.Getwd()
