@@ -1,14 +1,13 @@
-package imports
+package inits
 
 import (
 	"github.com/IceFoxs/open-gateway/conf"
 	"github.com/IceFoxs/open-gateway/constant"
-	_ "github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config/nacos"
 	"github.com/IceFoxs/open-gateway/sync/config/zookeeper"
 )
 
-func init() {
+func Init() {
 	configType := conf.GetConf().SyncConfig.ConfigType
 	if configType == constant.REGISTRY_NACOS {
 		nacos.GetConfChangeClient()
