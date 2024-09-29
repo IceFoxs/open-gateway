@@ -46,12 +46,7 @@ func (nc *NacosConfChangeClient) Subscribe(confType string, confGroup string, li
 		hlog.Errorf("Listen config dataId:[%s] group:[%s],failed : %s", confType, confGroup, err.Error())
 	}
 }
-func init() {
-	configType := conf.GetConf().SyncConfig.ConfigType
-	if configType == constant.REGISTRY_NACOS {
-		GetConfChangeClient()
-	}
-}
+
 func GetConfChangeClient() config.ConfChangeClient {
 	once.Do(initNacosConfChangeClient)
 	return nacosConfChangeClient

@@ -15,9 +15,10 @@ import (
 	"github.com/IceFoxs/open-gateway/server/consul"
 	na "github.com/IceFoxs/open-gateway/server/nacos"
 	"github.com/IceFoxs/open-gateway/server/router"
-	"github.com/IceFoxs/open-gateway/server/zookeeper"
+	zk "github.com/IceFoxs/open-gateway/server/zookeeper"
 	"github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/sync/config/nacos"
+	"github.com/IceFoxs/open-gateway/sync/config/zookeeper"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	re "github.com/cloudwego/hertz/pkg/app/server/registry"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -80,6 +81,7 @@ func Start() {
 	})))
 	hlog.SetLogger(logger)
 	nacos.GetConfChangeClient()
+	zookeeper.GetConfChangeClient()
 	dubbo.InitDefaultDubboClient()
 	dsn := conf.GetConf().MySQL.DSN
 	db.Init(dsn)
@@ -126,7 +128,7 @@ func CreateServer() (*server.Hertz, error) {
 	} else if register == constant.REGISTRY_CONSUL {
 		r, err = consul.CreateRegistry()
 	} else if register == constant.REGISTRY_ZOOKEEPER {
-		r, err = zookeeper.CreateRegistry()
+		r, err = zk.CreateRegistry()
 	} else {
 		return nil, errors.New("register[" + register + "]is not supported")
 	}
