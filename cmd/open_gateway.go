@@ -22,7 +22,7 @@ import (
 func Start() {
 	h, err := CreateServer()
 	if err != nil {
-		hlog.SystemLogger().Errorf("create server failed: %s", err.Error())
+		hlog.Errorf("create server failed: %s", err.Error())
 	}
 	//pprof.Register(h)
 	staticPath := conf.GetConf().BaseDir
