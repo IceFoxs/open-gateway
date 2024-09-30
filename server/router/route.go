@@ -123,7 +123,7 @@ func AddRouter(h *server.Hertz) {
 			return
 		}
 		err = mysql.UpdateGatewayConfig(&model.GatewayConfig{
-			AppId:               req.AppId,
+			AppId:               strings.Trim(strings.Trim(req.AppId, "\n"), " "),
 			AppName:             req.AppName,
 			CallbackUrl:         req.CallbackUrl,
 			RsaPrivateKey:       req.RsaPrivateKey,
@@ -150,7 +150,7 @@ func AddRouter(h *server.Hertz) {
 		}
 		err = mysql.CreateGatewaySystem([]*model.GatewaySystemConfig{
 			{
-				SystemId:   req.SystemId,
+				SystemId:   strings.Trim(strings.Trim(req.SystemId, "\n"), " "),
 				SystemName: req.SystemName,
 			},
 		})
