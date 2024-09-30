@@ -11,7 +11,7 @@ require (
 	github.com/dubbogo/triple v1.2.2-rc3
 	github.com/hashicorp/consul/api v1.15.0
 	github.com/hertz-contrib/registry/consul v0.0.0-20240618152458-11c3cac90e4f
-	github.com/nacos-group/nacos-sdk-go/v2 v2.2.2
+	github.com/nacos-group/nacos-sdk-go/v2 v2.2.7
 )
 
 require (
@@ -31,13 +31,18 @@ require (
 )
 
 require (
-	cloud.google.com/go/compute v1.19.0 // indirect
+	cloud.google.com/go/compute v1.19.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/RoaringBitmap/roaring v1.2.3 // indirect
 	github.com/Workiva/go-datastructures v1.0.52 // indirect
 	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5 // indirect
 	github.com/alibaba/sentinel-golang v1.0.4 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1704 // indirect
+	github.com/alibabacloud-go/debug v0.0.0-20190504072949-9472017b5c68 // indirect
+	github.com/alibabacloud-go/tea v1.1.17 // indirect
+	github.com/alibabacloud-go/tea-utils v1.4.4 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1800 // indirect
+	github.com/aliyun/alibabacloud-dkms-gcs-go-sdk v0.2.2 // indirect
+	github.com/aliyun/alibabacloud-dkms-transfer-go-sdk v0.1.7 // indirect
 	github.com/apache/dubbo-getty v1.4.9 // indirect
 	github.com/armon/go-metrics v0.3.10 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -54,7 +59,7 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/cloudwego/netpoll v0.6.2 // indirect
 	github.com/cncf/udpa/go v0.0.0-20220112060539-c52dc94e7fbe // indirect
-	github.com/cncf/xds/go v0.0.0-20230310173818-32f1caf87195 // indirect
+	github.com/cncf/xds/go v0.0.0-20230607035331-e9ce68804cb4 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/creasty/defaults v1.5.2 // indirect
@@ -64,8 +69,8 @@ require (
 	github.com/dubbogo/grpc-go v1.42.10 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.10.1 // indirect
-	github.com/envoyproxy/go-control-plane v0.11.0 // indirect
-	github.com/envoyproxy/protoc-gen-validate v0.10.0 // indirect
+	github.com/envoyproxy/go-control-plane v0.11.1-0.20230524094728-9239064ad72f // indirect
+	github.com/envoyproxy/protoc-gen-validate v0.10.1 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-co-op/gocron v1.9.0 // indirect
@@ -161,17 +166,17 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
-	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/oauth2 v0.6.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/oauth2 v0.7.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.1.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
-	google.golang.org/grpc v1.55.0 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/grpc v1.56.3 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
