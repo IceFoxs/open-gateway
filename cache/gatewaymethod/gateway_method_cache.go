@@ -60,6 +60,7 @@ func (g *GatewayMethodCache) RefreshCache(filename string) {
 func (g *GatewayMethodCache) AddListen(method string) {
 	registry.GetRegisterClient().Subscribe(method, constant.GATEWAY_META_DATA, gatewayMethodCache.Listen)
 }
+
 func (g *GatewayMethodCache) Listen(group, dataId, data string) {
 	hlog.Infof("Config Refresh  group:[%s],dataId:[%s],data:[%s]", group, dataId, data)
 	g.RefreshCache(dataId)

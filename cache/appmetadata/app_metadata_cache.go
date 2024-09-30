@@ -58,8 +58,10 @@ func (g *AppMetadataCache) AddListen(appname string) {
 		if appname == k {
 			registry.GetRegisterClient().Subscribe(k, constant.APP_METADATA,
 				appMetadataCache.Listen)
+			hlog.Infof("AddListen  Subscribe group:[%s],dataId:[%s]", constant.APP_METADATA, k)
 			registry.GetRegisterClient().Subscribe(k, constant.HTTP_APP_METADATA,
 				appMetadataCache.Listen)
+			hlog.Infof("AddListen Subscribe group:[%s],dataId:[%s]", constant.HTTP_APP_METADATA, k)
 		}
 	}
 }
@@ -73,19 +75,24 @@ func (g *AppMetadataCache) Listen(group, dataId, data string) {
 func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 	data, err := registry.GetRegisterClient().GetConfig(appName, group)
 	if err != nil {
-		hlog.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
+		amm := model.AppMetadata{
+			AppName: appName,
+			Methods: []string{},
+		}
+		appMetadataCache.PutCache(amm)
+		hlog.Errorf("AppMetadata GetConfig[%s|%s] failed,error is %s", group, appName, err.Error())
 		return
 	}
-	hlog.Infof("AppMetadata GetConfig[%s][%s] is %s", appName, group, data)
 	if len(data) == 0 {
 		amm := model.AppMetadata{
 			AppName: appName,
 			Methods: []string{},
 		}
-		hlog.Errorf("AppMetadata GetConfig[%s][%s] is empty", appName, group)
+		hlog.Errorf("AppMetadata GetConfig[%s|%s] is empty", group, appName)
 		appMetadataCache.PutCache(amm)
 		return
 	}
+	hlog.Infof("AppMetadata GetConfig[%s|%s] is %s", group, appName, data)
 	var amm model.AppMetadata
 	err = json.Unmarshal([]byte(data), &amm)
 	if err != nil {
@@ -93,7 +100,7 @@ func (a *AppMetadataCache) RefreshCache(appName string, group string) {
 			AppName: appName,
 			Methods: []string{},
 		}
-		hlog.Errorf("AppMetadata GetConfig %s failed,error is %s", appName, err.Error())
+		hlog.Errorf("AppMetadata GetConfig[%s|%s] failed,error is %s", group, appName, err.Error())
 		appMetadataCache.PutCache(amm)
 	} else {
 		hlog.Infof("AppMetadataCache [%s] is %s", appName, amm)
