@@ -8,13 +8,16 @@ type DingDingNotify struct {
 }
 
 type DingDingReq struct {
-	MsgType string             `json:"msgtype"`
-	Text    DingDingReqContent `json:"text"`
-	At      DingDingAt         `json:"at"`
+	MsgType  string     `json:"msgtype"`
+	Markdown Markdown   `json:"markdown"`
+	Text     Markdown   `json:"text"`
+	At       DingDingAt `json:"at"`
 }
 
-type DingDingReqContent struct {
+type Markdown struct {
+	Title   string `json:"title"`
 	Content string `json:"content"`
+	Text    string `json:"text"`
 }
 
 type DingDingAt struct {

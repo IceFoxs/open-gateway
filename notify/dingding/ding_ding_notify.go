@@ -38,24 +38,14 @@ func NewDingDingNotifyClient(dc *common.DingDingNotify) (*DingDingNotifyClient, 
 		Client: c,
 	}, nil
 }
-
-func (d *DingDingNotifyClient) Req(param string, atAll bool) (bool, error) {
-	ddReq := common.DingDingReq{
-		MsgType: "text",
-		Text:    common.DingDingReqContent{Content: param},
-		At: common.DingDingAt{
-			AsAtAll:   atAll,
-			AtMobiles: []string{},
-			AtUserIds: []string{},
-		},
-	}
+func (d *DingDingNotifyClient) Req(dingdingReq common.DingDingReq) (bool, error) {
 	req := &protocol.Request{}
 	res := &protocol.Response{}
 	req.Header.SetMethod(consts.MethodPost)
 	req.Header.SetContentTypeBytes([]byte("application/json"))
 	req.SetRequestURI(d.generateUrl())
 	req.SetOptions(config.WithSD(false))
-	bt, _ := json.Marshal(ddReq)
+	bt, _ := json.Marshal(dingdingReq)
 	req.SetBody(bt)
 	err := d.Client.Do(context.Background(), req, res)
 	if err != nil {
@@ -66,6 +56,30 @@ func (d *DingDingNotifyClient) Req(param string, atAll bool) (bool, error) {
 		return true, nil
 	}
 	return false, err
+}
+func (d *DingDingNotifyClient) ReqMarkdown(title, param string, atAll bool) (bool, error) {
+	ddReq := common.DingDingReq{
+		MsgType:  "markdown",
+		Markdown: common.Markdown{Title: title, Text: param},
+		At: common.DingDingAt{
+			AsAtAll:   atAll,
+			AtMobiles: []string{},
+			AtUserIds: []string{},
+		},
+	}
+	return d.Req(ddReq)
+}
+func (d *DingDingNotifyClient) ReqText(param string, atAll bool) (bool, error) {
+	ddReq := common.DingDingReq{
+		MsgType: "text",
+		Text:    common.Markdown{Content: param},
+		At: common.DingDingAt{
+			AsAtAll:   atAll,
+			AtMobiles: []string{},
+			AtUserIds: []string{},
+		},
+	}
+	return d.Req(ddReq)
 }
 func (d *DingDingNotifyClient) generateUrl() string {
 	timestamp := time.Now().UnixNano() / 1e6
