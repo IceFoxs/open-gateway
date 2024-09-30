@@ -6,6 +6,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
+	"strings"
 )
 
 type NacosRegisterClient struct {
@@ -39,7 +40,7 @@ func (rc *NacosRegisterClient) GetConfig(key string, group string) (string, erro
 
 func (rc *NacosRegisterClient) Subscribe(key string, group string, f common.Listener) {
 	err := (*rc.Client).ListenConfig(vo.ConfigParam{
-		DataId: key,
+		DataId: strings.Trim(key, "\n"),
 		Group:  group,
 		OnChange: func(namespace, group, dataId, data string) {
 			f(group, dataId, data)

@@ -9,6 +9,7 @@ import (
 	"github.com/dubbogo/gost/log/logger"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
+	"strings"
 	"sync"
 )
 
@@ -34,7 +35,7 @@ func (nc *NacosConfChangeClient) Publish(confType string, confGroup string, conf
 
 func (nc *NacosConfChangeClient) Subscribe(confType string, confGroup string, listener common.Listener) {
 	err := (*nc.ClientConfig).ListenConfig(vo.ConfigParam{
-		DataId: confType,
+		DataId: strings.Trim(confType, "\n"),
 		Group:  confGroup,
 		OnChange: func(namespace, group, dataId, data string) {
 			listener(group, dataId, data)
