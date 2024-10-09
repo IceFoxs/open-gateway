@@ -14,6 +14,7 @@ import (
 	"github.com/IceFoxs/open-gateway/model"
 	"github.com/IceFoxs/open-gateway/rpc"
 	"github.com/IceFoxs/open-gateway/server/handler"
+	"github.com/IceFoxs/open-gateway/server/response"
 	"github.com/IceFoxs/open-gateway/sync"
 	"github.com/IceFoxs/open-gateway/util/aes"
 	rsaUtil "github.com/IceFoxs/open-gateway/util/rsa"
@@ -52,7 +53,7 @@ func AddRouter(h *server.Hertz) {
 		var req common.DecryptContentReq
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, err)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 
@@ -72,7 +73,7 @@ func AddRouter(h *server.Hertz) {
 		var req model.GatewayConfigReq
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, err)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 		if req.PageSize != 0 {
@@ -80,17 +81,17 @@ func AddRouter(h *server.Hertz) {
 			g, total, _ := mysql.QueryGatewayConfigByPage(req.AppId, req.PageIndex, req.PageSize)
 			res.Models = g
 			res.Total = total
-			c.JSON(consts.StatusOK, res)
+			c.JSON(consts.StatusOK, response.Success(res))
 			return
 		}
 		g, _ := mysql.GetGatewayConfig(req.AppId)
-		c.JSON(consts.StatusOK, g)
+		c.JSON(consts.StatusOK, response.Success(g))
 	})
 	h.POST("/addChannelConfig", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewayConfig
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, err)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 		err = mysql.CreateGatewayConfig([]*model.GatewayConfig{
@@ -109,17 +110,17 @@ func AddRouter(h *server.Hertz) {
 			},
 		})
 		if err != nil {
-			c.JSON(consts.StatusOK, 0)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
-		c.JSON(consts.StatusOK, 1)
+		c.JSON(consts.StatusOK, response.Success(1))
 	})
 
 	h.POST("/updateChannelConfig", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewayConfig
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, err)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 		err = mysql.UpdateGatewayConfig(&model.GatewayConfig{
@@ -136,16 +137,16 @@ func AddRouter(h *server.Hertz) {
 			IsEnable:            req.IsEnable,
 		})
 		if err != nil {
-			c.JSON(consts.StatusOK, 0)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
-		c.JSON(consts.StatusOK, 1)
+		c.JSON(consts.StatusOK, response.Success(1))
 	})
 	h.POST("/addSystemConfig", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewaySystemConfig
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, err)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 		err = mysql.CreateGatewaySystem([]*model.GatewaySystemConfig{
@@ -155,7 +156,7 @@ func AddRouter(h *server.Hertz) {
 			},
 		})
 		if err != nil {
-			c.JSON(consts.StatusOK, 0)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 		appmetadata.GetAppMetadataCache().RefreshCacheByAppName([]string{req.SystemId})
@@ -163,32 +164,32 @@ func AddRouter(h *server.Hertz) {
 		if ok {
 			gatewaymethod.GetGatewayMethodCache().RefreshAllCache(a.Methods)
 		}
-		c.JSON(consts.StatusOK, 1)
+		c.JSON(consts.StatusOK, response.Success(1))
 	})
 
 	h.POST("/selectAppMethods", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewayMethodRequest
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, err)
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 		g, _ := handler.QueryGatewayMethodInfo(req)
-		c.JSON(consts.StatusOK, g)
+		c.JSON(consts.StatusOK, response.Success(g))
 	})
 	h.GET("/channelConfig/refresh", func(ctx context.Context, c *app.RequestContext) {
 		sync.GetConfChangeClientHelper().Publish("GATEWAY_CHANNEL", "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString())
-		c.JSON(consts.StatusOK, "ok")
+		c.JSON(consts.StatusOK, response.Success(nil))
 	})
 	h.GET("/gateway/refresh", func(ctx context.Context, c *app.RequestContext) {
 		sync.GetConfChangeClientHelper().Publish("GATEWAY_SYSTEM", "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString())
-		c.JSON(consts.StatusOK, "ok")
+		c.JSON(consts.StatusOK, response.Success(nil))
 	})
 	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewaySystemReq
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, err)
+			c.JSON(consts.StatusInternalServerError, response.Error(err.Error()))
 			return
 		}
 		var g []*model.GatewaySystemConfig
@@ -198,11 +199,11 @@ func AddRouter(h *server.Hertz) {
 			g, total, _ = mysql.GetGatewaySystemConfigByPage(req.SysId, req.PageIndex, req.PageSize)
 			res.Models = g
 			res.Total = total
-			c.JSON(consts.StatusOK, res)
+			c.JSON(consts.StatusOK, response.Success(res))
 			return
 		}
 		g, _ = mysql.GetGatewaySystemConfig(req.SysId)
-		c.JSON(consts.StatusOK, g)
+		c.JSON(consts.StatusOK, response.Success(g))
 	})
 
 	h.POST("/api/json", validFileName, validSign, func(ctx context.Context, c *app.RequestContext) {

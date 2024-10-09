@@ -1,7 +1,7 @@
 app:
   host: 127.0.0.1:8888
   name: open-gateway
-  register: zookeeper
+  register: nacos
   weight: 0
   web_path: /Users/icefox/Documents/nacos/opengateway-macos/web
 sync_config:
