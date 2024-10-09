@@ -24,5 +24,6 @@ upx -d -o example_uncompressed.exe example_compressed.exe
 
 ### windows编译
 ```shell
+go mod tidy
 go build  -o dist/opengateway.exe  ./cmd/opengateway/
 ```
