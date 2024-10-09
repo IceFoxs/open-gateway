@@ -7,30 +7,30 @@ import (
 func QueryGatewayConfigByPage(keyword string, page, pageSize int64) ([]*model.GatewayConfig, int64, error) {
 	db := DB.Model(model.GatewayConfig{})
 	if len(keyword) != 0 {
-		db = db.Where(DB.Or("app_name like ?", "%"+keyword+"%"))
+		db = db.Debug().Where(DB.Or("app_name like ?", "%"+keyword+"%"))
 	}
 	var total int64
-	if err := db.Count(&total).Error; err != nil {
+	if err := db.Debug().Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 	var res []*model.GatewayConfig
-	if err := db.Limit(int(pageSize)).Offset(int(pageSize * (page - 1))).Find(&res).Error; err != nil {
+	if err := db.Debug().Limit(int(pageSize)).Offset(int(pageSize * (page - 1))).Find(&res).Error; err != nil {
 		return nil, 0, err
 	}
 	return res, total, nil
 }
 
 func CreateGatewayConfig(gscs []*model.GatewayConfig) error {
-	return DB.Create(gscs).Error
+	return DB.Debug().Create(gscs).Error
 }
 
 func UpdateGatewayConfig(gsc *model.GatewayConfig) error {
-	return DB.Updates(gsc).Error
+	return DB.Debug().Updates(gsc).Error
 }
 func GetGatewayConfig(keyword string) ([]*model.GatewayConfig, error) {
 	db := DB.Model(model.GatewayConfig{})
 	if len(keyword) != 0 {
-		db = db.Where(DB.Or("app_name like ?", "%"+keyword+"%"))
+		db = db.Debug().Where(DB.Or("app_name like ?", "%"+keyword+"%"))
 	}
 	var res []*model.GatewayConfig
 	if err := db.Find(&res).Error; err != nil {

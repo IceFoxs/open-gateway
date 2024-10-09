@@ -34,11 +34,12 @@ func Start() {
 }
 
 func Init() {
-	hlog.SetLogger(logger.NewLogger())
+	l := logger.NewLogger()
+	hlog.SetLogger(l)
 	inits.Init()
 	dubbo.InitDefaultDubboClient()
 	dsn := conf.GetConf().MySQL.DSN
-	db.Init(dsn)
+	db.Init(dsn, l.Logger())
 	registry.GetRegisterClient()
 	http.GetHttpClient()
 	c := gatewayconfig.GetGatewayConfigCache()

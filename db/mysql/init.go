@@ -18,19 +18,25 @@ package mysql
 
 import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"moul.io/zapgorm2"
 )
 
 var DB *gorm.DB
 
-func Init(dsn string) {
+func Init(dsn string, zapLogger *zap.Logger) {
 	var err error
+	log := zapgorm2.New(zapLogger)
+	log.LogMode(logger.Info)
+	log.SetAsDefault()
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
-		Logger:                 logger.Default.LogMode(logger.Info),
+		//Logger:                 logger.Default.LogMode(logger.Info),
+		Logger: log,
 	})
 	if err != nil {
 		panic(err)
