@@ -189,7 +189,7 @@ func AddRouter(h *server.Hertz) {
 		var req model.GatewaySystemReq
 		err := c.BindAndValidate(&req)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, response.Error(err.Error()))
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
 			return
 		}
 		var g []*model.GatewaySystemConfig
