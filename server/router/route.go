@@ -185,6 +185,17 @@ func AddRouter(h *server.Hertz) {
 		sync.GetConfChangeClientHelper().Publish("GATEWAY_SYSTEM", "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString())
 		c.JSON(consts.StatusOK, response.Success(nil))
 	})
+
+	h.POST("/confSync", func(ctx context.Context, c *app.RequestContext) {
+		var req model.ConfTypeRequest
+		err := c.BindAndValidate(&req)
+		if err != nil {
+			c.JSON(consts.StatusOK, response.Error(err.Error()))
+			return
+		}
+		sync.GetConfChangeClientHelper().Publish(req.ConfType, "FPS_GROUP", strings.ReplaceAll(time.Now().Format("20060102150405.000"), ".", "")+"|"+uuid.NewString()+"|"+req.ConfContent)
+		c.JSON(consts.StatusOK, response.Success(nil))
+	})
 	h.POST("/selectBySysId", func(ctx context.Context, c *app.RequestContext) {
 		var req model.GatewaySystemReq
 		err := c.BindAndValidate(&req)
